@@ -1,0 +1,86 @@
+.gpf-btn-icon-wfsfilter::after {
+    -webkit-mask: url("img/dsfr/services-publics.svg") center no-repeat;
+    mask: url("img/dsfr/services-publics.svg") center no-repeat;
+}
+
+.gpf-btn-header-wfsfilter {
+    z-index: 2;
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    box-shadow: none;
+}
+
+.gpf-panel__body_wfsfilter {
+    overflow: auto;
+    max-height: 300px !important;
+}
+
+button[id^=GPcollapseWfsfilter_ID_] {
+    position: absolute;
+    top: 0px;
+    right: 0;
+}
+
+.gpf-btn-icon-wfsfilter-collapse {
+    box-shadow: none;
+}
+
+.gpf-btn-icon-wfsfilter-collapse::after {
+    -webkit-mask: url("img/dsfr/collapse.svg") center no-repeat;
+    mask: url("img/dsfr/collapse.svg") center no-repeat;
+    transition: transform 0.2s ease-out 0s;
+}
+
+.gpf-btn-icon-wfsfilter-collapse[aria-pressed="true"]::after {
+    box-shadow: none;
+    transform: rotate(180deg);
+}
+
+.wfsfilter-entry-container {
+    position: relative;
+    top: 0;
+    border-bottom: 1px solid var(--border-default-grey);
+    overflow: hidden;
+}
+
+.wfsfilter-entry-container {
+    background-color: var(--background-overlap-grey);
+}
+
+.wfsfilter-entries {
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-top: 0px;
+  filter: none;
+  overflow-y: scroll;
+  max-height: 60vh;
+}
+
+#GPwfsfilter_ID_empty {
+    border-bottom: none;
+}
+
+.gpf-panel__title__wfsfilter {
+    padding-bottom: 20px;
+}
+
+.gpf-panel__header_wfsfilter {
+    margin-bottom: 15px;
+}
+
+.fr-icon-cartosp-building::before, .fr-icon-cartosp-building::after {
+    -webkit-mask-image: url("img/dsfr/services-publics.svg");
+    mask-image: url("img/dsfr/services-publics.svg");
+}
+
+.GPfilterButton {
+    border: unset;
+    background: unset;
+}
+
+#reset-sp-selection {
+    margin-bottom: 10px;
+    display: inline-block;
+    text-decoration: underline;
+}

@@ -45,6 +45,8 @@ export { default as Legends } from "./packages/Controls/Legends/Legends";
 export { default as Catalog } from "./packages/Controls/Catalog/Catalog";
 export { default as Territories } from "./packages/Controls/Territories/Territories";
 export { default as ControlList } from "./packages/Controls/ControlList/ControlList";
+// Carto SP fork
+export { default as WfsFilter } from "./packages/Controls/CartospWfsFilter/WfsFilter";
 
 // proj4
 export { default as Proj4 } from "proj4";

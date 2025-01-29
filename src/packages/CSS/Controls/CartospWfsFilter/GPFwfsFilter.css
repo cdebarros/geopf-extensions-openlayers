@@ -1,0 +1,26 @@
+div[id^=GPwfsfilter-] {
+    top: 58px;
+    right: 8px;
+}
+
+.position > div[id^=GPwfsfilter-] > dialog[id^=GPwfsfilterPanel] {
+    position: absolute;
+}
+
+/* Showing/hiding */
+
+button[id^=GPshowWfsfilterPicto][aria-pressed="false"] + dialog {
+    display: none;
+    visibility: hidden;
+    opacity: 0%;
+}
+
+button[id^="GPshowWfsfilterPicto-"][aria-pressed="true"] + dialog {
+    display: flex;
+    flex-direction: column;
+    visibility: visible;
+    opacity: 100%;
+    width: 450px;
+    height: initial;
+    max-height: inherit;
+}

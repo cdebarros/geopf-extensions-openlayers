@@ -63,3 +63,4 @@ package-lock.json
 TODO.md
 FIXME.md
 TARGET.md
+samples-src/resources/data/configuration/customConfig.json

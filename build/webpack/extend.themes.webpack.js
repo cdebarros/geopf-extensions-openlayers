@@ -67,6 +67,7 @@ module.exports = (env, argv) => {
                 path.join(rootdir, "src", "packages", "CSS", "Controls/Catalog", "DSFRcatalogStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/Territories", "DSFRterritoriesStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/ControlList", "DSFRcontrolListStyle.css"),
+                path.join(rootdir, "src", "packages", "CSS", "Controls/CartospWfsFilter", "DSFRwfsFilterStyle.css"),
             ],
         }
     };

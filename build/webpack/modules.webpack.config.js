@@ -56,6 +56,8 @@ module.exports = (env, argv) => {
             "GpfExtOlCatalog" : path.join(rootdir, "src", "packages", "Controls/Catalog", "Catalog.js"),
             "GpfExtOlTerritories" : path.join(rootdir, "src", "packages", "Controls/Territories", "Territories.js"),
             "GpfExtOlControlList" : path.join(rootdir, "src", "packages", "Controls/ControlList", "ControlList.js"),
+            // Carto SP fork
+            "GpfExtOlWfsFilter" : path.join(rootdir, "src", "packages", "Controls/CartospWfsFilter", "WfsFilter.js"),
             // Formats étendus
             "GpfExtOlFormats" : [
                 path.join(rootdir, "src", "packages", "Formats", "GeoJSON.js"),
