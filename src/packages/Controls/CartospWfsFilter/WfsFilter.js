@@ -151,19 +151,28 @@ var WfsFilter = class Wfsfilter extends Control {
      */
     updateFilters () {
         var atLeastOne = false;
-        this.panelWfsfilterEntriesContainer.innerHTML= "";
+        var frag = new DocumentFragment();
+
+        // construction de l'accordeon
         this.cartospFilterList.forEach(element => {
-            //console.log(element);
             if (element.typologies.length > 0) {
                 var entry = this._createThematiqueEntry(element);
                 if (entry) {
-                    this.panelWfsfilterEntriesContainer.prepend(entry);
+                    frag.appendChild(entry);
                     atLeastOne = true;
                 }
             }
         });
+
+        // affichage du contenu dans le conteneur de départ
         if (!atLeastOne){
+            this.panelWfsfilterEntriesContainer.innerHTML = "";
             this.panelWfsfilterEntriesContainer.prepend(this._createEmptyThematique());
+        } else {
+            var replacement = this._createWfsfilterElement();
+            replacement.appendChild(frag);
+            this.PanelWfsfilterContentElement.replaceChild(replacement, this.panelWfsfilterEntriesContainer);
+            this.panelWfsfilterEntriesContainer = replacement;
         }
     }
 
@@ -192,7 +201,7 @@ var WfsFilter = class Wfsfilter extends Control {
         var self = this;
         var count = 0;
         self.selectedTypologies.forEach((theme) => {
-            count += count + theme.typologies.length;
+            count += theme.typologies.length;
         });
 
         self.WfsThematiqueResetLink.innerHTML = "Réinitialiser (" + count + ")";

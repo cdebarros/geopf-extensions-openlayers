@@ -20,7 +20,7 @@ button[id^="GPshowWfsfilterPicto-"][aria-pressed="true"] + dialog {
     flex-direction: column;
     visibility: visible;
     opacity: 100%;
-    width: 450px;
+    width: 480px;
     height: initial;
-    max-height: inherit;
+    /*max-height: inherit;*/
 }

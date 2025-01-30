@@ -13,7 +13,7 @@
 
 .gpf-panel__body_wfsfilter {
     overflow: auto;
-    max-height: 300px !important;
+    /*max-height: 300px !important;*/
 }
 
 button[id^=GPcollapseWfsfilter_ID_] {
@@ -53,8 +53,9 @@ button[id^=GPcollapseWfsfilter_ID_] {
   padding-left: 0px;
   padding-top: 0px;
   filter: none;
-  overflow-y: scroll;
-  max-height: 60vh;
+  /*overflow-y: scroll;*/
+  /*scrollbar-width: thin;*/
+  /*max-height: 60vh;*/
 }
 
 #GPwfsfilter_ID_empty {
