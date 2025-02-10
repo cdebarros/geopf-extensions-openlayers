@@ -152,7 +152,7 @@ var Isocurve = class Isocurve extends Control {
                 this.export = new ButtonExport(opts);
                 this.export.render();
                 var self = this;
-                this.export.on("export:compute", (e) => {
+                this.export.on("button:clicked", (e) => {
                     self.dispatchEvent({
                         type : "export:compute",
                         content : e.content
@@ -318,8 +318,10 @@ var Isocurve = class Isocurve extends Control {
         // (cf. _createIsoPanelFormPointElement),
         var inputPointer = document.getElementById("GPlocationOriginPointer_" + 1 + "-" + this._uid);
         inputPointer.checked = true;
+        var inputCoordsDOM = document.getElementById("GPlocationOrigin_" + 1 + "-" + this._uid);
         var inputCoords = document.getElementById("GPlocationOriginCoords_" + 1 + "-" + this._uid);
-        inputCoords.value = "";
+        inputCoords.value = data.point;
+        inputCoordsDOM.value = data.point[1].toFixed(4) + " / " + data.point[0].toFixed(4);
         this._originPoint.setCoordinate(data.point, "EPSG:4326");
         this._currentIsoResults = data.results;
     }
@@ -888,13 +890,15 @@ var Isocurve = class Isocurve extends Control {
             footer.appendChild(buttonReset);
         }
 
-
         // form: bouton du calcul
         var buttonSubmit = this._submitContainer = this._createIsoSubmitFormElement();
         footer.appendChild(buttonSubmit);
 
         panelDiv.appendChild(form);
 
+        var plugin = this._createDrawingButtonsPluginDiv();
+        panelDiv.appendChild(plugin);
+        
         // waiting
         var waiting = this._waitingContainer = this._createIsoWaitingElement();
         panel.appendChild(waiting);
@@ -1112,13 +1116,14 @@ var Isocurve = class Isocurve extends Control {
      * @private
      */
     onShowIsoPanelClick (e) {
-        if (e.target.ariaPressed === "true") {
+        var opened = this._pictoIsoButton.ariaPressed;
+        if (opened === "true") {
             this.onPanelOpen();
         }
+
         var map = this.getMap();
         // on supprime toutes les interactions
         Interactions.unset(map);
-        var opened = this._pictoIsoButton.ariaPressed;
         this.collapsed = !(opened === "true");
         // on génère nous même l'evenement OpenLayers de changement de propriété
         // (utiliser ol.control.Isocurve.on("change:collapsed", function ) pour s'abonner à cet évènement)

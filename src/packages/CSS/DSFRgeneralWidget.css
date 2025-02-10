@@ -152,7 +152,7 @@
   position: relative;
 }
 
-.gpf-widget:has(> .gpf-btn-icon[aria-pressed="true"])::after {
+.gpf-widget-button:has(> .gpf-btn-icon[aria-pressed="true"])::after {
   background-color: var(--background-action-high-blue-france);
   content: "";
   width: 3px;
@@ -167,6 +167,8 @@
     transform: unset;
   }
 }
+
+/* Affichage du tooltip au survol du bouton */
 
 .gpf-widget > .gpf-btn-icon[aria-label]:hover::before {
   content: attr(aria-label);
@@ -204,12 +206,13 @@ div:not(.position) > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before {
 }
 
 
-
+.gpf-btn--primary,
 .gpf-btn--secondary,
 .gpf-btn--tertiary {
   position: relative;
 }
 
+.gpf-btn--primary::after,
 .gpf-btn--tertiary::after,
 .gpf-btn--secondary::after {
   content: "";
@@ -225,6 +228,11 @@ div:not(.position) > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before {
   mask: linear-gradient(#0000, #0000);
 }
 
+.gpf-btn--primary::after {
+  background-color: var(--text-inverted-blue-france);
+}
+
+.gpf-btn--primary:disabled:after,
 .gpf-btn--tertiary:disabled:after,
 .gpf-btn--secondary:disabled::after {
   background-color: var(--text-disabled-grey);
@@ -325,7 +333,7 @@ div:not(.position) > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before {
 .gpf-panel__list,
 .gpf-panel__advancedlist {
   z-index: 2;
-  width: inherit;
+  /* width: inherit; */
   /* display: none; */
   position: absolute;
   max-height: 140px;

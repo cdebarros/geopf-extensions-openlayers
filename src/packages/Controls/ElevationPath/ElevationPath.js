@@ -536,7 +536,7 @@ var ElevationPath = class ElevationPath extends Control {
                 this.export = new ButtonExport(opts);
                 this.export.render();
                 var self = this;
-                this.export.on("export:compute", (e) => {
+                this.export.on("button:clicked", (e) => {
                     self.dispatchEvent({
                         type : "export:compute",
                         content : e.content
@@ -870,6 +870,9 @@ var ElevationPath = class ElevationPath extends Control {
         // info
         var info = this._infoContainer = this._createElevationPathInformationsElement();
         panelDiv.appendChild(info);
+
+        var plugin = this._createDrawingButtonsPluginDiv();
+        panelDiv.appendChild(plugin);
 
         if (this.options.displayProfileOptions.target === null) {
             container.appendChild(panel);
@@ -1640,16 +1643,17 @@ var ElevationPath = class ElevationPath extends Control {
      * @private
      */
     onShowElevationPathClick (e) {
-        if (e.target.ariaPressed === "true") {
+        var opened = this._pictoButton.ariaPressed;
+        if (opened === "true") {
             this.onPanelOpen();
         }
+
         var map = this.getMap();
         Interactions.unset(map, {
             current : "ElevationPath"
         });
 
         // Activation/Desactivation des interactions de dessins
-        var opened = this._pictoButton.ariaPressed;
         if (opened === "true") {
             // on n'affiche pas la fenetre de profile s'il n'existe pas...
             if (this._profile === null) {
