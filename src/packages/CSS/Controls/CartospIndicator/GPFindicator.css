@@ -1,0 +1,25 @@
+div[id^=GPindicator-] {
+    top: 58px;
+    right: 8px;
+}
+
+.position > div[id^=GPindicator-] > dialog[id^=GPindicatorPanel] {
+    position: absolute;
+}
+
+/* Showing/hiding */
+
+button[id^=GPshowIndicatorPicto][aria-pressed="false"] + dialog {
+    display: none;
+    visibility: hidden;
+    opacity: 0%;
+}
+
+button[id^="GPshowIndicatorPicto-"][aria-pressed="true"] + dialog {
+    display: flex;
+    flex-direction: column;
+    visibility: visible;
+    opacity: 100%;
+    width: 480px;
+    height: initial;
+}

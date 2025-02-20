@@ -4,6 +4,10 @@ import "../../CSS/Controls/CartospWfsFilter/GPFwfsFilter.css";
 // import OpenLayers
 import Widget from "../Widget";
 import Control from "../Control";
+import {
+    Style,
+    Icon
+} from "ol/style";
 
 // import local
 import Utils from "../../Utils/Helper";
@@ -104,21 +108,9 @@ var WfsFilter = class Wfsfilter extends Control {
                 });
             }
 
-            // ajout des evenements sur la carte
-            // pour les futurs ajouts de couche
-            if (this.auto) {
-                this.addEventsListeners(map);
-            }
-        } else {
-            // suppression des evenements sur la carte
-            // pour les futurs suppressions de couche
-            if (this.auto) {
-                this.removeEventsListeners();
-            }
-        }
-
-        // on appelle la méthode setMap originale d'OpenLayers
-        super.setMap(map);
+            // on appelle la méthode setMap originale d'OpenLayers
+            super.setMap(map);
+        } 
 
         // position
         if (this.options.position) {
@@ -186,12 +178,23 @@ var WfsFilter = class Wfsfilter extends Control {
         var thematique;
         var typologie;
         var featureTheme;
+        var featureStructure;
         layer.setStyle(function (feature) {
-            thematique = feature.getProperties().thematique;
-            typologie = feature.getProperties().typologie_service;
-            if (self.selectedTypologies.find(theme => theme.typologies.includes(feature.getProperties().typologie_service))) {
-                //if ( self.selectedTypologies[feature.getProperties().thematique].includes(feature.getProperties().typologie_service)){
-                return self.cartospStyles[feature.getProperties().thematique];
+            thematique = feature.getProperties().service_thematique;
+            typologie = feature.getProperties().service_typologie;
+            featureStructure = feature.getProperties().type_structure.toLowerCase();
+            if (self.selectedTypologies.find(theme => theme.typologies.includes(feature.getProperties().service_typologie))) {
+                if (featureStructure !== "implantation" && featureStructure !== "itinérant" &&  featureStructure !== "permanence"){
+                    featureStructure = "implantation";
+                }
+                return new Style({
+                    image : new Icon({
+                        anchor : [0.5, 37],
+                        anchorXUnits : "fraction",
+                        anchorYUnits : "pixels",
+                        src : self.cartospThemesInfo[feature.getProperties().service_thematique].markerPath + featureStructure + ".svg",
+                    })
+                });
             };
             return undefined;
         });
@@ -249,22 +252,22 @@ var WfsFilter = class Wfsfilter extends Control {
         this.PanelWfsfilterContentElement = null;
         this.WfsThematiqueResetLink = null;
 
-        this.eventsListeners = [];
-
         // Cartosp WFS layer name
         this.cartospLayerName = this.options.cartospLayerName;
 
-        // tableau des styles
+        // tableau des Themes
         // ex.
         // {
-        //   "class1": {
-        //     new ol.style.Style,
+        //   "theme1": {
+        //     markerPath : String - chemin relatif vers le dossier des marker cartosp,
+        //     topologies: [] - Liste des topologies de services pour le thème
         //   },     
-        //   "class2": {
-        //     new ol.style.Style,
+        //   "theme2": {
+        //     markerPath: String - chemin relatif vers le dossier des marker cartosp,
+        //     topologies: [] - Liste des topologies de services pour le thème
         //   } 
-        // }  
-        this.cartospStyles = this.options.cartospStyles;
+        // }
+        this.cartospThemesInfo = this.options.cartospThemesInfo;
 
         // tableau des filtres
         // ex.
@@ -278,11 +281,11 @@ var WfsFilter = class Wfsfilter extends Control {
         //     typologies: []string
         //   } 
         // ]  
-        if (this.cartospStyles){
+        if (this.cartospThemesInfo){
             this.cartospFilterList = [];
             this.selectedTypologies = [];
-            for (const [key, value] of Object.entries(this.cartospStyles)) {
-                this.cartospFilterList.push({ thematique : key, typologies : [] });
+            for (const [key, value] of Object.entries(this.cartospThemesInfo)) {
+                this.cartospFilterList.push({ thematique : key, typologies : value.topologies });
                 this.selectedTypologies.push({ thematique : key, typologies : [] });
             }
         }
@@ -333,54 +336,6 @@ var WfsFilter = class Wfsfilter extends Control {
         logger.log(container);
 
         return container;
-    }
-
-    /**
-     * Add events listeners on map (called by setMap)
-     *
-     * @param {*} map - map
-     * @private
-     * @todo listener on change:position
-     */
-    addEventsListeners (map) {
-        var self = this;
-        // on movend update SP list
-        this.eventsListeners["view:change"] = function (e) {
-            logger.trace(e);
-            // TODO
-            // à la modification de l'ordre de la couche, on modifie l'entrée
-            // * du DOM
-            // * de la liste des entrées
-            self.cartospFilterList.forEach((entry) => {
-                entry.typologies = [];
-                entry.dom = "";
-            });
-            self.getMap().getLayers().forEach((layer) => {
-                if (layer.name == self.cartospLayerName) {
-                    var featureTheme ;
-                    var extent = self.getMap().getView().calculateExtent(self.getMap().getSize());
-                    layer.getSource().forEachFeatureInExtent(extent, function (feature){
-                        featureTheme = self.cartospFilterList.find(element => element.thematique == feature.getProperties().thematique);
-                        if (!featureTheme.typologies.includes(feature.getProperties().typologie_service)) {
-                            featureTheme.typologies.push(feature.getProperties().typologie_service);
-                        }
-                    }); 
-                    self.updateFilters();
-                }
-            });
-        };
-
-        map.getView().on("change", this.eventsListeners["view:change"]);
-    }
-
-    /**
-     * Remove events listeners on map (called by setMap)
-     * @private
-     */
-    removeEventsListeners () {
-        var map = this.getMap();
-        map.getView().un("change", this.eventsListeners["view:change"]);
-        delete this.eventsListeners["view:change"];
     }
 
     // ################################################################### //

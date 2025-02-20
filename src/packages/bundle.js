@@ -103,6 +103,7 @@ import Catalog from "./Controls/Catalog/Catalog";
 import ContextMenu from "./Controls/ContextMenu/ContextMenu";
 // Carto SP fork
 import WfsFilter from "./Controls/CartospWfsFilter/WfsFilter";
+import Indicator from "./Controls/CartospIndicator/Indicator";
 
 import Proj4 from "proj4";
 
@@ -289,6 +290,7 @@ Ol.control.ControlList = ControlList;
 Ol.control.ContextMenu = ContextMenu;
 // Carto SP fork
 Ol.control.WfsFilter = WfsFilter;
+Ol.control.Indicator = Indicator;
 
 export {
     /**

@@ -1,0 +1,76 @@
+.gpf-btn-icon-indicator::after {
+    -webkit-mask: url("img/dsfr/indicateurs.svg") center no-repeat;
+    mask: url("img/dsfr/indicateurs.svg") center no-repeat;
+}
+
+.gpf-btn-header-indicator {
+    z-index: 2;
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    box-shadow: none;
+}
+
+.gpf-panel__body_indicator {
+    overflow: auto;
+}
+
+.gpf-btn-icon-indicator-collapse {
+    box-shadow: none;
+}
+
+.gpf-btn-icon-indicator-collapse[aria-pressed="true"]::after {
+    box-shadow: none;
+    transform: rotate(180deg);
+}
+
+.indicator-entry-container {
+    position: relative;
+    top: 0;
+    border-bottom: 1px solid var(--border-default-grey);
+    overflow: hidden;
+}
+
+.indicator-entry-container {
+    background-color: var(--background-overlap-grey);
+}
+
+.indicator-entries {
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-top: 0px;
+  filter: none;
+}
+
+#GPindicator_ID_empty {
+    border-bottom: none;
+}
+
+.gpf-panel__title__indicator {
+    padding-bottom: 20px;
+}
+
+.gpf-panel__header_indicator {
+    margin-bottom: 15px;
+}
+
+.fr-icon-cartosp-indicator::before, .fr-icon-cartosp-indicator::after {
+    -webkit-mask-image: url("img/dsfr/indicateurs.svg");
+    mask-image: url("img/dsfr/indicateurs.svg");
+    color: var(--text-action-high-blue-france);
+}
+
+.GPfilterButton {
+    border: unset;
+    background: unset;
+}
+
+#reset-sp-selection {
+    margin-bottom: 10px;
+    display: inline-block;
+    text-decoration: underline;
+}
+
+.fr-accordion__title{
+    height: unset !important;
+}

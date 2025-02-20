@@ -13,7 +13,6 @@
 
 .gpf-panel__body_wfsfilter {
     overflow: auto;
-    /*max-height: 300px !important;*/
 }
 
 button[id^=GPcollapseWfsfilter_ID_] {
@@ -53,9 +52,6 @@ button[id^=GPcollapseWfsfilter_ID_] {
   padding-left: 0px;
   padding-top: 0px;
   filter: none;
-  /*overflow-y: scroll;*/
-  /*scrollbar-width: thin;*/
-  /*max-height: 60vh;*/
 }
 
 #GPwfsfilter_ID_empty {
@@ -73,6 +69,7 @@ button[id^=GPcollapseWfsfilter_ID_] {
 .fr-icon-cartosp-building::before, .fr-icon-cartosp-building::after {
     -webkit-mask-image: url("img/dsfr/services-publics.svg");
     mask-image: url("img/dsfr/services-publics.svg");
+    color: var(--text-action-high-blue-france);
 }
 
 .GPfilterButton {

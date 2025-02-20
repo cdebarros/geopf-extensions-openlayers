@@ -59,6 +59,7 @@ module.exports = (env, argv) => {
             "GpfExtOlContextMenu" : path.join(rootdir, "src", "packages", "Controls/ContextMenu", "ContextMenu.js"),
             // Carto SP fork
             "GpfExtOlWfsFilter" : path.join(rootdir, "src", "packages", "Controls/CartospWfsFilter", "WfsFilter.js"),
+            "GpfExtOlIndicator" : path.join(rootdir, "src", "packages", "Controls/CartospIndicator", "Indicator.js"),
             // Formats étendus
             "GpfExtOlFormats" : [
                 path.join(rootdir, "src", "packages", "Formats", "GeoJSON.js"),

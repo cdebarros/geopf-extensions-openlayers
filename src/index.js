@@ -48,6 +48,7 @@ export { default as ControlList } from "./packages/Controls/ControlList/ControlL
 export { default as ContextMenu } from "./packages/Controls/ContextMenu/ContextMenu";
 // Carto SP fork
 export { default as WfsFilter } from "./packages/Controls/CartospWfsFilter/WfsFilter";
+export { default as Indicator } from "./packages/Controls/CartospIndicator/Indicator";
 
 // proj4
 export { default as Proj4 } from "proj4";
