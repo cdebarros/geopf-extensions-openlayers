@@ -102,7 +102,7 @@ var WfsFilter = class Wfsfilter extends Control {
                 var self = this;
                 map.getLayers().forEach((layer) => {
                     if (layer.name == this.cartospLayerName) {
-                        self.updateFilters();
+                        self.createFilters();
                         self.setStyleFunction(layer);
                     }
                 });
@@ -141,7 +141,7 @@ var WfsFilter = class Wfsfilter extends Control {
      * 
      * @public
      */
-    updateFilters () {
+    createFilters () {
         var atLeastOne = false;
         var frag = new DocumentFragment();
 
@@ -388,12 +388,14 @@ var WfsFilter = class Wfsfilter extends Control {
     onResetSelecSpClick (e) {
         var self = this;
         self.selectedTypologies.forEach((theme) => {
+            theme.typologies.forEach((typologie) => {
+                document.getElementById("checkboxes-" + typologie).checked = false;
+            });
             theme.typologies = [];
         });
         self.getMap().getLayers().forEach((layer) => {
             if (layer.name == self.cartospLayerName) {
                 self.setStyleFunction(layer);
-                self.updateFilters();
             }
         });
         self.WfsThematiqueResetLink.innerHTML = "Réinitialiser (0)";

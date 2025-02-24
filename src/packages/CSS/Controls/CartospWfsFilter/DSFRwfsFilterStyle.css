@@ -15,12 +15,6 @@
     overflow: auto;
 }
 
-button[id^=GPcollapseWfsfilter_ID_] {
-    position: absolute;
-    top: 0px;
-    right: 0;
-}
-
 .gpf-btn-icon-wfsfilter-collapse {
     box-shadow: none;
 }
@@ -81,4 +75,8 @@ button[id^=GPcollapseWfsfilter_ID_] {
     margin-bottom: 10px;
     display: inline-block;
     text-decoration: underline;
+}
+
+.fr-accordion__title{
+    height: unset !important;
 }

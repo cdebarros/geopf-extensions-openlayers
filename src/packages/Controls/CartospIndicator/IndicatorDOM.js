@@ -143,14 +143,17 @@ var IndicatorDOM = {
     // ################################################################### //
 
     _createThematiqueResetLink : function () {
-        var element = document.createElement("button");
-        element.className = "fr-link"; // afficher en dsfr
-        element.innerText = "Réinitialiser (0)";
-        element.id = "reset-sp-selection";
+        var element = document.createElement("div");
+        element.id = "global-indicator-action";
+        var button = document.createElement("button");
+        button.className = "fr-link"; // afficher en dsfr
+        button.innerText = "Réinitialiser (0)";
+        button.id = "reset-indicator-selection";
 
-        element.addEventListener("click", (e) => {
+        button.addEventListener("click", (e) => {
             this.onResetSelecSpClick(e);
         });
+        element.appendChild(button);
 
         return element;
     },

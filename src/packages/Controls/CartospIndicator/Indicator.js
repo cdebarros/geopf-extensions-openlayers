@@ -98,19 +98,7 @@ var Indicator = class Indicator extends Control {
             // Initialisation style et filtres
             if (this.auto) {
                 var self = this;
-                self.updateFilters();
-            }
-
-            // ajout des evenements sur la carte
-            // pour les futurs ajouts de couche
-            if (this.auto) {
-                this.addEventsListeners(map);
-            }
-        } else {
-            // suppression des evenements sur la carte
-            // pour les futurs suppressions de couche
-            if (this.auto) {
-                this.removeEventsListeners();
+                self.createFilters();
             }
         }
 
@@ -146,7 +134,7 @@ var Indicator = class Indicator extends Control {
      * 
      * @public
      */
-    updateFilters () {
+    createFilters () {
         var atLeastOne = false;
         var frag = new DocumentFragment();
 
@@ -180,7 +168,7 @@ var Indicator = class Indicator extends Control {
             count += theme.indicators.length;
         });
 
-        self.WfsThematiqueResetLink.innerHTML = "Réinitialiser (" + count + ")";
+        self.WfsThematiqueResetLink.firstChild.innerHTML = "Réinitialiser (" + count + ")";
     }
 
     // ################################################################### //
@@ -227,42 +215,18 @@ var Indicator = class Indicator extends Control {
 
         this.eventsListeners = [];
 
-        // Cartosp WFS layer name
-        this.cartospLayerName = this.options.cartospLayerName;
-
-        // tableau des styles
-        // ex.
-        // {
-        //   "class1": {
-        //     new ol.style.Style,
-        //   },     
-        //   "class2": {
-        //     new ol.style.Style,
-        //   } 
-        // }  
-        this.cartospStyles = this.options.cartospStyles;
-
-        // tableau des filtres
+        // tableau des indicateurs
         // ex.
         // [
         //   {
         //     thematique: string,
-        //     typologies: []string
+        //     indicators: [{title : String, layername: String}]Objects
         //   },     
         //   {
         //     thematique: string,
-        //     typologies: []string
+        //     indicators: [{title : String, layername: String}]Objects
         //   } 
         // ]  
-        if (this.cartospStyles){
-            this.cartospFilterList = [];
-            this.selectedTypologies = [];
-            for (const [key, value] of Object.entries(this.cartospStyles)) {
-                this.cartospFilterList.push({ thematique : key, typologies : [] });
-                this.selectedTypologies.push({ thematique : key, typologies : [] });
-            }
-        }
-
         if (this.options.indicatorList){
             this.indicatorFilterList = this.options.indicatorList;
             this.selectedIndicators = [];
@@ -318,54 +282,6 @@ var Indicator = class Indicator extends Control {
         logger.log(container);
 
         return container;
-    }
-
-    /**
-     * Add events listeners on map (called by setMap)
-     *
-     * @param {*} map - map
-     * @private
-     * @todo listener on change:position
-     */
-    addEventsListeners (map) {
-        var self = this;
-        // on movend update SP list
-        this.eventsListeners["view:change"] = function (e) {
-            logger.trace(e);
-            // TODO
-            // à la modification de l'ordre de la couche, on modifie l'entrée
-            // * du DOM
-            // * de la liste des entrées
-            /*self.cartospFilterList.forEach((entry) => {
-                entry.typologies = [];
-                entry.dom = "";
-            });
-            self.getMap().getLayers().forEach((layer) => {
-                if (layer.name == self.cartospLayerName) {
-                    var featureTheme ;
-                    var extent = self.getMap().getView().calculateExtent(self.getMap().getSize());
-                    layer.getSource().forEachFeatureInExtent(extent, function (feature){
-                        featureTheme = self.cartospFilterList.find(element => element.thematique == feature.getProperties().thematique);
-                        if (!featureTheme.typologies.includes(feature.getProperties().typologie_service)) {
-                            featureTheme.typologies.push(feature.getProperties().typologie_service);
-                        }
-                    }); 
-                    self.updateFilters();
-                }
-            });*/
-        };
-
-        map.getView().on("change", this.eventsListeners["view:change"]);
-    }
-
-    /**
-     * Remove events listeners on map (called by setMap)
-     * @private
-     */
-    removeEventsListeners () {
-        var map = this.getMap();
-        map.getView().un("change", this.eventsListeners["view:change"]);
-        delete this.eventsListeners["view:change"];
     }
 
     // ################################################################### //
@@ -427,11 +343,11 @@ var Indicator = class Indicator extends Control {
                         self.getMap().removeLayer(layer);
                     }
                 });
+                document.getElementById("checkboxes-" + indicator).checked = false;
             });
             theme.indicators = [];
         });
-        self.updateFilters();
-        self.WfsThematiqueResetLink.innerHTML = "Réinitialiser (0)";
+        self.WfsThematiqueResetLink.firstChild.innerHTML = "Réinitialiser (0)";
     }
 
 };
