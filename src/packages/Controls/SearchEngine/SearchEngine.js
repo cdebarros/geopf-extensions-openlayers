@@ -27,6 +27,7 @@ import CRS from "../../CRS/CRS";
 // import local des layers
 import GeoportalWMS from "../../Layers/LayerWMS";
 import GeoportalWMTS from "../../Layers/LayerWMTS";
+import GeoportalWFS from "../../Layers/LayerWFS";
 import GeoportalMapBox from "../../Layers/LayerMapBox";
 // Service
 import Search from "../../Services/Search";
@@ -78,17 +79,20 @@ var logger = Logger.getLogger("searchengine");
  * @param {Boolean} [options.resources.search = false] - false to disable search service, by default : "false"
  * @param {Object}  [options.searchOptions = {}] - options of search service
  * @param {Boolean} [options.searchOptions.addToMap = true] - add layer automatically to map, defaults to true.
- * @param {String}  [options.searchOptions.filterServices] - filter on a list of search services, each field is separated by a comma. "WMTS,TMS" by default
- * @param {String}  [options.searchOptions.filterWMTSPriority] - filter on priority WMTS layer in search, each field is separated by a comma. "PLAN.IGN,ORTHOIMAGERY.ORTHOPHOTOS" by default
+ * @param {String[]}  [options.searchOptions.filterServices] - filter on a list of search services, each field is separated by a comma. "WMTS,TMS" by default
+ * @param {String[]}  [options.searchOptions.filterWMTSPriority] - filter on priority WMTS layer in search, each field is separated by a comma. "PLAN.IGN,ORTHOIMAGERY.ORTHOPHOTOS" by default
+ * @param {String[]}  [options.searchOptions.filterProjections] - filter on a list of projections : the searchEngine ignore the suggestions with one of the projections listed. Each field is separated by a comma.
  * @param {Boolean}  [options.searchOptions.filterLayersPriority = false] - filter on priority layers in search, false by default
- * @param {String}  [options.searchOptions.filterVectortiles] - filter on list of search layers only on service TMS, each field is separated by a comma. "PLAN.IGN, ..." by default
- * @param {Boolean} [options.searchOptions.updateVectortiles = false] - updating the list of search layers only on service TMS
+ * @param {Boolean}  [options.searchOptions.filterLayers] - false to disable the automatic filter from Config or from the filterLayerList parameter. True by Default.
+ * @param {Object}  [options.searchOptions.filterLayersList] - filter on list of search layers list with a struture {"layerName" : "service"}. By Default, the layers available in Config.configuration.layers.
+ * @param {Boolean}  [options.searchOptions.filterTMS] - filter the results to keep TMS with at least a style (.json) into the metadata. True by Default.
  * @param {Object}  [options.searchOptions.serviceOptions] - options of search service
- * @param {Sring}   [options.searchOptions.serviceOptions.url] - url of service
+ * @param {String}   [options.searchOptions.serviceOptions.url] - url of service
  * @param {String}  [options.searchOptions.serviceOptions.index] - index of search, "standard" by default
- * @param {String}  [options.searchOptions.serviceOptions.fields] - list of search fields, each field is separated by a comma. "title,layer_name" by default
+ * @param {String[]}  [options.searchOptions.serviceOptions.fields] - list of search fields, each field is separated by a comma. "title,layer_name" by default
  * @param {Number}  [options.searchOptions.serviceOptions.size] - number of response in the service. 1000 by default
  * @param {Number}  [options.searchOptions.serviceOptions.maximumResponses] - number of results in the response. 10 by default
+ * @param {Number}  [options.searchOptions.maximumEntries] - maximum search results we want to display. 
  * @param {Object}  [options.geocodeOptions = {}] - options of geocode service (see {@link http://ignf.github.io/geoportal-access-lib/latest/jsdoc/module-Services.html#~geocode Gp.Services.geocode})
  * @param {Object}  [options.geocodeOptions.serviceOptions] - options of geocode service
  * @param {Object}  [options.autocompleteOptions = {}] - options of autocomplete service (see {@link http://ignf.github.io/geoportal-access-lib/latest/jsdoc/module-Services.html#~autoComplete Gp.Services.autoComplete})
@@ -318,9 +322,11 @@ var SearchEngine = class SearchEngine extends Control {
             coordinateSearch : {},
             searchOptions : {
                 addToMap : true,
+                maximumEntries : 5,
                 serviceOptions : {
-                    maximumResponses : 5,
-                }
+                    maximumResponses : 10,
+                },
+                filterLayers : true
             },
             geocodeOptions : {
                 serviceOptions : {}
@@ -377,17 +383,21 @@ var SearchEngine = class SearchEngine extends Control {
                 if (this.options.searchOptions.filterWMTSPriority) {
                     Search.setFilterWMTSPriority(this.options.searchOptions.filterWMTSPriority);
                 }
-                if (this.options.searchOptions.filterVectortiles) {
-                    Search.setFiltersByTMS(this.options.searchOptions.filterVectortiles);
+                if (this.options.searchOptions.filterTMS === false) {
+                    Search.setFilterTMS(this.options.searchOptions.filterTMS);
                 }
-                if (this.options.searchOptions.updateVectortiles) {
-                    Search.updateFilterByTMS(); // url par defaut
+                if (this.options.searchOptions.filterProjections) {
+                    Search.setFiltersByProjection(this.options.searchOptions.filterProjections);
                 }
             }
             // abonnement au service
             Search.target.addEventListener("suggest", (e) => {
                 logger.debug(e);
-                this._fillSearchedSuggestListContainer(e.detail);
+                let suggestResults = e.detail;
+                // filtre des suggestions selon la configuration ou l'option filterLayersList                
+                suggestResults = this._filterResultsFromConfigLayers(suggestResults);
+
+                this._fillSearchedSuggestListContainer(suggestResults);
             });
         }
 
@@ -1093,6 +1103,10 @@ var SearchEngine = class SearchEngine extends Control {
      * @private
      */
     _fillSearchedSuggestListContainer (suggests) {
+        // on réduit la liste de suggests au nombre d'éléments maximum que l'on veut afficher
+        if (this.options.searchOptions.maximumEntries) {
+            suggests = suggests.slice(0, this.options.searchOptions.maximumEntries);
+        }
         // on vide la liste avant de la construire
         var element = this._containerResultsSuggest;
         if (element.childElementCount) {
@@ -1113,6 +1127,43 @@ var SearchEngine = class SearchEngine extends Control {
                 this._createSearchedSuggestElement(suggest, i);
             }
         }
+    }
+
+    /**
+     * this method is called by this.() (case of success)
+     * and clean the results of the suggest list from a list of layers
+     * by default, the Config.layers list.
+     *
+     * @param {Array} suggests - Array of suggested corresponding to search results list
+     * @returns {Array} suggests - Array of suggested corresponding to search results list filtered by Config
+     * @private
+     */
+    _filterResultsFromConfigLayers (suggests) {
+        // si l'option de filtrage des entrées à afficher est activée (true par défaut) : on nettoie la liste 
+        if (this.options.searchOptions.filterLayers) {
+            var layerList = {};
+            if (this.options.searchOptions.filterLayersList) {
+                layerList = this.options.searchOptions.filterLayersList;
+            } else {
+                var layersObject = window.Gp.Config.layers;
+                for (let layer in layersObject) {
+                    if (layersObject.hasOwnProperty(layer)) {
+                        layerList[layersObject[layer].name] = layersObject[layer].serviceParams.id.split(":")[1];
+                    }
+                }
+            }
+            let i = suggests.length;
+            while (i--) {
+                // on retire la suggestion si :
+                // - son nom ne correspond pas à une couche dans la conf
+                // - le service associé à la suggestion n'est pas celui associé à la couche dans la conf
+                if (!layerList[suggests[i].name] || suggests[i].service.toUpperCase() !==  layerList[suggests[i].name].toUpperCase()) {
+                    suggests.splice(i, 1);
+                }
+            } 
+        }
+        Search.setSuggestions(suggests);
+        return suggests;
     }
 
     /**
@@ -1971,6 +2022,11 @@ var SearchEngine = class SearchEngine extends Control {
                             layer : name
                         });
                         break;
+                    case "WFS":
+                        layer = new GeoportalWFS({
+                            layer : name
+                        });
+                        break;
                     case "TMS":
                         layer = new GeoportalMapBox({
                             layer : name
@@ -2179,6 +2235,14 @@ var SearchEngine = class SearchEngine extends Control {
         // On ne prend pas en compte ce qu'il y a dans l'input de recherche simple pour la recherche avance de PC
         if (this._currentGeocodingCode === "CadastralParcel") {
             _location = "";
+        }
+        if (this._currentGeocodingCode === "StreetAddress") {
+            _location = `${_filterOptions.address} ${_filterOptions.postcode} ${_filterOptions.city}`;
+            _filterOptions = {};
+        }
+        if (this._currentGeocodingCode === "PositionOfInterest") {
+            _location = _filterOptions.q;
+            delete _filterOptions.q;
         }
 
         // on met en place l'affichage des resultats dans une fenetre de recherche.
