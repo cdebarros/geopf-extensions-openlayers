@@ -41,7 +41,7 @@ var WfsFilterDOM = {
         button.appendChild(span);
         button.id = this._addUID("GPshowWfsfilterPicto");
         button.className = "GPshowOpen GPshowAdvancedToolPicto GPshowWfsfilterPicto gpf-btn gpf-btn--tertiary gpf-btn-icon gpf-btn-icon-wfsfilter fr-btn fr-btn--tertiary";
-        button.setAttribute("aria-label", "Afficher les services publics");
+        button.setAttribute("aria-label", "Services publics");
         button.setAttribute("tabindex", "0");
         button.setAttribute("aria-pressed", false);
         button.setAttribute("type", "button");

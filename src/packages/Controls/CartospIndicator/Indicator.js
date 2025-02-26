@@ -14,7 +14,6 @@ import Draggable from "../../Utils/Draggable";
 
 // DOM
 import IndicatorDOM from "./IndicatorDOM";
-import LayerWMS from "../../Layers/LayerWMS";
 
 var logger = Logger.getLogger("indicator");
 

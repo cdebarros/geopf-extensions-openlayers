@@ -1,0 +1,88 @@
+.gpf-btn-icon-layerselector::after {
+    -webkit-mask: url("img/dsfr/fond_carte.svg") center no-repeat;
+    mask: url("img/dsfr/fond_carte.svg") center no-repeat;
+}
+
+.gpf-btn-header-layerselector {
+    z-index: 2;
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    box-shadow: none;
+}
+
+.gpf-panel__body_layerselector {
+    overflow: auto;
+}
+
+.gpf-btn-icon-layerselector-collapse {
+    box-shadow: none;
+}
+
+.gpf-btn-icon-layerselector-collapse[aria-pressed="true"]::after {
+    box-shadow: none;
+    transform: rotate(180deg);
+}
+
+.layerselector-entry-container {
+    position: relative;
+    top: 0;
+    border-bottom: 1px solid var(--border-default-grey);
+    overflow: hidden;
+}
+
+.layerselector-entry-container {
+    background-color: var(--background-overlap-grey);
+}
+
+.layerselector-entries {
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-top: 0px;
+  filter: none;
+}
+
+#GPlayerselector_ID_empty {
+    border-bottom: none;
+}
+
+.gpf-panel__title__layerselector {
+    padding-bottom: 20px;
+}
+
+.gpf-panel__header_layerselector {
+    margin-bottom: 15px;
+}
+
+.fr-icon-cartosp-layerselector::before, .fr-icon-cartosp-layerselector::after {
+    -webkit-mask-image: url("img/dsfr/fond_carte.svg");
+    mask-image: url("img/dsfr/fond_carte.svg");
+    color: var(--text-action-high-blue-france);
+}
+
+.GPfilterButton {
+    border: unset;
+    background: unset;
+}
+
+#reset-layerselector-selection {
+    margin-bottom: 10px;
+    display: inline-block;
+    text-decoration: underline;
+}
+
+.fr-accordion__title{
+    height: unset !important;
+}
+
+div.radio { text-align: center; }
+div.radio:hover img , div.radio:hover .sub-label, div.radio:hover label{ cursor: pointer; }
+div.radio img { border: solid 1px #bbb; padding: 2px; width: 50%; }
+div.radio label { font-family: arial; }
+input[type=radio]{ display: none; }
+input[type=radio]:checked + img { border: solid 2px var(--text-action-high-blue-france); }
+input[type=radio]:checked + img + .sub-label { color: var(--text-action-high-blue-france); font-weight: 700; }
+
+#GPlayerselector_ID_layerlist{
+    display: flex;
+}

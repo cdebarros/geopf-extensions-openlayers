@@ -104,6 +104,7 @@ import ContextMenu from "./Controls/ContextMenu/ContextMenu";
 // Carto SP fork
 import WfsFilter from "./Controls/CartospWfsFilter/WfsFilter";
 import Indicator from "./Controls/CartospIndicator/Indicator";
+import Layerselector from "./Controls/CartospLayerselector/Layerselector";
 
 import Proj4 from "proj4";
 

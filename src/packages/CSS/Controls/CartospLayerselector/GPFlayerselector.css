@@ -1,0 +1,27 @@
+div[id^=GPlayerselector-] {
+    top: unset;
+    right: 8px;
+}
+
+.position > div[id^=GPlayerselector-] > dialog[id^=GPlayerselectorPanel] {
+    position: absolute;
+}
+
+/* Showing/hiding */
+
+button[id^=GPshowLayerselectorPicto][aria-pressed="false"] + dialog {
+    display: none;
+    visibility: hidden;
+    opacity: 0%;
+}
+
+button[id^="GPshowLayerselectorPicto-"][aria-pressed="true"] + dialog {
+    display: flex;
+    flex-direction: column;
+    visibility: visible;
+    opacity: 100%;
+    width: 300px;
+    height: 130px !important;
+    bottom: 0px !important;
+    top: unset !important;
+}
