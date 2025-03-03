@@ -4,8 +4,6 @@ import "../../CSS/Controls/CartospSearchdialog/GPFsearchdialog.css";
 // import OpenLayers
 import Widget from "../Widget";
 import Control from "../Control";
-import GeoportalWMS from "../../Layers/LayerWMS";
-import SearchEngine from "../../Controls/SearchEngine/SearchEngine";
 
 // import local
 import Utils from "../../Utils/Helper";
