@@ -50,6 +50,7 @@ export { default as ContextMenu } from "./packages/Controls/ContextMenu/ContextM
 export { default as WfsFilter } from "./packages/Controls/CartospWfsFilter/WfsFilter";
 export { default as Indicator } from "./packages/Controls/CartospIndicator/Indicator";
 export { default as Layerselector } from "./packages/Controls/CartospLayerselector/Layerselector";
+export { default as Layerselector } from "./packages/Controls/CartospSearchdialog/Searchdialog";
 
 // proj4
 export { default as Proj4 } from "proj4";

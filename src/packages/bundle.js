@@ -105,6 +105,7 @@ import ContextMenu from "./Controls/ContextMenu/ContextMenu";
 import WfsFilter from "./Controls/CartospWfsFilter/WfsFilter";
 import Indicator from "./Controls/CartospIndicator/Indicator";
 import Layerselector from "./Controls/CartospLayerselector/Layerselector";
+import Layerselector from "./Controls/CartospSearchdialog/Searchdialog";
 
 import Proj4 from "proj4";
 
@@ -292,6 +293,7 @@ Ol.control.ContextMenu = ContextMenu;
 // Carto SP fork
 Ol.control.WfsFilter = WfsFilter;
 Ol.control.Indicator = Indicator;
+Ol.control.Searchdialog = Searchdialog;
 
 export {
     /**
