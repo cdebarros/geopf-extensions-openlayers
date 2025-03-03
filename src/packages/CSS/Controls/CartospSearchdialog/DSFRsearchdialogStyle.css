@@ -1,0 +1,10 @@
+.fr-icon-cartosp-searchengine::before, .fr-icon-cartosp-searchengine::after {
+    -webkit-mask-image: url("img/dsfr/rechercher.svg");
+    mask-image: url("img/dsfr/rechercher.svg");
+    color: var(--text-action-high-blue-france);
+}
+
+.gpf-btn-icon-searchengine::after {
+    -webkit-mask: url("img/dsfr/rechercher.svg") center no-repeat;
+    mask: url("img/dsfr/rechercher.svg") center no-repeat;
+}

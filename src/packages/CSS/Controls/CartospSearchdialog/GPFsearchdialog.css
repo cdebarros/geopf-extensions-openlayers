@@ -1,0 +1,43 @@
+div[id^=GPsearchdialog-] {
+    top: 58px;
+    right: 8px;
+}
+
+.position > div[id^=GPsearchdialog-] > dialog[id^=GPsearchdialogPanel] {
+    position: absolute;
+}
+
+/* Showing/hiding */
+
+button[id^=GPshowSearchdialogPicto][aria-pressed="false"] + dialog {
+    display: none;
+    visibility: hidden;
+    opacity: 0%;
+}
+
+button[id^="GPshowSearchdialogPicto-"][aria-pressed="true"] + dialog {
+    display: flex;
+    flex-direction: column;
+    visibility: visible;
+    opacity: 100%;
+    width: 425px;
+    height: initial;
+}
+
+#searchmodal  {
+    padding-bottom: 20px;
+    margin-bottom: unset !important;
+}
+
+#searchmodal > .gpf-widget {
+    position: unset !important;
+}
+
+#searchmodal > .fr-modal__title {
+    margin-bottom: 1rem !important;
+    margin-top: 0.8rem !important;
+}
+
+div[id^=GPshowSearchDiv-] > form[id^=GPsearchInput-] {
+    padding: unset !important;
+}
