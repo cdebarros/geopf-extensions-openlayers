@@ -189,15 +189,19 @@ var IndicatorDOM = {
         // create checkboxes by typologie_services
         var content = "";
         o.indicators.forEach(indicator => {
-            var checked = this.selectedIndicators.find(theme => theme.indicators.includes(indicator));
-            content+=`<div class="fr-fieldset__element">
-                <div class="fr-checkbox-group">
-                    <input value="${indicator.layername}" name="checkboxes-${o.thematique}" id="checkboxes-${indicator.layername}" type="checkbox" ${checked ? "checked": ""}>
-                    <label class="fr-label" for="checkboxes-${indicator.layername}">
-                        ${indicator.title}
-                    </label>
-                </div>
-            </div>`;
+            if (indicator.layername) {
+                var checked = this.selectedIndicators.find(theme => theme.indicators.includes(indicator));
+                content+=`<div class="fr-fieldset__element">
+                    <div class="fr-checkbox-group">
+                        <input value="${indicator.layername}" name="checkboxes-${o.thematique}" id="checkboxes-${indicator.layername}" type="checkbox" ${checked ? "checked": ""}>
+                        <label class="fr-label" for="checkboxes-${indicator.layername}">
+                            ${indicator.title}
+                        </label>
+                    </div>
+                </div>`;
+            } else {
+                content+=`<h6>${indicator.title}</h6>`;
+            }
         });
 
         // accordeon section for each thematique

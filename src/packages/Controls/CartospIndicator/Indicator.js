@@ -231,7 +231,9 @@ var Indicator = class Indicator extends Control {
             this.selectedIndicators = [];
 
             this.indicatorFilterList.forEach((indicator) => {
-                this.selectedIndicators.push({ thematique : indicator.thematique, indicators : [] });
+                if (indicator.layername != ""){
+                    this.selectedIndicators.push({ thematique : indicator.thematique, indicators : [] });
+                }
             });
         }
     }
