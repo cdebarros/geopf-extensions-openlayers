@@ -9,21 +9,21 @@ __DATE__
 
 ### 🎉 Summary
 
-- on fixe les versions : ol 10.3.1 & ol-mapbox-style 12.3.5
-
 ### 💥 Breaking changes
 
 ### 📖 Changelog
 
 * ✨ [Added]
 
-  - LayerSwitcher : ajout d'un bouton d'édition des données de type vecteur via l'option `options.allowEdit:true` (#342)
-  - SearchEngine : ajout d'un filtre sur les données en fonction de leur projection (#353) 
+  - searchEngine : ajout d'une option pour afficher la recherche par coordonnées dans la recherche avancée (#363)
+  - isocurve : ajout d'un panel affichant les informations du calcul d'isochrone (#364)
+  - layerSwitcher : bouton permettant de passer une couche en noir et blanc (#367) pour raster et (#370) pour tuiles vecteur en mode DSFR
+  - layerSwitcher : bouton permettant de passer une couche en noir et blanc en mode classique (#371)
 
 * 🔨 [Changed]
 
-  - ContextMenu: refacto et documentation du code du menu contextuel (#340)
-  - ContextMenu: Adresse : affichage du nom de commune quand il n'y a pas d'adresse (#351)
+  - route: amélioration de la lisibilité du panel de résultats de l'itinéraire (#362)
+  - elevationPath : changement du style des résultats textuels en mode DSFR (#373)
 
 * 🔥 [Deprecated]
 
@@ -31,14 +31,9 @@ __DATE__
 
 * 🐛 [Fixed]
 
-  - ContextMenu : correction pour affichage du menu en mode dark (#332, #333)
-  - Export : mise en conformité DSFR du bouton Export (#334)
-  - LocationSelector : fenêtre transparente en mode classique et pas assez large en mode DSFR (#349)
-  - LayerImport : fenêtre d'affichage des getCapabilities agrandie (#349)
-  - Search : ajout wfs fonctionnel et filtre automatique des suggests selon la configuration si liste non spécifiée (#352, #358)
-  - AdvancedSearch : correction de la recherche avancée et évolution de  l'UX (#354)
-  - GetFeatureInfo : ajout de propriétés liées au style des labels à ignorer dans l'affichage (#357)
- 
+  - export : le menu d'export des calculs n'apparait qu'une fois le calcul réalisé (#364)
+  - catalog : verification que la configuration des couches est disponible (#369)
+
 * 🔒 [Security]
 
 
