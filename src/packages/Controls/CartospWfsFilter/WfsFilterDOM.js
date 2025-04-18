@@ -142,15 +142,190 @@ var WfsFilterDOM = {
     // ####################### Methods dynamics ########################## //
     // ################################################################### //
 
-    _createThematiqueResetLink : function () {
-        var element = document.createElement("button");
-        element.className = "fr-link"; // afficher en dsfr
-        element.innerText = "Réinitialiser (0)";
-        element.id = "reset-sp-selection";
+    _createFilterDiv : function () {
+        var element = document.createElement("div");
+        element.id = "filters";
 
-        element.addEventListener("click", (e) => {
+        // label
+        var label = document.createElement("div");
+        label.innerHTML = "Filtres :";
+        label.id = "filter-label";
+
+        // reset
+        var reset = document.createElement("button");
+        reset.className = "fr-link margin-link"; // afficher en dsfr
+        reset.innerText = "Réinitialiser (0)";
+        reset.title = "Réinitialiser la sélection de filtres";
+        reset.id = "reset-filter-selection";
+
+        reset.addEventListener("click", (e) => {
+            this.onResetSelecFilterClick(e);
+        });
+
+        element.appendChild(label);
+        element.appendChild(reset);
+
+        return element;
+    },
+
+    _createFilterInfosDiv : function () {
+        // info
+        var infos = document.createElement("div");
+        infos.innerHTML = "Les filtres s'appliquent seulement aux services publics ayant la donnée disponible.";
+        infos.className = "fr-callout";
+        infos.id = "filter-infos";
+
+        return infos;
+    },
+
+    _createFilterContent : function () {
+        const stringToHTML = (str) => {
+            var support = function () {
+                if (!window.DOMParser) {
+                    return false;
+                }
+                var parser = new DOMParser();
+                try {
+                    parser.parseFromString("x", "text/html");
+                } catch (err) {
+                    return false;
+                }
+                return true;
+            };
+
+            // If DOMParser is supported, use it
+            if (support()) {
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(str, "text/html");
+                return doc.body;
+            }
+
+            // Otherwise, fallback to old-school method
+            var dom = document.createElement("div");
+            dom.innerHTML = str;
+            return dom;
+        };
+
+        // accordeon section for each thematique
+        var strContainer = `
+            <div id="filters-content">
+                <div class="filter-title">Caractéristiques du service</div>
+                <div class="fr-fieldset__element">
+                    <div class="fr-checkbox-group">
+                        <input value="Implantation" name="filtersp-spcara" id="filtersp-Implantation" type="checkbox">
+                        <label class="fr-label" for="filtersp-Implantation">
+                            Implantation
+                        </label>
+                    </div>
+                </div>
+                <div class="fr-fieldset__element">
+                    <div class="fr-checkbox-group">
+                        <input value="Permanence" name="filtersp-spcara" id="filtersp-Permanence" type="checkbox">
+                        <label class="fr-label" for="filtersp-Permanence">
+                            Permanence
+                        </label>
+                    </div>
+                </div>
+                <div class="fr-fieldset__element">
+                    <div class="fr-checkbox-group">
+                        <input value="Itinérance" name="filtersp-spcara" id="filtersp-Itinérance" type="checkbox">
+                        <label class="fr-label" for="filtersp-Itinérance">
+                            Dispositif itinérant
+                        </label>
+                    </div>
+                </div>
+                <div id="spfilter-more-content" style="display: none;">
+                    <div class="filter-title">Volume horaire (par semaine)</div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Itinérance" name="filtersp-spcara" id="filtersp-Itinérance" type="checkbox">
+                            <label class="fr-label" for="filtersp-Itinérance">
+                                Dispositif itinérant
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-title">Modalité d'accueil</div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Itinérance" name="filtersp-spcara" id="filtersp-Itinérance" type="checkbox">
+                            <label class="fr-label" for="filtersp-Itinérance">
+                                Dispositif itinérant
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-title">Fréquentation (visiteurs par an)</div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Itinérance" name="filtersp-spcara" id="filtersp-Itinérance" type="checkbox">
+                            <label class="fr-label" for="filtersp-Itinérance">
+                                Dispositif itinérant
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button class="fr-link margin-link" name="spfilter-more" id="filtersp-more">Afficher plus de filtres &#709;</button>
+            </div>
+        `;
+
+        // Final HTML content
+        var entry = stringToHTML(strContainer);
+
+        // Use shadow dom to attach eventlister for checboxes and accordeon
+        const shadow = entry.attachShadow({ mode : "open" });
+        shadow.innerHTML = strContainer.trim();
+
+        // checkbox event click
+        var inputSpcara = shadow.querySelectorAll("[name=filtersp-spcara]");
+        inputSpcara.forEach((input) => {
+            input.addEventListener("click", (e) => {
+                this.onSelecFilterCaracClick(e);
+            });
+        });
+
+        // checkbox event click
+        var inputMore = shadow.querySelector("[name=spfilter-more]");
+        inputMore.addEventListener("click", (e) => {
+            var element = document.getElementById("spfilter-more-content");
+            if (element.style.display === "none") {
+                element.style.display = "inline";
+                e.target.innerHTML = "Afficher moins de filtres &#708;";
+            } else {
+                element.style.display = "none";
+                e.target.innerHTML = "Afficher plus de filtres &#709;";
+            }
+        });
+
+        return shadow;
+    },
+
+    _createThematiqueResetLink : function () {
+        var element = document.createElement("div");
+        element.id = "allSpSelectors";
+
+        // select
+        var select = document.createElement("button");
+        select.className = "fr-link"; // afficher en dsfr
+        select.innerText = "Tout sélectionner";
+        select.title = "Sélectionner toutes les typologies";
+        select.id = "select-sp-selection";
+
+        select.addEventListener("click", (e) => {
+            this.onSelecAllSpClick(e);
+        });
+
+        // reset
+        var reset = document.createElement("button");
+        reset.className = "fr-link"; // afficher en dsfr
+        reset.innerText = "Réinitialiser (0)";
+        reset.title = "Réinitialiser la sélection de services publics";
+        reset.id = "reset-sp-selection";
+
+        reset.addEventListener("click", (e) => {
             this.onResetSelecSpClick(e);
         });
+
+        element.appendChild(select);
+        element.appendChild(reset);
 
         return element;
     },
@@ -185,11 +360,11 @@ var WfsFilterDOM = {
 
         // create checkboxes by typologie_services
         var content = "";
+        content+=`<button title="Sélectionner toutes les typologies du thème" class="fr-link margin-link" value="${o.thematique}" name="checkboxes-all-${o.thematique}" id="checkboxes-all-${o.thematique}">Tout sélectionner</button>`;
         o.typologies.forEach(typologie_service => {
-            var checked = this.selectedTypologies.find(theme => theme.typologies.includes(typologie_service));
             content+=`<div class="fr-fieldset__element">
                 <div class="fr-checkbox-group">
-                    <input value="${typologie_service}" name="checkboxes-${o.thematique}" id="checkboxes-${typologie_service}" type="checkbox" ${checked ? "checked": ""}>
+                    <input value="${typologie_service}" name="checkboxes-${o.thematique}" id="checkboxes-${typologie_service}" type="checkbox">
                     <label class="fr-label" for="checkboxes-${typologie_service}">
                         ${typologie_service}
                     </label>
@@ -241,6 +416,15 @@ var WfsFilterDOM = {
         inputs.forEach((input) => {
             input.addEventListener("click", (e) => {
                 this.onSelecSpClick(e);
+            });
+        });
+
+        // checkbox all event click
+        var inputName = `checkboxes-all-${o.thematique}`;
+        var inputs = shadow.querySelectorAll("[name=" + "\"" + inputName + "\"]");
+        inputs.forEach((input) => {
+            input.addEventListener("click", (e) => {
+                this.onSelecAllSpThemeClick(e);
             });
         });
 

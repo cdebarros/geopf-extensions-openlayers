@@ -183,7 +183,14 @@ var WfsFilter = class Wfsfilter extends Control {
             thematique = feature.getProperties().service_thematique;
             typologie = feature.getProperties().service_typologie;
             featureStructure = feature.getProperties().type_structure.toLowerCase();
-            if (self.selectedTypologies.find(theme => theme.typologies.includes(feature.getProperties().service_typologie))) {
+            //if (self.spFilters.sptopo.includes(feature.getProperties().service_typologie)) {
+            if (
+                self.spFilters.sptopo.includes(feature.getProperties().service_typologie) &&
+                (self.spFilters.spcarac.length == 0 || self.spFilters.spcarac.includes(feature.getProperties().type_structure)) &&
+                (self.spFilters.spvolume.length == 0 || self.spFilters.spvolume.includes(feature.getProperties().service_nb_heures_hebdo)) &&
+                (self.spFilters.spmoda.length == 0 || self.spFilters.spmoda.includes(feature.getProperties().service_modalite_d_accueil)) &&
+                (self.spFilters.spfreq.length == 0 || self.spFilters.spfreq.includes(feature.getProperties().service_frequentation_annuelle))
+            ) {
                 if (featureStructure !== "implantation" && featureStructure !== "itinérant" &&  featureStructure !== "permanence"){
                     featureStructure = "implantation";
                 }
@@ -201,13 +208,12 @@ var WfsFilter = class Wfsfilter extends Control {
     }
 
     updateSelectSpCount () {
-        var self = this;
-        var count = 0;
-        self.selectedTypologies.forEach((theme) => {
-            count += theme.typologies.length;
-        });
+        this.WfsThematiqueResetLink.lastChild.innerHTML = "Réinitialiser (" + this.spFilters.sptopo.length + ")";
+    }
 
-        self.WfsThematiqueResetLink.innerHTML = "Réinitialiser (" + count + ")";
+    updateSelectFilterCount () {
+        var count = this.spFilters.spcarac.length + this.spFilters.spfreq.length + this.spFilters.spmoda.length + this.spFilters.spvolume.length;
+        this.filterContainerDiv.lastChild.innerHTML = "Réinitialiser (" + count + ")";
     }
 
     // ################################################################### //
@@ -251,6 +257,9 @@ var WfsFilter = class Wfsfilter extends Control {
         this.buttonWfsfilterClose = null; // utile ?
         this.PanelWfsfilterContentElement = null;
         this.WfsThematiqueResetLink = null;
+        this.filterContainerDiv = null;
+        this.filterContentDiv = null;
+        this.filterInfosDiv = null;
 
         // Cartosp WFS layer name
         this.cartospLayerName = this.options.cartospLayerName;
@@ -283,10 +292,9 @@ var WfsFilter = class Wfsfilter extends Control {
         // ]  
         if (this.cartospThemesInfo){
             this.cartospFilterList = [];
-            this.selectedTypologies = [];
+            this.spFilters = { sptopo : [], spcarac : [], spvolume : [], spmoda : [], spfreq : []};
             for (const [key, value] of Object.entries(this.cartospThemesInfo)) {
                 this.cartospFilterList.push({ thematique : key, typologies : value.topologies });
-                this.selectedTypologies.push({ thematique : key, typologies : [] });
             }
         }
     }
@@ -325,6 +333,16 @@ var WfsFilter = class Wfsfilter extends Control {
 
         var WfsfilterHeaderContainerTitleDiv = this.panelWfsfilterHeaderTitleContainer = this._createWfsfilterPanelTitleDivElement();
         WfsfilterContentDiv.appendChild(WfsfilterHeaderContainerTitleDiv);
+
+        var WfsFilterFilterContainerDiv = this.filterContainerDiv = this._createFilterDiv();
+        WfsfilterContentDiv.appendChild(WfsFilterFilterContainerDiv);
+
+        var WfsFilterFilterInfosDiv = this.filterInfosDiv = this._createFilterInfosDiv();
+        WfsfilterContentDiv.appendChild(WfsFilterFilterInfosDiv);
+
+        var WfsFilterFilterContentDiv = this.filterContentDiv = this._createFilterContent();
+        WfsfilterContentDiv.appendChild(WfsFilterFilterContentDiv);
+
         var WfsThematiqueResetLinkDiv = this.WfsThematiqueResetLink = this._createThematiqueResetLink();
         WfsfilterContentDiv.appendChild(WfsThematiqueResetLinkDiv);
 
@@ -366,12 +384,75 @@ var WfsFilter = class Wfsfilter extends Control {
      */
     onSelecSpClick (e) {
         var self = this;
-        var featureTheme = self.selectedTypologies.find(element => element.thematique == e.target.name.split("checkboxes-").pop());
-        if (self.selectedTypologies.find(featureTheme => featureTheme.typologies.includes(e.target.value))) {
-            featureTheme.typologies=featureTheme.typologies.filter(subject => !([e.target.value].includes(subject)));
+        if (this.spFilters.sptopo.includes(e.target.value)) {
+            this.spFilters.sptopo.splice(this.spFilters.sptopo.indexOf(e.target.value), 1);
         } else {
-            featureTheme.typologies.push(e.target.value);
+            this.spFilters.sptopo.push(e.target.value); 
         }
+        self.getMap().getLayers().forEach((layer) => {
+            if (layer.name == self.cartospLayerName) {
+                self.setStyleFunction(layer);
+            }
+        });
+        self.updateSelectSpCount ();
+    }
+
+    onSelecFilterCaracClick (e) {
+        console.log(e.target.value);
+        if (this.spFilters.spcarac.includes(e.target.value)) {
+            this.spFilters.spcarac.splice(this.spFilters.spcarac.indexOf(e.target.value), 1);
+        } else {
+            this.spFilters.spcarac.push(e.target.value); 
+        }
+
+        var self = this;
+        self.getMap().getLayers().forEach((layer) => {
+            if (layer.name == self.cartospLayerName) {
+                self.setStyleFunction(layer);
+            }
+        });
+        this.updateSelectFilterCount();
+    }
+
+    /**
+     * ...
+     * @param {*} e - ...
+     * @private
+     */
+    onSelecAllSpThemeClick (e) {
+        var filteredList = [...new Set([...this.spFilters.sptopo, ...this.cartospFilterList.find(filter => filter.thematique == e.target.value).typologies])];
+        
+        filteredList.forEach((typologie) => {
+            document.getElementById("checkboxes-" + typologie).checked = true;
+        });
+        
+        this.spFilters.sptopo = filteredList;
+
+        var self = this;
+        self.getMap().getLayers().forEach((layer) => {
+            if (layer.name == self.cartospLayerName) {
+                self.setStyleFunction(layer);
+            }
+        });
+
+        this.updateSelectSpCount ();
+    }
+
+    /**
+     * ...
+     * @param {*} e - ...
+     * @private
+     */
+    onSelecAllSpClick (e) {
+        var self = this;
+        this.spFilters.sptopo = [];
+        self.cartospFilterList.forEach((theme) => {
+            theme.typologies.forEach((typologie) => {
+                document.getElementById("checkboxes-" + typologie).checked = true;
+                self.spFilters.sptopo.push(typologie);
+            });
+        });
+
         self.getMap().getLayers().forEach((layer) => {
             if (layer.name == self.cartospLayerName) {
                 self.setStyleFunction(layer);
@@ -385,20 +466,37 @@ var WfsFilter = class Wfsfilter extends Control {
      * @param {*} e - ...
      * @private
      */
+    onResetSelecFilterClick (e) {
+        // Uncheck filter TODO
+
+        // reset listes
+        this.spFilters.spcarac = [];
+        this.spFilters.spvolume = [];
+        this.spFilters.spmoda = [];
+        this.spFilters.spfreq = [];
+
+        // update style TODO
+    }
+
+    /**
+     * ...
+     * @param {*} e - ...
+     * @private
+     */
     onResetSelecSpClick (e) {
-        var self = this;
-        self.selectedTypologies.forEach((theme) => {
-            theme.typologies.forEach((typologie) => {
-                document.getElementById("checkboxes-" + typologie).checked = false;
-            });
-            theme.typologies = [];
+        this.spFilters.sptopo.forEach((typologie) => {
+            document.getElementById("checkboxes-" + typologie).checked = false;
         });
+        this.spFilters.sptopo = [];
+
+        var self = this;
         self.getMap().getLayers().forEach((layer) => {
             if (layer.name == self.cartospLayerName) {
                 self.setStyleFunction(layer);
             }
         });
-        self.WfsThematiqueResetLink.innerHTML = "Réinitialiser (0)";
+
+        this.WfsThematiqueResetLink.lastChild.innerHTML = "Réinitialiser (0)";
     }
 
 };

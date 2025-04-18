@@ -71,10 +71,44 @@
     background: unset;
 }
 
-#reset-sp-selection {
+#allSpSelectors, #filters {
+    position: relative;
+}
+
+#select-sp-selection, .margin-link {
     margin-bottom: 10px;
-    display: inline-block;
     text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+#reset-sp-selection, #reset-filter-selection {
+    margin-bottom: 10px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    left: 170px;
+    position: relative;
+}
+
+#reset-filter-selection {
+    left: 251px;
+}
+
+#filter-label {
+    display: inline;
+}
+
+#filter-infos {
+    padding: 1.5rem !important;
+    margin-bottom: 0.8rem !important;
+}
+
+#filters-content {
+    margin-bottom: 30px;
+}
+
+.filter-title {
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .fr-accordion__title{
