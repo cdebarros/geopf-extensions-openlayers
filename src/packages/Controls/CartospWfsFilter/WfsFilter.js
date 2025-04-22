@@ -183,17 +183,13 @@ var WfsFilter = class Wfsfilter extends Control {
             thematique = feature.getProperties().service_thematique;
             typologie = feature.getProperties().service_typologie;
             featureStructure = feature.getProperties().type_structure.toLowerCase();
-            //if (self.spFilters.sptopo.includes(feature.getProperties().service_typologie)) {
             if (
                 self.spFilters.sptopo.includes(feature.getProperties().service_typologie) &&
                 (self.spFilters.spcarac.length == 0 || self.spFilters.spcarac.includes(feature.getProperties().type_structure)) &&
-                (self.spFilters.spvolume.length == 0 || self.spFilters.spvolume.includes(feature.getProperties().service_nb_heures_hebdo)) &&
-                (self.spFilters.spmoda.length == 0 || self.spFilters.spmoda.includes(feature.getProperties().service_modalite_d_accueil)) &&
-                (self.spFilters.spfreq.length == 0 || self.spFilters.spfreq.includes(feature.getProperties().service_frequentation_annuelle))
+                (self.spFilters.spvolume.length == 0 || self.spFilters.spvolume.includes(feature.getProperties().service_categorie_niveau_d_ouverture) || self.spFilters.spvolume.includes(feature.getProperties().permanence_categorie_niveau_d_ouverture)) &&
+                (self.spFilters.spmoda.length == 0 || self.spFilters.spmoda.includes(feature.getProperties().service_modalite_d_accueil) || self.spFilters.spmoda.includes(feature.getProperties().permanence_modalite_d_accueil)) &&
+                (self.spFilters.spfreq.length == 0 || self.spFilters.spfreq.includes(feature.getProperties().service_frequentation_annuelle) || self.spFilters.spfreq.includes(feature.getProperties().permanence_frequentation_annuelle))
             ) {
-                if (featureStructure !== "implantation" && featureStructure !== "itinérant" &&  featureStructure !== "permanence"){
-                    featureStructure = "implantation";
-                }
                 return new Style({
                     image : new Icon({
                         anchor : [0.5, 37],
@@ -397,12 +393,79 @@ var WfsFilter = class Wfsfilter extends Control {
         self.updateSelectSpCount ();
     }
 
+    /**
+     * ...
+     * @param {*} e - ...
+     * @private
+     */
     onSelecFilterCaracClick (e) {
-        console.log(e.target.value);
         if (this.spFilters.spcarac.includes(e.target.value)) {
             this.spFilters.spcarac.splice(this.spFilters.spcarac.indexOf(e.target.value), 1);
         } else {
             this.spFilters.spcarac.push(e.target.value); 
+        }
+
+        var self = this;
+        self.getMap().getLayers().forEach((layer) => {
+            if (layer.name == self.cartospLayerName) {
+                self.setStyleFunction(layer);
+            }
+        });
+        this.updateSelectFilterCount();
+    }
+
+    /**
+     * ...
+     * @param {*} e - ...
+     * @private
+     */
+    onSelecFilterVolumeClick (e) {
+        if (this.spFilters.spvolume.includes(e.target.value)) {
+            this.spFilters.spvolume.splice(this.spFilters.spvolume.indexOf(e.target.value), 1);
+        } else {
+            this.spFilters.spvolume.push(e.target.value); 
+        }
+
+        var self = this;
+        self.getMap().getLayers().forEach((layer) => {
+            if (layer.name == self.cartospLayerName) {
+                self.setStyleFunction(layer);
+            }
+        });
+        this.updateSelectFilterCount();
+    }
+
+    /**
+     * ...
+     * @param {*} e - ...
+     * @private
+     */
+    onSelecFilterModaClick (e) {
+        if (this.spFilters.spmoda.includes(e.target.value)) {
+            this.spFilters.spmoda.splice(this.spFilters.spmoda.indexOf(e.target.value), 1);
+        } else {
+            this.spFilters.spmoda.push(e.target.value); 
+        }
+
+        var self = this;
+        self.getMap().getLayers().forEach((layer) => {
+            if (layer.name == self.cartospLayerName) {
+                self.setStyleFunction(layer);
+            }
+        });
+        this.updateSelectFilterCount();
+    }
+
+    /**
+     * ...
+     * @param {*} e - ...
+     * @private
+     */
+    onSelecFilterFreqClick (e) {
+        if (this.spFilters.spfreq.includes(e.target.value)) {
+            this.spFilters.spfreq.splice(this.spFilters.spfreq.indexOf(e.target.value), 1);
+        } else {
+            this.spFilters.spfreq.push(e.target.value); 
         }
 
         var self = this;
@@ -467,15 +530,39 @@ var WfsFilter = class Wfsfilter extends Control {
      * @private
      */
     onResetSelecFilterClick (e) {
-        // Uncheck filter TODO
-
-        // reset listes
+        // reset spcarac
+        this.spFilters.spcarac.forEach((filter) => {
+            document.getElementById("filtersp-" + filter).checked = false;
+        });
         this.spFilters.spcarac = [];
+
+        // reset spvolume
+        this.spFilters.spvolume.forEach((filter) => {
+            document.getElementById("filtersp-" + filter).checked = false;
+        });
         this.spFilters.spvolume = [];
+
+        // reset spmoda
+        this.spFilters.spmoda.forEach((filter) => {
+            document.getElementById("filtersp-" + filter).checked = false;
+        });
         this.spFilters.spmoda = [];
+
+        // reset spfreq
+        this.spFilters.spfreq.forEach((filter) => {
+            document.getElementById("filtersp-" + filter).checked = false;
+        });
         this.spFilters.spfreq = [];
 
-        // update style TODO
+        // update style
+        var self = this;
+        self.getMap().getLayers().forEach((layer) => {
+            if (layer.name == self.cartospLayerName) {
+                self.setStyleFunction(layer);
+            }
+        });
+
+        this.filterContainerDiv.lastChild.innerHTML = "Réinitialiser (0)";
     }
 
     /**

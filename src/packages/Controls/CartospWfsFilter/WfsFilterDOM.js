@@ -238,27 +238,107 @@ var WfsFilterDOM = {
                     <div class="filter-title">Volume horaire (par semaine)</div>
                     <div class="fr-fieldset__element">
                         <div class="fr-checkbox-group">
-                            <input value="Itinérance" name="filtersp-spcara" id="filtersp-Itinérance" type="checkbox">
-                            <label class="fr-label" for="filtersp-Itinérance">
-                                Dispositif itinérant
+                            <input value="Moins de 7h" name="filtersp-spvolume" id="filtersp-Moins de 7h" type="checkbox">
+                            <label class="fr-label" for="filtersp-Moins de 7h">
+                                Moins de 7h
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Entre 7h et 15h" name="filtersp-spvolume" id="filtersp-Entre 7h et 15h" type="checkbox">
+                            <label class="fr-label" for="filtersp-Entre 7h et 15h">
+                                Entre 7h et 15h
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Entre 15h et 35h" name="filtersp-spvolume" id="filtersp-Entre 15h et 35h" type="checkbox">
+                            <label class="fr-label" for="filtersp-Entre 15h et 35h">
+                                Entre 15h et 35h
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Plus de 35h" name="filtersp-spvolume" id="filtersp-Plus de 35h" type="checkbox">
+                            <label class="fr-label" for="filtersp-Plus de 35h">
+                                Plus de 35h
                             </label>
                         </div>
                     </div>
                     <div class="filter-title">Modalité d'accueil</div>
                     <div class="fr-fieldset__element">
                         <div class="fr-checkbox-group">
-                            <input value="Itinérance" name="filtersp-spcara" id="filtersp-Itinérance" type="checkbox">
-                            <label class="fr-label" for="filtersp-Itinérance">
-                                Dispositif itinérant
+                            <input value="Avec rendez-vous" name="filtersp-spmoda" id="filtersp-Avec rendez-vous" type="checkbox">
+                            <label class="fr-label" for="filtersp-Avec rendez-vous">
+                                Avec rendez-vous
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Sans rendez-vous" name="filtersp-spmoda" id="filtersp-Sans rendez-vous" type="checkbox">
+                            <label class="fr-label" for="filtersp-Sans rendez-vous">
+                                Sans rendez-vous
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Avec et sans rendez-vous" name="filtersp-spmoda" id="filtersp-Avec et sans rendez-vous" type="checkbox">
+                            <label class="fr-label" for="filtersp-Avec et sans rendez-vous">
+                                Avec et sans rendez-vous
                             </label>
                         </div>
                     </div>
                     <div class="filter-title">Fréquentation (visiteurs par an)</div>
                     <div class="fr-fieldset__element">
                         <div class="fr-checkbox-group">
-                            <input value="Itinérance" name="filtersp-spcara" id="filtersp-Itinérance" type="checkbox">
-                            <label class="fr-label" for="filtersp-Itinérance">
-                                Dispositif itinérant
+                            <input value="Moins de 100" name="filtersp-spfreq" id="filtersp-Moins de 100" type="checkbox">
+                            <label class="fr-label" for="filtersp-Moins de 100">
+                                Moins de 100
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="De 100 à 999" name="filtersp-spfreq" id="filtersp-De 100 à 999" type="checkbox">
+                            <label class="fr-label" for="filtersp-De 100 à 999">
+                                De 100 à 999
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="De 1000 à 4999" name="filtersp-spfreq" id="filtersp-De 1000 à 4999" type="checkbox">
+                            <label class="fr-label" for="filtersp-De 1000 à 4999">
+                                De 1000 à 4999
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="De 5000 à 9999" name="filtersp-spfreq" id="filtersp-De 5000 à 9999" type="checkbox">
+                            <label class="fr-label" for="filtersp-De 5000 à 9999">
+                                De 5000 à 9999
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="De 10000 à 49999" name="filtersp-spfreq" id="filtersp-De 10000 à 49999" type="checkbox">
+                            <label class="fr-label" for="filtersp-De 10000 à 49999">
+                                De 10000 à 49999
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Plus de 50000" name="filtersp-spfreq" id="filtersp-Plus de 50000" type="checkbox">
+                            <label class="fr-label" for="filtersp-Plus de 50000">
+                                Plus de 50000
                             </label>
                         </div>
                     </div>
@@ -279,6 +359,27 @@ var WfsFilterDOM = {
         inputSpcara.forEach((input) => {
             input.addEventListener("click", (e) => {
                 this.onSelecFilterCaracClick(e);
+            });
+        });
+
+        var inputVolume = shadow.querySelectorAll("[name=filtersp-spvolume]");
+        inputVolume.forEach((input) => {
+            input.addEventListener("click", (e) => {
+                this.onSelecFilterVolumeClick(e);
+            });
+        });
+
+        var inputModa = shadow.querySelectorAll("[name=filtersp-spmoda]");
+        inputModa.forEach((input) => {
+            input.addEventListener("click", (e) => {
+                this.onSelecFilterModaClick(e);
+            });
+        });
+
+        var inputFreq = shadow.querySelectorAll("[name=filtersp-spfreq]");
+        inputFreq.forEach((input) => {
+            input.addEventListener("click", (e) => {
+                this.onSelecFilterFreqClick(e);
             });
         });
 
