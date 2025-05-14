@@ -183,22 +183,42 @@ var WfsFilter = class Wfsfilter extends Control {
             thematique = feature.getProperties().service_thematique;
             typologie = feature.getProperties().service_typologie;
             featureStructure = feature.getProperties().type_structure.toLowerCase();
-            if (
-                self.spFilters.sptopo.includes(feature.getProperties().service_typologie) &&
-                (self.spFilters.spcarac.length == 0 || self.spFilters.spcarac.includes(feature.getProperties().type_structure)) &&
-                (self.spFilters.spvolume.length == 0 || self.spFilters.spvolume.includes(feature.getProperties().service_categorie_niveau_d_ouverture) || self.spFilters.spvolume.includes(feature.getProperties().permanence_categorie_niveau_d_ouverture)) &&
-                (self.spFilters.spmoda.length == 0 || self.spFilters.spmoda.includes(feature.getProperties().service_modalite_d_accueil) || self.spFilters.spmoda.includes(feature.getProperties().permanence_modalite_d_accueil)) &&
-                (self.spFilters.spfreq.length == 0 || self.spFilters.spfreq.includes(feature.getProperties().service_frequentation_annuelle) || self.spFilters.spfreq.includes(feature.getProperties().permanence_frequentation_annuelle))
-            ) {
-                return new Style({
-                    image : new Icon({
-                        anchor : [0.5, 37],
-                        anchorXUnits : "fraction",
-                        anchorYUnits : "pixels",
-                        src : self.cartospThemesInfo[feature.getProperties().service_thematique].markerPath + featureStructure + ".svg",
-                    })
-                });
-            };
+            if (featureStructure == "permanence") {
+                if (
+                    self.spFilters.sptopo.includes(feature.getProperties().permanence_typologie) &&
+                    (self.spFilters.spcarac.length == 0 || self.spFilters.spcarac.includes(feature.getProperties().type_structure)) &&
+                    (self.spFilters.spvolume.length == 0 || self.spFilters.spvolume.includes(feature.getProperties().permanence_categorie_niveau_d_ouverture)) &&
+                    (self.spFilters.spmoda.length == 0 || self.spFilters.spmoda.includes(feature.getProperties().permanence_modalite_d_accueil)) &&
+                    (self.spFilters.spfreq.length == 0 || self.spFilters.spfreq.includes(feature.getProperties().permanence_frequentation_annuelle_categorie))
+                ) {
+                    return new Style({
+                        image : new Icon({
+                            anchor : [0.5, 37],
+                            anchorXUnits : "fraction",
+                            anchorYUnits : "pixels",
+                            src : self.cartospThemesInfo[feature.getProperties().permanence_thematique].markerPath + featureStructure + ".svg",
+                        })
+                    });
+                } 
+            }
+            else if (featureStructure == "implantation" || "itinérance") {
+                if (
+                    self.spFilters.sptopo.includes(feature.getProperties().service_typologie) &&
+                    (self.spFilters.spcarac.length == 0 || self.spFilters.spcarac.includes(feature.getProperties().type_structure)) &&
+                    (self.spFilters.spvolume.length == 0 || self.spFilters.spvolume.includes(feature.getProperties().service_categorie_niveau_d_ouverture)) &&
+                    (self.spFilters.spmoda.length == 0 || self.spFilters.spmoda.includes(feature.getProperties().service_modalite_d_accueil)) &&
+                    (self.spFilters.spfreq.length == 0 || self.spFilters.spfreq.includes(feature.getProperties().service_frequentation_categories))                
+                ) {
+                    return new Style({
+                        image : new Icon({
+                            anchor : [0.5, 37],
+                            anchorXUnits : "fraction",
+                            anchorYUnits : "pixels",
+                            src : self.cartospThemesInfo[feature.getProperties().service_thematique].markerPath + featureStructure + ".svg",
+                        })
+                    });
+                };
+            }
             return undefined;
         });
     }

@@ -171,7 +171,7 @@ var WfsFilterDOM = {
     _createFilterInfosDiv : function () {
         // info
         var infos = document.createElement("div");
-        infos.innerHTML = "Les filtres s'appliquent seulement aux services publics ayant la donnée disponible.";
+        infos.innerHTML = "Les filtres s'appliquent seulement aux services publics ayant la donnée disponible. <br><br> Lorsqu'un filtre est activé, seuls les services correspondants à la catégorie sélectionnée s'affichent.";
         infos.className = "fr-callout";
         infos.id = "filter-infos";
 
@@ -238,33 +238,25 @@ var WfsFilterDOM = {
                     <div class="filter-title">Volume horaire (par semaine)</div>
                     <div class="fr-fieldset__element">
                         <div class="fr-checkbox-group">
-                            <input value="Moins de 7h" name="filtersp-spvolume" id="filtersp-Moins de 7h" type="checkbox">
-                            <label class="fr-label" for="filtersp-Moins de 7h">
-                                Moins de 7h
+                            <input value="Moins de 10h" name="filtersp-spvolume" id="filtersp-Moins de 10h" type="checkbox">
+                            <label class="fr-label" for="filtersp-Moins de 10h">
+                                Moins de 10 heures
                             </label>
                         </div>
                     </div>
                     <div class="fr-fieldset__element">
                         <div class="fr-checkbox-group">
-                            <input value="Entre 7h et 15h" name="filtersp-spvolume" id="filtersp-Entre 7h et 15h" type="checkbox">
-                            <label class="fr-label" for="filtersp-Entre 7h et 15h">
-                                Entre 7h et 15h
+                            <input value="Entre 10h et 24h" name="filtersp-spvolume" id="filtersp-Entre 10h et 24h" type="checkbox">
+                            <label class="fr-label" for="filtersp-Entre 10h et 24h">
+                                Entre 10 et 24 heures
                             </label>
                         </div>
                     </div>
                     <div class="fr-fieldset__element">
                         <div class="fr-checkbox-group">
-                            <input value="Entre 15h et 35h" name="filtersp-spvolume" id="filtersp-Entre 15h et 35h" type="checkbox">
-                            <label class="fr-label" for="filtersp-Entre 15h et 35h">
-                                Entre 15h et 35h
-                            </label>
-                        </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="Plus de 35h" name="filtersp-spvolume" id="filtersp-Plus de 35h" type="checkbox">
-                            <label class="fr-label" for="filtersp-Plus de 35h">
-                                Plus de 35h
+                            <input value="Plus de 24h" name="filtersp-spvolume" id="filtersp-Plus de 24h" type="checkbox">
+                            <label class="fr-label" for="filtersp-Plus de 24h">
+                                Plus de 24 heures
                             </label>
                         </div>
                     </div>
