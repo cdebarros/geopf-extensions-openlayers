@@ -1,0 +1,256 @@
+/* ISOCHRON */
+[id^=GPisochronPanel-] {
+  width: 280px;
+}
+
+.GPshowIsochronPicto {
+  background-image: url("img/GPisochronOpen.png");
+  background-repeat: no-repeat;
+  background-position: 1px center;
+}
+
+.GPisochronPanelClose {
+  background-image: url("img/GPisochronOpen.png");
+}
+
+/* Reset picto */
+
+button[id^=GPisochronReset] {
+  opacity: 0.8;
+  transition: opacity 0.2s ease-out;
+}
+
+button[id^=GPisochronReset]:hover {
+  opacity: 1;
+}
+
+.GPisochronReset {
+  background-color: #366291;
+  background-image: url("img/GPisochronOptions.png");
+  background-position: -281px center;
+}
+
+/* Isochron form */
+form[id^=GPisochronForm] {
+  padding: 15px;
+}
+
+div[id^=GPisochronChoice] {
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  width: 160px;
+  -webkit-justify-content: space-between;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+p[id^=GPisochronPointLabelP], p[id^=GPisochronValueChronLabelP] {
+  margin: 2px 0 5px 0;
+}
+
+.GProuteComputationLabel {
+  margin-bottom: 5px;
+}
+
+.GPisochronChoiceAlt input:checked + label + span {
+  color: #366291;
+}
+
+input[id^=GPisochronChoiceAltChron] + .GPisochronChoiceAltImg {
+  background-position: -56px 0;
+}
+
+input[id^=GPisochronChoiceAltChron]:checked + .GPisochronChoiceAltImg {
+  background-position: -84px 0;
+}
+
+input[id^=GPisochronChoiceAltDist] + .GPisochronChoiceAltImg {
+  background-position: -112px 0;
+}
+
+input[id^=GPisochronChoiceAltDist]:checked + .GPisochronChoiceAltImg {
+  background-position: -140px 0;
+}
+
+input[id^=GPisochronChoiceAltChron] {
+  background-image: url("img/GPisochronOptions.png");
+}
+
+.GPisochronOriginPointerImg,
+.GPisochronChoiceAltImg,
+.GPisochronTransportImg {
+  background-image: url("img/GPisochronOptions.png");
+  font-size: 0;
+}
+
+.GPisoExclusionsOption {
+  background-image: url("img/GPisochronCheck.png");
+}
+
+.GPisochronOriginPointerImg {
+  width: 28px;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+
+.GPisochronChoiceAlt input {
+  display: none;
+}
+
+.GPisochronChoiceAltImg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: auto;
+  cursor: pointer;
+}
+
+.GPisochronChoiceAlt span {
+  cursor: pointer;
+  display:block;
+  color: #999;
+}
+
+.GPisochronModeLabel {
+  display: block;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+input[id^=GPisochronTransportCar] + .GPisochronTransportImg {
+  background-image: url("img/GPisochronOptions.png");
+  background-position: -168px 0;
+}
+
+input[id^=GPisochronTransportCar]:checked + .GPisochronTransportImg {
+  background-image: url("img/GPisochronOptions.png");
+  background-position: -196px 0;
+}
+
+input[id^=GPisochronTransportPedestrian] + .GPisochronTransportImg {
+  background-image: url("img/GPisochronOptions.png");
+  background-position: -224px 0;
+}
+
+input[id^=GPisochronTransportPedestrian]:checked + .GPisochronTransportImg {
+  background-image: url("img/GPisochronOptions.png");
+  background-position: -252px 0;
+}
+
+.GPisochronTransportChoice input {
+  display: none;
+}
+
+div[id^=GPisochronTransportChoice] > div {
+  width: 100%;
+  justify-content: center;
+}
+
+div[id^=GPisochronValueChron],
+div[id^=GPisochronValueDist] {
+  width: 220px;
+  margin: 5px auto;
+}
+
+.GPisochronTransportImg {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.GPisochronTransportImg:first-of-type {
+    margin-left: 18px;
+    margin-right: 10px;
+}
+
+select[id^=GPisochronDirectionSelect] {
+  width: 80px;
+  margin: 5px auto;
+}
+
+.GPshowIsoExclusionsPicto {
+  top: unset;
+  right: 0;
+  transition: all 0.5s ease-out 0s;
+}
+
+.GPisoExclusionsLabel {
+  display: block;
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: bold;
+  line-height: 16px;
+}
+
+.GPisoExclusionsOptions {
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.GPisoExclusionsOption {
+  display: block;
+  height: 28px;
+  line-height: 26px;
+  color: #A77;
+  background-color: #FEE;
+  padding-left: 28px;
+  padding-right: 5px;
+  border: 1px solid #A77;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+input:checked + .GPisoExclusionsOption {
+  background-color: #EFE;
+  background-position: 0 -28px;
+  color: #797;
+  border: 1px solid #797;
+}
+
+input[id^=GPisochronSubmit-] {
+  width: fit-content;
+  padding: 0 10px;
+}
+
+div[id^=GPisoResultsNew] {
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
+  opacity: 0.8;
+  background-position: 3px 0;
+  transition: opacity 0.2s ease-out;
+  cursor: pointer;
+  background-color: #366291;
+  background-image: url("img/GPisochronClose.png");
+  position: initial;
+}
+
+/* Results Div */
+div[id^=GPisoResultsValueDiv-] {
+  display: inline-block;
+  margin-top: 4px;
+  line-height: 16px;
+}
+
+.GPisoResultsValue div {
+  color: #666;
+}
+
+.GPisoResultsValueLabel {
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+div[id^=GPisoResultsPanel-] {
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-evenly;
+}

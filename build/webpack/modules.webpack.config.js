@@ -62,6 +62,7 @@ module.exports = (env, argv) => {
             "GpfExtOlIndicator" : path.join(rootdir, "src", "packages", "Controls/CartospIndicator", "Indicator.js"),
             "GpfExtOlLayerselector" : path.join(rootdir, "src", "packages", "Controls/CartospLayerselector", "Layerselector.js"),
             "GpfExtOlSearchdialog" : path.join(rootdir, "src", "packages", "Controls/CartospSearchdialog", "Searchdialog.js"),
+            "GpfExtOlCartospIsocurve" : path.join(rootdir, "src", "packages", "Controls/CartospIsocurve", "CartospIsocurve.js"),
             // Formats étendus
             "GpfExtOlFormats" : [
                 path.join(rootdir, "src", "packages", "Formats", "GeoJSON.js"),

@@ -51,6 +51,7 @@ export { default as WfsFilter } from "./packages/Controls/CartospWfsFilter/WfsFi
 export { default as Indicator } from "./packages/Controls/CartospIndicator/Indicator";
 export { default as Layerselector } from "./packages/Controls/CartospLayerselector/Layerselector";
 export { default as Searchdialog } from "./packages/Controls/CartospSearchdialog/Searchdialog";
+export { default as CartospIsocurve } from "./packages/Controls/CartospIsocurve/CartospIsocurve";
 
 // proj4
 export { default as Proj4 } from "proj4";

@@ -1,0 +1,89 @@
+{{#extend "ol-sample-modules-dsfr-layout"}}
+
+{{#content "vendor"}}
+        
+        <link rel="stylesheet" href="{{ baseurl }}/dist/modules/GpfExtOlCartospIsocurve.css" />
+        <script src="{{ baseurl }}/dist/modules/GpfExtOlCartospIsocurve.js"></script>
+        <script src="{{ baseurl }}/dist/modules/GpfExtOlLayers.js"></script>
+{{/content}}
+
+{{#content "head"}}
+        <title>Sample openlayers Isocurve</title>
+{{/content}}
+
+{{#content "style"}}
+        <style>
+            div#map {
+                width: 100%;
+                height: 700px;
+            }
+        </style>
+{{/content}}
+
+{{#content "body"}}
+            <h2>Ajout du widget de calcul isochrone, avec les options par défaut</h2>
+            <!-- map -->
+            <div id="map">
+            </div>
+{{/content}}
+
+{{#content "js"}}
+            <script type="text/javascript">
+              var map;
+              var iso;
+              var createMap = function () {
+                // on cache l'image de chargement du Géoportail.
+                document.getElementById("map").style.backgroundImage = "none";
+
+                // Création de la map
+                map = new ol.Map({
+                  target : "map",
+                  layers : [
+                    new ol.layer.GeoportalWMTS({
+                      layer: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2"
+                    })
+                  ],
+                  view : new ol.View({
+                    center : [288074.8449901076, 6247982.515792289],
+                    zoom : 8
+                  })
+                });
+
+                iso = new ol.control.Isocurve({
+                  draggable: true,
+                  position: "bottom-left",
+                  typologyLocations: [
+                    {nom:"05 - Hautes-Alpes", code: "05", bbox: [5.4184,44.1865,7.0771,45.1268]}, 
+                    {nom:"36 - Indre", code: "36", bbox: [0.8675,46.3471,2.2046,47.2773]}, 
+                    {nom:"59 - Nord", code: "59", bbox: [2.0677,49.9691,4.2311,51.089]} 
+                  ],
+                  typologyLayers: [
+                    {title:"CAF", layername: "CAF_isochrone20", time: "20 min"},
+                    {title:"CAF", layername: "CAF_isochrone30", time: "30 min"},
+                    {title:"CPAM", layername: "CPAM_isochrone30", time: "30 min"},
+                    {title:"France Renov'", layername: "FranceRenov_isochrone30", time: "30 min"},
+                    {title:"France Service", layername: "FranceService_isochrone30", time: "30 min"},
+                    {title:"France Travail", layername: "FranceTravail_isochrone30", time: "30 min"},
+                    {title:"MDS", layername: "MDS_isochrone30", time: "30 min"},
+                    {title:"MSA", layername: "MSA_isochrone30", time: "30 min"},
+                    {title:"Point Justice CDAD", layername: "PointJustice_CDAD_isochrone30", time: "30 min"},
+                    {title:"SIP", layername: "SIP_isochrone30", time: "30 min"},
+                    {title:"URSSAF", layername: "URSSAF_isochrone30", time: "30 min"},
+                    {title:"Carsat", layername: "carsat_isochrone30", time: "30 min"}
+                  ]
+                });
+                map.addControl(iso);
+             };
+             Gp.Services.getConfig({
+                 customConfigFile : "{{ resources }}/data/configuration/customConfig.json",
+                 callbackSuffix : "",
+                 // apiKey: "{{ apikey }}",
+                 timeOut : 20000,
+                 onSuccess : createMap,
+                 onFailure : (e) => {
+                  console.error(e);
+                 }
+             });
+            </script>
+{{/content}}
+{{/extend}}
