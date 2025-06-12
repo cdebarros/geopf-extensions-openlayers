@@ -866,7 +866,7 @@ var IsoDOM = {
         for (var i = 0; i < locationList.length; i++) {
             optionLocation = document.createElement("option");
             optionLocation.value = locationList[i].code;
-            optionLocation.innerHTML = locationList[i].nom;
+            optionLocation.innerHTML = locationList[i].code + " - " + locationList[i].nom;
             selectLocation.appendChild(optionLocation);
         }
 

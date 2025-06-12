@@ -1415,11 +1415,16 @@ var Isocurve = class Isocurve extends Control {
                 this._typologyTagsContainer.appendChild(this._createTypologyLayerTagElement(obj));
                 var layernew = new GeoportalWMS({ layer : obj.layername });  
                 layernew.set("location", obj.location);
+                layernew.set("name_location", this.typologyLocations.find((list) => list.code === obj.location).nom);
                 layernew.set("layername", obj.layername);
                 layernew.set("time", obj.time); 
                 layernew.set("ride", obj.ride);
-                layernew.setExtent(ol.proj.transformExtent(this.typologyLocations.find((list) => list.code === obj.location).bbox, "EPSG:4326", "EPSG:3857"));       
+                layernew.setExtent(transformExtent(this.typologyLocations.find((list) => list.code === obj.location).bbox, "EPSG:4326", "EPSG:3857"));       
                 this.getMap().addLayer(layernew);
+                this.dispatchEvent({
+                    type : "isochrone:add",
+                    layer : layernew
+                });
                 document.getElementById("GPisochroneCounter").innerHTML = this._typologyLayersOnMap.length;
             }
         });
@@ -1432,6 +1437,10 @@ var Isocurve = class Isocurve extends Control {
         this.getMap().getAllLayers().forEach((layer) => {
             if (layer.values_.location == obj.location & layer.values_.layername == obj.layername & layer.values_.time == obj.time & layer.values_.ride == obj.ride){
                 this.getMap().removeLayer(layer);
+                this.dispatchEvent({
+                    type : "isochrone:remove",
+                    layer : layer
+                });
             }
         });        
         e.target.remove();
