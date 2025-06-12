@@ -323,7 +323,7 @@ var Indicator = class Indicator extends Control {
             });
             featureTheme.indicators=featureTheme.indicators.filter(subject => !([e.target.value].includes(subject)));
         } else {
-            var layernew = new GeoportalWMS({ layer : e.target.value });        
+            var layernew = new GeoportalWMS({ layer : e.target.value, olParams : { opacity : Number(e.target.dataset.opacity) } });        
             self.getMap().addLayer(layernew);
             featureTheme.indicators.push(e.target.value);
         }

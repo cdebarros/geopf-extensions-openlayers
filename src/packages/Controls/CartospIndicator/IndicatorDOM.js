@@ -1,3 +1,5 @@
+import Filter from "../Editor/Filter";
+
 var IndicatorDOM = {
 
     /**
@@ -193,7 +195,7 @@ var IndicatorDOM = {
                 var checked = this.selectedIndicators.find(theme => theme.indicators.includes(indicator));
                 content+=`<div class="fr-fieldset__element">
                     <div class="fr-checkbox-group">
-                        <input value="${indicator.layername}" name="checkboxes-${o.thematique}" id="checkboxes-${indicator.layername}" type="checkbox" ${checked ? "checked": ""}>
+                        <input value="${indicator.layername}" data-opacity="${indicator.opacity}" name="checkboxes-${o.thematique}" id="checkboxes-${indicator.layername}" type="checkbox" ${checked ? "checked": ""}>
                         <label class="fr-label" for="checkboxes-${indicator.layername}">
                             ${indicator.title}
                         </label>
@@ -208,7 +210,7 @@ var IndicatorDOM = {
         var strContainer = `
             <section id="${o.thematique}" class="fr-accordion">
                 <h3 class="fr-accordion__title" style="height: 48px;">
-                    <button id="GPcollapseIndicator_ID_${o.thematique}" class="GPfilterButton fr-accordion__btn" aria-expanded="false" aria-controls="GPindicator_ID_${o.thematique}">${o.thematique} (${o.indicators.length})</button>
+                    <button id="GPcollapseIndicator_ID_${o.thematique}" class="GPfilterButton fr-accordion__btn" aria-expanded="false" aria-controls="GPindicator_ID_${o.thematique}">${o.thematique} (${o.indicators.filter((indicator) => indicator.layername != "").length})</button>
                 </h3>
                 <div id="GPindicator_ID_${o.thematique}" class="fr-collapse GPelementHidden" style="margin:unset;">
                     <fieldset class="fr-fieldset" id="checkboxes-${o.thematique}">
