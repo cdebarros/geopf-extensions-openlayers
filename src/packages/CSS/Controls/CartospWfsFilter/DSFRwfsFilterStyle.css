@@ -114,3 +114,7 @@
 .fr-accordion__title{
     height: unset !important;
 }
+
+.zero-count {
+    color: rgba(146, 146, 146, 1);
+}

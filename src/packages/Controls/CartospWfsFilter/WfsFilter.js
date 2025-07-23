@@ -225,11 +225,21 @@ var WfsFilter = class Wfsfilter extends Control {
 
     updateSelectSpCount () {
         this.WfsThematiqueResetLink.lastChild.innerHTML = "Réinitialiser (" + this.spFilters.sptopo.length + ")";
+        if (this.spFilters.sptopo.length == 0) {
+            this.WfsThematiqueResetLink.lastChild.classList.add("zero-count");
+        } else {
+            this.WfsThematiqueResetLink.lastChild.classList.remove("zero-count");
+        }
     }
 
     updateSelectFilterCount () {
         var count = this.spFilters.spcarac.length + this.spFilters.spfreq.length + this.spFilters.spmoda.length + this.spFilters.spvolume.length;
         this.filterContainerDiv.lastChild.innerHTML = "Réinitialiser (" + count + ")";
+        if (count == 0) {
+            this.filterContainerDiv.lastChild.classList.add("zero-count");
+        } else {
+            this.filterContainerDiv.lastChild.classList.remove("zero-count");
+        }
     }
 
     // ################################################################### //
@@ -583,6 +593,7 @@ var WfsFilter = class Wfsfilter extends Control {
         });
 
         this.filterContainerDiv.lastChild.innerHTML = "Réinitialiser (0)";
+        this.filterContainerDiv.lastChild.classList.add("zero-count");
     }
 
     /**
@@ -604,6 +615,7 @@ var WfsFilter = class Wfsfilter extends Control {
         });
 
         this.WfsThematiqueResetLink.lastChild.innerHTML = "Réinitialiser (0)";
+        this.WfsThematiqueResetLink.lastChild.classList.add("zero-count");
     }
 
 };

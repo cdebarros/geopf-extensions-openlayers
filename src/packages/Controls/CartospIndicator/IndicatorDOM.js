@@ -148,7 +148,7 @@ var IndicatorDOM = {
         var element = document.createElement("div");
         element.id = "global-indicator-action";
         var button = document.createElement("button");
-        button.className = "fr-link"; // afficher en dsfr
+        button.className = "fr-link zero-count"; // afficher en dsfr
         button.innerText = "Réinitialiser (0)";
         button.id = "reset-indicator-selection";
 

@@ -153,7 +153,7 @@ var WfsFilterDOM = {
 
         // reset
         var reset = document.createElement("button");
-        reset.className = "fr-link margin-link"; // afficher en dsfr
+        reset.className = "fr-link margin-link zero-count"; // afficher en dsfr
         reset.innerText = "Réinitialiser (0)";
         reset.title = "Réinitialiser la sélection de filtres";
         reset.id = "reset-filter-selection";
@@ -408,7 +408,7 @@ var WfsFilterDOM = {
 
         // reset
         var reset = document.createElement("button");
-        reset.className = "fr-link"; // afficher en dsfr
+        reset.className = "fr-link zero-count"; // afficher en dsfr
         reset.innerText = "Réinitialiser (0)";
         reset.title = "Réinitialiser la sélection de services publics";
         reset.id = "reset-sp-selection";

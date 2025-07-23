@@ -71,6 +71,16 @@
     text-decoration: underline;
 }
 
+#global-indicator-action {
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+}
+
 .fr-accordion__title{
     height: unset !important;
+}
+
+.zero-count {
+    color: rgba(146, 146, 146, 1);
 }

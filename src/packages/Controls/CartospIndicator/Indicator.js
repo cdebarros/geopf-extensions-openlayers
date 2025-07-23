@@ -168,6 +168,11 @@ var Indicator = class Indicator extends Control {
         });
 
         self.WfsThematiqueResetLink.firstChild.innerHTML = "Réinitialiser (" + count + ")";
+        if (count == 0) {
+            self.WfsThematiqueResetLink.firstChild.classList.add("zero-count");
+        } else {
+            self.WfsThematiqueResetLink.firstChild.classList.remove("zero-count");
+        }
     }
 
     // ################################################################### //
@@ -349,6 +354,7 @@ var Indicator = class Indicator extends Control {
             theme.indicators = [];
         });
         self.WfsThematiqueResetLink.firstChild.innerHTML = "Réinitialiser (0)";
+        self.WfsThematiqueResetLink.firstChild.classList.add("zero-count");
     }
 
 };
