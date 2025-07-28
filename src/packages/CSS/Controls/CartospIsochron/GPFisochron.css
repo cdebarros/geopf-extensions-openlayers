@@ -122,8 +122,8 @@ div[id^=GPisochronTypologyLocationSelect], div[id^=GPisochronTypologyLayerSelect
 
 #GPisochroneCounter {
   position: relative;
-  background: #fff;
-  color: #000;
+  background: var(--text-action-high-blue-france);
+  color: white;
   padding: 2px 0px 1px;
   border-radius: 100px;
   min-width: 15px;

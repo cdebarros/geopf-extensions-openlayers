@@ -939,6 +939,15 @@ var IsoDOM = {
             }
         });
 
+        document.addEventListener("click", e => {
+            if (e.target.id != "GPisochronTypologyLayerListSelector") {
+                var LayerListPanel = document.getElementById("GPisochronTypologyLayerListSelector");
+                if (e.target.id != "GPisochronTypologyLayerSelect" && e.target.type != "checkbox" && e.target.className != "fr-label") {
+                    LayerListPanel.style.display = "none";
+                }
+            }
+        });
+
         div.appendChild(selectLocation);
         div.appendChild(layerListSelector);
         

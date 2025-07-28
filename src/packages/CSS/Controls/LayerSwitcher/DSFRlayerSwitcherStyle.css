@@ -311,3 +311,8 @@ div[id^=GPlayerInfoContent] {
         flex-grow: 0.6;
     }
 }
+
+.GPlayerCounter {
+    background: var(--text-action-high-blue-france);
+    color: white;    
+}

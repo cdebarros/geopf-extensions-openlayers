@@ -84,3 +84,7 @@
 .zero-count {
     color: rgba(146, 146, 146, 1);
 }
+
+div[id^=GPindicator_] > fieldset > h6 {
+    font-size: 16px;
+}
