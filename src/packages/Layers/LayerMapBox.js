@@ -14,130 +14,121 @@ import Config from "../Utils/Config";
 * @classdesc
 * Geoportal Layer Mapbox creation
 *
-* @constructor
-* @extends {ol.layer.VectorTile}
 * @alias ol.layer.GeoportalMapBox
-* @type {ol.layer.GeoportalMapBox}
-* @param {Object} options            - options for function call.
-* @param {String} options.layer      - Layer name (e.g. "PLAN.IGN")
-* @param {Object} [options.configuration] - configuration (cf. example) 
-* @param {String} [options.style]    - Style name (e.g. "classique")
-* @param {String} [options.source]   - Source name (e.g. "plan_ign")
-* @param {Boolean} [options.ssl]     - if set true, enforce protocol https (only for nodejs)
-* @param {Object} [settings] - other options for ol.layer.VectorTile function (see {@link https://openlayers.org/en/latest/apidoc/module-ol_layer_VectorTile-VectorTileLayer.html ol.layer.VectorTile})
-* @example
-* var LayerMapBox = new ol.layer.GeoportalMapBox({
-*      layer  : "PLAN.IGN",
-*      [style  : "classique",]
-*      [source : "plan_ign",]
-*      [ssl: true]
-* }, {
-*      opacity
-*      visible
-*      extent
-*      declutter
-*      ...
-* });
-* 
-* // Ex. configuration object for TMS Layer
-* "PLAN.IGN$GEOPORTAIL:GPP:TMS": {
-*   "hidden": true,
-*   "queryable": false,
-*   "serviceParams": {
-*     "id": "GPP:TMS",
-*     "version": "1.0.0",
-*     "serverUrl": {
-*       "cartes": "https://wxs.ign.fr/cartes/geoportail/tms/1.0.0/"
-*     }
-*   },
-*   "name": "PLAN.IGN",
-*   "title": "Plan IGN",
-*   "description": "BDUni tuilée",
-*   "formats": [
-*     {
-*       "current": true,
-*       "name": "application/x-protobuf"
-*     }
-*   ],
-*   "styles": [
-*     {
-*       "name": "standard",
-*       "title": "Style standard",
-*       "current": true,
-*       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/standard.json"
-*     },
-*     {
-*       "name": "classique",
-*       "title": "Style classique",
-*       "current": true,
-*       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/classique.json"
-*     },
-*     {
-*       "name": "transparent",
-*       "title": "Style transparent",
-*       "current": true,
-*       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/transparent.json"
-*     },
-*     {
-*       "name": "accentue",
-*       "title": "Style accentue",
-*       "current": true,
-*       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/accentue.json"
-*     },
-*     {
-*       "name": "attenue",
-*       "title": "Style attenue",
-*       "current": true,
-*       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/attenue.json"
-*     },
-*     {
-*       "name": "gris",
-*       "title": "Style en noir et blanc",
-*       "current": false,
-*       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/gris.json"
-*     },
-*     {
-*       "name": "epure",
-*       "title": "Style epure",
-*       "current": true,
-*       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/epure.json"
-*     },
-*     {
-*       "name": "sans_toponymes",
-*       "title": "Style sans toponymes",
-*       "current": false,
-*       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/sans_toponymes.json"
-*     }
-*   ],
-*   "globalConstraint": {
-*     "crs": null,
-*     "bbox": {
-*       "left": -724011.531917197,
-*       "right": 1095801.237496279,
-*       "top": 6672646.821182753,
-*       "bottom": 5009377.0856973175
-*     },
-*     "minScaleDenominator": null,
-*     "maxScaleDenominator": null
-*   },
-*   "quicklookUrl": "https://wxs.ign.fr/static/pictures/ign_carte2.jpg",
-*   "layerId": "PLAN.IGN$GEOPORTAIL:GPP:TMS",
-*   "defaultProjection": "EPSG:3857"
-* }
 *
 */
-var LayerMapBox = class LayerMapBox extends VectorTileLayer {
+class LayerMapBox extends VectorTileLayer {
     
     /**
-     * See {@link ol.layer.GeoportalMapBox}
-     * @module LayerMapBox
-     * @alias module:~layers/GeoportalMapBox
-     * @param {*} options - options
-     * @param {*} [settings] - other settings
+     * @module GeoportalMapBox
+     * @constructor
+     * @param {Object} options            - options for function call.
+     * @param {String} options.layer      - Layer name (e.g. "PLAN.IGN")
+     * @param {Object} [options.configuration] - configuration (cf. example) 
+     * @param {String} [options.style]    - Style name (e.g. "classique")
+     * @param {String} [options.source]   - Source name (e.g. "plan_ign")
+     * @param {Boolean} [options.ssl]     - if set true, enforce protocol https (only for nodejs)
+     * @param {Object} [settings] - other options for ol.layer.VectorTile function (see {@link https://openlayers.org/en/latest/apidoc/module-ol_layer_VectorTile-VectorTileLayer.html ol.layer.VectorTile})
+     * @fires mapbox:style:loaded
      * @example
-     * import LayerMapBox from "gpf-ext-ol/layers/LayerMapBox"
-     * ou 
-     * import { LayerMapBox } from "gpf-ext-ol"
+     * var LayerMapBox = new ol.layer.GeoportalMapBox({
+     *      layer  : "PLAN.IGN",
+     *      [style  : "classique",]
+     *      [source : "plan_ign",]
+     *      [ssl: true]
+     * }, {
+     *      opacity
+     *      visible
+     *      extent
+     *      declutter
+     *      ...
+     * });
+     * 
+     * // Ex. configuration object for TMS Layer
+     * "PLAN.IGN$GEOPORTAIL:GPP:TMS": {
+     *   "hidden": true,
+     *   "queryable": false,
+     *   "serviceParams": {
+     *     "id": "GPP:TMS",
+     *     "version": "1.0.0",
+     *     "serverUrl": {
+     *       "cartes": "https://wxs.ign.fr/cartes/geoportail/tms/1.0.0/"
+     *     }
+     *   },
+     *   "name": "PLAN.IGN",
+     *   "title": "Plan IGN",
+     *   "description": "BDUni tuilée",
+     *   "formats": [
+     *     {
+     *       "current": true,
+     *       "name": "application/x-protobuf"
+     *     }
+     *   ],
+     *   "styles": [
+     *     {
+     *       "name": "standard",
+     *       "title": "Style standard",
+     *       "current": true,
+     *       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/standard.json"
+     *     },
+     *     {
+     *       "name": "classique",
+     *       "title": "Style classique",
+     *       "current": true,
+     *       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/classique.json"
+     *     },
+     *     {
+     *       "name": "transparent",
+     *       "title": "Style transparent",
+     *       "current": true,
+     *       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/transparent.json"
+     *     },
+     *     {
+     *       "name": "accentue",
+     *       "title": "Style accentue",
+     *       "current": true,
+     *       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/accentue.json"
+     *     },
+     *     {
+     *       "name": "attenue",
+     *       "title": "Style attenue",
+     *       "current": true,
+     *       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/attenue.json"
+     *     },
+     *     {
+     *       "name": "gris",
+     *       "title": "Style en noir et blanc",
+     *       "current": false,
+     *       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/gris.json"
+     *     },
+     *     {
+     *       "name": "epure",
+     *       "title": "Style epure",
+     *       "current": true,
+     *       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/epure.json"
+     *     },
+     *     {
+     *       "name": "sans_toponymes",
+     *       "title": "Style sans toponymes",
+     *       "current": false,
+     *       "url": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/essentiels/sans_toponymes.json"
+     *     }
+     *   ],
+     *   "globalConstraint": {
+     *     "crs": null,
+     *     "bbox": {
+     *       "left": -724011.531917197,
+     *       "right": 1095801.237496279,
+     *       "top": 6672646.821182753,
+     *       "bottom": 5009377.0856973175
+     *     },
+     *     "minScaleDenominator": null,
+     *     "maxScaleDenominator": null
+     *   },
+     *   "quicklookUrl": "https://wxs.ign.fr/static/pictures/ign_carte2.jpg",
+     *   "layerId": "PLAN.IGN$GEOPORTAIL:GPP:TMS",
+     *   "defaultProjection": "EPSG:3857"
+     * }
     */
     constructor (options, settings) {
         // if (!(this instanceof LayerMapBox)) {
@@ -249,6 +240,7 @@ var LayerMapBox = class LayerMapBox extends VectorTileLayer {
         this.protocol = protocol;
         this.sourceId = options.source;
         this.styleUrl = styleUrl;
+        this.styleName = styleName;
         this.config = layerCfg;
         
         // récuperation du style
@@ -340,12 +332,34 @@ var LayerMapBox = class LayerMapBox extends VectorTileLayer {
             source.setUrls(styleSource.tiles);
         }
         
-        applyStyle(this, style, this.sourceId).then(() => {
-            source.setState("ready");
-            this.set("mapbox-styles", style);
-        }).catch((error) => {
-            this.onStyleMapBoxError(error);
-        });
+        applyStyle(this, style, this.sourceId)
+            .then(() => {
+                source.setState("ready");
+                this.set("mapbox-styles", style);
+            })
+            .then(() => {
+                /**
+                 * event triggered when a style is apply
+                 *
+                 * @event mapbox:style:loaded
+                 * @property {Object} type - event
+                 * @property {String} style - style url
+                 * @property {String} name - style name
+                 * @property {Object} target - instance LayerMapBox
+                 * @example
+                 * LayerMapBox.on("mapbox:style:loaded", function (e) {
+                 *   console.log(e.style);
+                 * })
+                 */
+                this.dispatchEvent({
+                    type : "mapbox:style:loaded",
+                    style : this.styleUrl,
+                    name : this.styleName
+                });
+            })
+            .catch((error) => {
+                this.onStyleMapBoxError(error);
+            });
     };
     
     /**

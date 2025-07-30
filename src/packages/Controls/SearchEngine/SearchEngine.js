@@ -5,6 +5,7 @@ import "../../CSS/Controls/SearchEngine/GPFsearchEngine.css";
 // import Control from "ol/control/Control";
 import Control from "../Control";
 import Widget from "../Widget";
+import Map from "ol/Map";
 import Overlay from "ol/Overlay";
 import {
     transform as olProjTransform,
@@ -38,151 +39,143 @@ import checkDsfr from "../Utils/CheckDsfr";
 var logger = Logger.getLogger("searchengine");
 
 /**
- * @classdesc
- * SearchEngine control
- *
- * @constructor
- * @extends {ol.control.Control}
- * @type {ol.control.SearchEngine}
- * @alias ol.control.SearchEngine
- * @param {Object}  options - control options
- * @param {Number} [options.id] - Ability to add an identifier on the widget (advanced option)
- * @param {String}  [options.apiKey] - API key. The key "calcul" is used by default.
- * @param {Boolean} [options.ssl = true] - use of ssl or not (default true, service requested using https protocol)
- * @param {Boolean} [options.collapsed = true] - collapse mode, true by default
- * @param {Boolean} [options.collapsible = true] - force control to be collapsed or not, true by default.
- * @param {String}  [options.direction = "start"] - TODO : position of picto, by default : "start"
- * @param {String}  [options.placeholder] - Placeholder in search bar. Default is "Rechercher un lieu, une adresse".
- * @param {Boolean} [options.displayMarker = true] - set a marker on search result, defaults to true.
- * @param {String}  [options.markerStyle = "lightOrange"] - Marker style. Currently possible values are "lightOrange" (default value), "darkOrange", "red" and "turquoiseBlue".
- * @param {String}  [options.markerUrl = ""] - Marker url. By default, if not specified, use option markerStyle. Otherwise, you can added a http url or a base64 image.
- * @param {Boolean} [options.splitResults = true] - False to disable layers search
- * @param {Boolean} [options.displayButtonAdvancedSearch = false] - False to disable advanced search tools (it will not be displayed). Default is false (not displayed)
- * @param {Boolean} [options.displayButtonGeolocate = false] - False to disable advanced search tools (it will not be displayed). Default is false (not displayed)
- * @param {Boolean} [options.displayButtonCoordinateSearch = false] - False to disable advanced search tools (it will not be displayed). Default is false (not displayed)
- * @param {Boolean} [options.coordinateSearchInAdvancedSearch = false] -True to display coord search in advanced search
- * @param {Boolean} [options.displayButtonClose = true] - False to disable advanced search tools (it will not be displayed). Default is true (displayed)
- * @param {Object}  [options.coordinateSearch] - coordinates search options.
- * @param {DOMElement} [options.coordinateSearch.target = null] - TODO : target location of results window. By default under the search bar.
- * @param {Array}   [options.coordinateSearch.units] - list of coordinates units, to be displayed in control units list.
+ * @typedef {Object} SearchEngineOptions
+ * @property {number} [id] - Identifiant du widget (option avancée)
+ * @property {string} [apiKey] - Clé API. "calcul" par défaut.
+ * @property {boolean} [ssl=true] - Utilisation du protocole https (true par défaut)
+ * @property {boolean} [collapsed=true] - Mode réduit (true par défaut)
+ * @property {boolean} [collapsible=true] - Contrôle pliable ou non (true par défaut)
+ * @property {string} [direction="start"] - Position du picto (loupe), "start" par défaut
+ * @property {string} [placeholder="Rechercher un lieu, une adresse"] - Placeholder de la barre de recherche
+ * @property {boolean} [displayMarker=true] - Afficher un marqueur sur le résultat (true par défaut)
+ * @property {string} [markerStyle="lightOrange"] - Style du marqueur ("lightOrange", "darkOrange", "red", "turquoiseBlue")
+ * @property {string} [markerUrl=""] - URL du marqueur (prioritaire sur markerStyle)
+ * @property {boolean} [splitResults=false] - Désactiver la recherche par couches (false par défaut)
+ * @property {boolean} [displayButtonAdvancedSearch=false] - Afficher le bouton de recherche avancée (false par défaut)
+ * @property {boolean} [displayButtonGeolocate=false] - Afficher le bouton de géolocalisation (false par défaut)
+ * @property {boolean} [displayButtonCoordinateSearch=false] - Afficher le bouton de recherche par coordonnées (false par défaut)
+ * @property {boolean} [coordinateSearchInAdvancedSearch=false] - Afficher la recherche par coordonnées dans la recherche avancée
+ * @property {boolean} [displayButtonClose=true] - Afficher le bouton de fermeture (true par défaut)
+ * @property {Object} [coordinateSearch] - Options de recherche par coordonnées
+ * @property {HTMLElement} [coordinateSearch.target=null] - Cible d'affichage des résultats
+ * @property {Array} [coordinateSearch.units] - Unités de coordonnées à afficher ("DEC", "DMS", "M", "KM")
  *      Values may be "DEC" (decimal degrees), "DMS" (sexagecimal) for geographical coordinates,
  *      and "M" or "KM" for metric coordinates
- * @param {Array}   [options.coordinateSearch.systems] - list of projection systems, default are Geographical ("EPSG:4326"), Web Mercator ("EPSG:3857") and Lambert 93 ("EPSG:2154").
- *      Each array element (=system) is an object with following properties :
- * @param {String}  [options.coordinateSearch.systems.crs] - Proj4 crs alias (from proj4 defs). e.g. : "EPSG:4326". Required
- * @param {String}  [options.coordinateSearch.systems.label] - CRS label to be displayed in control. Default is crs code (e.g. "EPSG:4326")
- * @param {String}  [options.coordinateSearch.systems.type] - CRS units type for coordinates conversion : "Geographical" or "Metric". Default: "Geographical"
- * @param {Object}  [options.advancedSearch] - advanced search options for geocoding (filters). Properties can be found among geocode options.filterOptions (see {@link http://ignf.github.io/geoportal-access-lib/latest/jsdoc/module-Services.html#~geocode Gp.Services.geocode})
- * @param {DOMElement} [options.advancedSearch.target = null] - TODO : target location of results window. By default under the search bar.
- * @param {Object}  [options.resources] - resources to be used by geocode and autocompletion services :
- * @param {String}  [options.resources.geocode = "location"] - resources geocoding, by default : "location"
- * @param {Array}   [options.resources.autocomplete] - resources autocompletion, by default : ["PositionOfInterest", "StreetAddress"]
- * @param {Boolean} [options.resources.search = false] - false to disable search service, by default : "false"
- * @param {Object}  [options.searchOptions = {}] - options of search service
- * @param {Boolean} [options.searchOptions.addToMap = true] - add layer automatically to map, defaults to true.
- * @param {String[]}  [options.searchOptions.filterServices] - filter on a list of search services, each field is separated by a comma. "WMTS,TMS" by default
- * @param {String[]}  [options.searchOptions.filterWMTSPriority] - filter on priority WMTS layer in search, each field is separated by a comma. "PLAN.IGN,ORTHOIMAGERY.ORTHOPHOTOS" by default
- * @param {String[]}  [options.searchOptions.filterProjections] - filter on a list of projections : the searchEngine ignore the suggestions with one of the projections listed. Each field is separated by a comma.
- * @param {Boolean}  [options.searchOptions.filterLayersPriority = false] - filter on priority layers in search, false by default
- * @param {Boolean}  [options.searchOptions.filterLayers] - false to disable the automatic filter from Config or from the filterLayerList parameter. True by Default.
- * @param {Object}  [options.searchOptions.filterLayersList] - filter on list of search layers list with a struture {"layerName" : "service"}. By Default, the layers available in Config.configuration.layers.
- * @param {Boolean}  [options.searchOptions.filterTMS] - filter the results to keep TMS with at least a style (.json) into the metadata. True by Default.
- * @param {Object}  [options.searchOptions.serviceOptions] - options of search service
- * @param {String}   [options.searchOptions.serviceOptions.url] - url of service
- * @param {String}  [options.searchOptions.serviceOptions.index] - index of search, "standard" by default
- * @param {String[]}  [options.searchOptions.serviceOptions.fields] - list of search fields, each field is separated by a comma. "title,layer_name" by default
- * @param {Number}  [options.searchOptions.serviceOptions.size] - number of response in the service. 1000 by default
- * @param {Number}  [options.searchOptions.serviceOptions.maximumResponses] - number of results in the response. 10 by default
- * @param {Number}  [options.searchOptions.maximumEntries] - maximum search results we want to display.
- * @param {Object}  [options.geocodeOptions = {}] - options of geocode service (see {@link http://ignf.github.io/geoportal-access-lib/latest/jsdoc/module-Services.html#~geocode Gp.Services.geocode})
- * @param {Object}  [options.geocodeOptions.serviceOptions] - options of geocode service
- * @param {Object}  [options.autocompleteOptions = {}] - options of autocomplete service (see {@link http://ignf.github.io/geoportal-access-lib/latest/jsdoc/module-Services.html#~autoComplete Gp.Services.autoComplete})
- * @param {Object}  [options.autocompleteOptions.serviceOptions] - options of autocomplete service
- * @param {Boolean} [options.autocompleteOptions.triggerGeocode = false] - trigger a geocoding request if the autocompletion does not return any suggestions, false by default
- * @param {Number}  [options.autocompleteOptions.triggerDelay = 1000] - waiting time before sending the geocoding request, 1000ms by default
- * @param {Number}  [options.autocompleteOptions.maximumEntries] - maximum autocompletion results we want to display
- * @param {Boolean} [options.autocompleteOptions.prettifyResults = false] - apply a filter/prettifier function to clean or prettify autocomplete entries
- * @param {Sting|Numeric|Function} [options.zoomTo] - zoom to results, by default, current zoom.
+ * @property {Array} [coordinateSearch.systems] - Systèmes de projection à afficher (objet avec crs, label, type)
+ * @property {Object} [advancedSearch] - Options de recherche avancée (voir geocodeOptions.filterOptions)
+ * @property {HTMLElement} [advancedSearch.target=null] - Cible d'affichage des résultats
+ * @property {Object} [resources] - Ressources utilisées par les services
+ * @property {string|string[]} [resources.geocode="location"] - Ressources de géocodage
+ * @property {string[]} [resources.autocomplete] - Ressources d'autocomplétion
+ * @property {boolean} [resources.search=false] - Activer le service de recherche (false par défaut)
+ * @property {Object} [searchOptions={}] - Options du service de recherche
+ * @property {boolean} [searchOptions.addToMap=true] - Ajouter la couche automatiquement à la carte
+ * @property {string[]} [searchOptions.filterServices] - Filtrer sur une liste de services ("WMTS,TMS" par défaut)
+ * @property {string[]} [searchOptions.filterWMTSPriority] - Filtrer sur les couches WMTS prioritaires
+ * @property {string[]} [searchOptions.filterProjections] - Filtrer sur une liste de projections
+ * @property {boolean} [searchOptions.filterLayersPriority=false] - Filtrer sur les couches prioritaires
+ * @property {boolean} [searchOptions.filterLayers=true] - Activer le filtrage automatique des couches
+ * @property {Object} [searchOptions.filterLayersList] - Liste des couches à filtrer {"layerName": "service"}
+ * @property {boolean} [searchOptions.filterTMS=true] - Garder les TMS avec style dans les métadonnées
+ * @property {Object} [searchOptions.serviceOptions] - Options du service de recherche
+ * @property {string} [searchOptions.serviceOptions.url] - URL du service
+ * @property {string} [searchOptions.serviceOptions.index="standard"] - Index de recherche
+ * @property {string[]} [searchOptions.serviceOptions.fields=["title","layer_name"]] - Champs de recherche
+ * @property {number} [searchOptions.serviceOptions.size=1000] - Nombre de réponses du service
+ * @property {number} [searchOptions.serviceOptions.maximumResponses=10] - Nombre de résultats à afficher
+ * @property {number} [searchOptions.maximumEntries] - Nombre maximum de résultats à afficher
+ * @property {Object} [geocodeOptions={}] - Options du service de géocodage (voir Gp.Services.geocode {@link http://ignf.github.io/geoportal-access-lib/latest/jsdoc/module-Services.html#~geocode Gp.Services.geocode}))
+ * @property {Object} [geocodeOptions.serviceOptions] - Options du service de géocodage
+ * @property {Object} [autocompleteOptions={}] - Options du service d'autocomplétion (voir Gp.Services.autoComplete {@link http://ignf.github.io/geoportal-access-lib/latest/jsdoc/module-Services.html#~autoComplete Gp.Services.autoComplete})
+ * @property {Object} [autocompleteOptions.serviceOptions] - Options du service d'autocomplétion
+ * @property {boolean} [autocompleteOptions.triggerGeocode=false] - Déclencher une requête de géocodage si aucune suggestion
+ * @property {number} [autocompleteOptions.triggerDelay=1000] - Délai avant la requête de géocodage (ms)
+ * @property {number} [autocompleteOptions.maximumEntries] - Nombre maximum de résultats d'autocomplétion à afficher
+ * @property {boolean} [autocompleteOptions.prettifyResults=false] - Nettoyer/embellir les résultats d'autocomplétion
+ * @property {string|number|Function} [zoomTo] - Niveau de zoom à appliquer sur le résultat ("auto", niveau, ou fonction)
  *       Value possible : auto or zoom level.
  *       Possible to overload it with a function :
  *       zoomTo : function (info) {
  *           // do some stuff...
  *           return zoom;
  *       }
- * @fires searchengine:autocomplete:click
- * @fires searchengine:geocode:click
- * @fires searchengine:search:click
- * @fires searchengine:geolocation:click
- * @fires searchengine:coordinates:click
- * @todo option : direction (start|end) de la position du picto (loupe)
- * @todo option : choix du target pour les fenetres geocodage ou recherche par coordonnées
- * @example
- *  var SearchEngine = ol.control.SearchEngine({
- *      apiKey : "CLEAPI",
- *      collapsed : true,
- *      collapsible : true,
- *      displayButtonAdvancedSearch : true,
- *      displayButtonGeolocate : true,
- *      displayButtonCoordinateSearch : true,
- *      markerStyle : "lightOrange" // "http://..." or "data/base64..."
- *      resources : {
- *          geocode : ["StreetAddress", "PositionOfInterest"],
- *          autocomplete : ["StreetAddress"],
- *          search : false
- *      },
- *      advancedSearch : {
- *          target : document.getElementById("dialog"),
- *          PositionOfInterest : [{name : "municipality", title : "Ville"}],
- *          StreetAddress : [{...}]
- *      },
- *      coordinateSearch : {
- *          target : null
- *          systems : [
- *            {
- *              "crs" : "EPSG:3857",
- *              "label" : "Web Mercator",
- *              "type" : "Metric"
- *            },
- *            {
- *              "crs" : "EPSG:4326",
- *              "label" : "Géographiques",
- *              "type" : "Geographical"
- *            }
- *          ],
- *          units : ["DEC", "DMS"]
- *      },
- *      geocodeOptions : {},
- *      autocompleteOptions : {},
- *      searchOptions : {}
- *  });
- *
- *  SearchEngine.on("searchengine:autocomplete:click", function (e) {
- *    console.warn("autocomplete", e.location);
- *  });
- *  SearchEngine.on("searchengine:search:click", function (e) {
- *    console.warn("search", e.suggest);
- *  });
- *  SearchEngine.on("searchengine:geocode:click", function (e) {
- *    console.warn("geocode", e.location);
- *  });
- *  SearchEngine.on("searchengine:geolocation:click", function (e) {
- *    console.warn("geolocation", e.);
- *  });
- *  SearchEngine.on("searchengine:coordinate:click", function (e) {
- *    console.warn("coordinate", e.);
- *  });
  */
-var SearchEngine = class SearchEngine extends Control {
 
+/**
+ * @classdesc
+ * SearchEngine control
+ *
+ * @alias ol.control.SearchEngine
+ * @module SearchEngine
+*/
+class SearchEngine extends Control {
+    
     /**
-     * See {@link ol.control.SearchEngine}
-     * @module SearchEngine
-     * @alias module:~controls/SearchEngine
-     * @param {*} options - options
+     * @constructor
+     * @param {SearchEngineOptions}  options - control options
+     * @fires searchengine:autocomplete:click
+     * @fires searchengine:geocode:click
+     * @fires searchengine:search:click
+     * @fires searchengine:geolocation:click
+     * @fires searchengine:geolocation:remove
+     * @fires searchengine:coordinates:click
+     * @todo option : direction (start|end) de la position du picto (loupe)
+     * @todo option : choix du target pour les fenetres geocodage ou recherche par coordonnées
      * @example
-     * import SearchEngine from "gpf-ext-ol/controls/SearchEngine"
-     * ou
-     * import { SearchEngine } from "gpf-ext-ol"
+     *  var SearchEngine = ol.control.SearchEngine({
+     *      apiKey : "CLEAPI",
+     *      collapsed : true,
+     *      collapsible : true,
+     *      displayButtonAdvancedSearch : true,
+     *      displayButtonGeolocate : true,
+     *      displayButtonCoordinateSearch : true,
+     *      markerStyle : "lightOrange" // "http://..." or "data/base64..."
+     *      resources : {
+     *          geocode : ["StreetAddress", "PositionOfInterest"],
+     *          autocomplete : ["StreetAddress"],
+     *          search : false
+     *      },
+     *      advancedSearch : {
+     *          target : document.getElementById("dialog"),
+     *          PositionOfInterest : [{name : "municipality", title : "Ville"}],
+     *          StreetAddress : [{...}]
+     *      },
+     *      coordinateSearch : {
+     *          target : null
+     *          systems : [
+     *            {
+     *              "crs" : "EPSG:3857",
+     *              "label" : "Web Mercator",
+     *              "type" : "Metric"
+     *            },
+     *            {
+     *              "crs" : "EPSG:4326",
+     *              "label" : "Géographiques",
+     *              "type" : "Geographical"
+     *            }
+     *          ],
+     *          units : ["DEC", "DMS"]
+     *      },
+     *      geocodeOptions : {},
+     *      autocompleteOptions : {},
+     *      searchOptions : {}
+     *  });
+     *
+     *  SearchEngine.on("searchengine:autocomplete:click", function (e) {
+     *    console.warn("autocomplete", e.location);
+     *  });
+     *  SearchEngine.on("searchengine:search:click", function (e) {
+     *    console.warn("search", e.suggest);
+     *  });
+     *  SearchEngine.on("searchengine:geocode:click", function (e) {
+     *    console.warn("geocode", e.location);
+     *  });
+     *  SearchEngine.on("searchengine:geolocation:click", function (e) {
+     *    console.warn("geolocation", e.);
+     *  });
+     *  SearchEngine.on("searchengine:coordinate:click", function (e) {
+     *    console.warn("coordinate", e.);
+     *  });
      */
     constructor (options) {
         options = options || {};
@@ -217,7 +210,7 @@ var SearchEngine = class SearchEngine extends Control {
     /**
      * Overwrite OpenLayers setMap method
      *
-     * @param {ol.Map} map - Map.
+     * @param {Map} map - Map.
      */
     setMap (map) {
         if (!map) {
@@ -287,7 +280,7 @@ var SearchEngine = class SearchEngine extends Control {
     /**
      * Get container
      *
-     * @returns {DOMElement} container
+     * @returns {HTMLElement} container
      */
     getContainer () {
         return this.container;
@@ -413,45 +406,61 @@ var SearchEngine = class SearchEngine extends Control {
         this._uid = this.options.id || SelectorID.generate();
 
         this._showSearchEngineButton = null;
+        this._showSearchEngineAdvancedButton = null;
 
         // container de l'input de recherche
+        /** @private */
         this._inputSearchContainer = null;
 
         // container des reponses de l'autocompletion / du service de recherche
+        /** @private */
         this._autocompleteContainer = null;
+        /** @private */
         this._containerResultsLocation = null;
+        /** @private */
         this._containerResultsSuggest = null;
         // Radio buttons correspondants
+        /** @private */
         this._radioButtonLocation = null;
+        /** @private */
         this._radioButtonSuggest = null;
 
         // listes des reponses de l'autocompletion
+        /** @private */
         this._suggestedLocations = [];
 
         // container des reponses du geocodage
+        /** @private */
         this._geocodedContainer = null;
 
         // liste des reponses du geocodage
+        /** @private */
         this._geocodedLocations = [];
 
         // container des filtres du geocodage
+        /** @private */
         this._filterContainer = null;
 
         // ressource de geocodage selectionnée pour le geocodage avancé
+        /** @private */
         this._currentGeocodingCode = null;
 
         // localisant
+        /** @private */
         this._currentGeocodingLocation = null;
 
         // liste des filtres du geocodage pour le geocodage avancé
+        /** @private */
         this._advancedSearchFilters = {};
         this._initAdvancedSearchFilters();
 
         // liste des ressources du geocodage pour le geocodage avancé
+        /** @private */
         this._advancedSearchCodes = [];
         this._initAdvancedSearchCodes();
 
         // recherche par coordonnées : systemes de projections
+        /** @private */
         this._coordinateSearchSystems = [];
         if (this.options.displayButtonCoordinateSearch) {
             this._initCoordinateSearchSystems();
@@ -460,21 +469,26 @@ var SearchEngine = class SearchEngine extends Control {
         }
 
         // recherche par coordonnées : unités
+        /** @private */
         this._coordinateSearchUnits = [];
         if (this.options.displayButtonCoordinateSearch) {
             this._initCoordinateSearchUnits();
             this._currentCoordinateSearchUnits = this._coordinateSearchUnits[this._currentCoordinateSearchType][0].code; // decimal
         }
 
-
+        /** @private */
         this._coordinateSearchLngInput = null;
+        /** @private */
         this._coordinateSearchLatInput = null;
 
         // marker
+        /** @private */
         this._marker = null;
 
         // marker style or url
+        /** @private */
         var _markerStyle = this.options.markerStyle;
+        /** @private */
         var _markerUrl = this.options.markerUrl;
         if (_markerUrl) {
             this._markerUrl = _markerUrl;
@@ -483,14 +497,19 @@ var SearchEngine = class SearchEngine extends Control {
         }
 
         // marker display
+        /** @private */
         this._displayMarker = this.options.displayMarker;
 
         // popup
+        /** @private */
         this._popupContent = null;
+        /** @private */
         this._popupDiv = this._initPopupDiv();
+        /** @private */
         this._popupOverlay = null;
 
         // trigger geocode
+        /** @private */
         this._triggerHandler = null;
     }
 
@@ -746,13 +765,47 @@ var SearchEngine = class SearchEngine extends Control {
      * this method is called by this.initialize() and initialize popup div
      * (to display results information on marker click)
      *
-     * @return {Object} element - DOM element for popup
+     * @returns {Object} element - DOM element for popup
      * @private
      */
     _initPopupDiv () {
         var context = this;
         var element = document.createElement("div");
         element.className = "gp-feature-info-div gpf-widget-color";
+        // bouton de suppression de la pop-up / marker
+        // var span = document.createElement("span");
+        // span.className = "GPelementHidden gpf-visible"; // afficher en dsfr
+        // span.innerText = "Supprimer";
+        var remove = document.createElement("button");
+        remove.title = "Supprimer le marqueur";
+        remove.className = "gp-styling-button remove gpf-btn gpf-btn-icon-remove fr-btn--remove fr-btn fr-btn--tertiary-no-outline fr-mt-1v fr-mr-2v";
+        // on remove click : remove marker
+        remove.onclick = function () {
+            var map = context.getMap();
+            if (context._marker) {
+                map.removeOverlay(context._marker);
+                context._marker = null;
+            }
+            if (context._popupOverlay != null) {
+                context._popupOverlay.setPosition(undefined);
+            }
+            /**
+             * event triggered when i want a remove geolocation popup
+             *
+             * @event searchengine:geolocation:remove
+             * @property {Object} type - event
+             * @property {Object} target - instance SearchEngine
+             * @example
+             * SearchEngine.on("searchengine:geolocation:remove", function (e) {
+             *   console.log(e.coordinates);
+             * })
+             */
+            context.dispatchEvent({
+                type : "searchengine:geolocation:remove"
+            });
+        };
+        // remove.appendChild(span);
+
         // bouton de fermeture de la pop-up
         var closer = document.createElement("button");
         closer.title = "Fermer la pop-up";
@@ -768,8 +821,9 @@ var SearchEngine = class SearchEngine extends Control {
         this._popupContent = document.createElement("div");
         this._popupContent.className = "gp-features-content-div";
         this._popupContent.style["min-width"] = "200px";
-        element.appendChild(this._popupContent);
         element.appendChild(closer);
+        element.appendChild(this._popupContent);
+        element.appendChild(remove);
 
         return element;
     }
@@ -781,7 +835,7 @@ var SearchEngine = class SearchEngine extends Control {
     /**
      * Create control main container
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      *
      * @private
      */
@@ -864,19 +918,19 @@ var SearchEngine = class SearchEngine extends Control {
             div.appendChild(labelUnits);
             div.appendChild(units);
 
-            div = this._containerCoordinateLng = this.__createCoordinateSearchDivElement();
-            coordinateForm.appendChild(div);
-            var coordinateLng = this._setCoordinateSearchLngLabelElement(this._currentCoordinateSearchType);
-            var coordinateInputLng = this._coordinateSearchLngInput = this._setCoordinateSearchLngInputElement(this._currentCoordinateSearchUnits);
-            div.appendChild(coordinateLng);
-            div.appendChild(coordinateInputLng);
-
             div = this._containerCoordinateLat = this.__createCoordinateSearchDivElement();
             coordinateForm.appendChild(div);
             var coordinateLat = this._setCoordinateSearchLatLabelElement(this._currentCoordinateSearchType);
             var coordinateInputLat = this._coordinateSearchLatInput = this._setCoordinateSearchLatInputElement(this._currentCoordinateSearchUnits);
             div.appendChild(coordinateLat);
             div.appendChild(coordinateInputLat);
+
+            div = this._containerCoordinateLng = this.__createCoordinateSearchDivElement();
+            coordinateForm.appendChild(div);
+            var coordinateLng = this._setCoordinateSearchLngLabelElement(this._currentCoordinateSearchType);
+            var coordinateInputLng = this._coordinateSearchLngInput = this._setCoordinateSearchLngInputElement(this._currentCoordinateSearchUnits);
+            div.appendChild(coordinateLng);
+            div.appendChild(coordinateInputLng);
 
             var submit = this._createCoordinateSearchSubmitElement();
             coordinateForm.appendChild(submit);
@@ -891,7 +945,7 @@ var SearchEngine = class SearchEngine extends Control {
         }
 
         if (this.options.displayButtonAdvancedSearch) {
-            var advancedShow = this._createShowAdvancedSearchElement();
+            var advancedShow = this._showSearchEngineAdvancedButton = this._createShowAdvancedSearchElement();
             buttonsContainer.appendChild(advancedShow);
 
             // INFO je decompose les appels car j'ai besoin de recuperer le container
@@ -947,7 +1001,7 @@ var SearchEngine = class SearchEngine extends Control {
      *
      * @param {String} code - resource geocoding name
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      * @private
      */
     _setFilter (code) {
@@ -1342,7 +1396,7 @@ var SearchEngine = class SearchEngine extends Control {
                 markerDiv.addEventListener(
                     "click",
                     function () {
-                        context._onResultMarkerSelect(info);
+                        context._onResultMarkerSelect(info, position);
                     }
                 );
             } else if (markerDiv.attachEvent) {
@@ -1350,7 +1404,7 @@ var SearchEngine = class SearchEngine extends Control {
                 markerDiv.attachEvent(
                     "onclick",
                     function () {
-                        context._onResultMarkerSelect(info);
+                        context._onResultMarkerSelect(info, position);
                     }
                 );
             }
@@ -1452,10 +1506,18 @@ var SearchEngine = class SearchEngine extends Control {
      * and sets a popup with marker information
      *
      * @param {Object} information - location information
+     * @param {Array} position - [lon, lat] of marker
      * @private
      */
-    _onResultMarkerSelect (information) {
+    _onResultMarkerSelect (information, position = null) {
         var map = this.getMap();
+
+        if (position) {
+            map.getView().animate({
+                center : position,
+                duration : 250,
+            });
+        }
 
         var popupContent = "";
         if (typeof information !== "string") {
@@ -1505,6 +1567,7 @@ var SearchEngine = class SearchEngine extends Control {
      * @param {String} system.crs - Proj4 crs alias (from proj4 defs) e.g. "EPSG:4326"
      * @param {String} [system.label] - CRS label to be displayed in control. Default is system.crs alias
      * @param {String} [system.type] - CRS units type for coordinates conversion (one of control options.units). Default is "Metric"
+     * @private
      */
     _setSystem (system) {
         if (typeof system !== "object") {
@@ -1554,7 +1617,7 @@ var SearchEngine = class SearchEngine extends Control {
      * (cf. this._createShowSearchEnginePictoElement), and it cleans the component
      * when it's closed.
      *
-     * @param { event } e évènement associé au clic
+     * @param { Event } e évènement associé au clic
      * @private
      */
     onShowSearchEngineClick (e) {
@@ -1617,7 +1680,7 @@ var SearchEngine = class SearchEngine extends Control {
                 }
                 this._setPosition(coordinates, 15); // FIXME zoom fixe !
                 if (this._displayMarker) {
-                    var markerInfo = "<h6> Ma position </h6> longitude : " + coordinates_4326[0] + "<br/> latitude : " + coordinates_4326[1];
+                    var markerInfo = "<h6> Ma position </h6> latitude : " + coordinates_4326[1] + "<br/> longitude : " + coordinates_4326[0];
                     this._setMarker(coordinates, markerInfo);
                 }
                 /**
@@ -1678,7 +1741,7 @@ var SearchEngine = class SearchEngine extends Control {
         }
         this._setPosition(coordinates, 10); // FIXME zoom fixe !
         if (this._displayMarker) {
-            this._setMarker(coordinates, "sans information");
+            this._setMarker(coordinates, lat + ", " + lng);
         }
 
         /**
@@ -1699,6 +1762,12 @@ var SearchEngine = class SearchEngine extends Control {
         });
     }
 
+    /**
+     * ...
+     * @param {*} dom - ...
+     * @private
+     * @returns {Object} ...
+     */
     _getCoordinateSearchDMS (dom) {
         if (dom && dom.nodeName === "DIV") {
             var nodes = dom.querySelectorAll("[name]");
@@ -1736,7 +1805,7 @@ var SearchEngine = class SearchEngine extends Control {
      * this value is passed as a parameter for the service autocomplete (text).
      * the results of the request are displayed into a drop down menu.
      *
-     * @param {Object} e - HTMLElement
+     * @param {Event} e - HTMLElement
      * @private
      */
     onAutoCompleteSearchText (e) {
@@ -1862,17 +1931,17 @@ var SearchEngine = class SearchEngine extends Control {
             // appel du service (cf. abonnement : Search.target.addEventListener("suggest"))
             Search.suggest(value);
         }
-
+        var context = this;
         var map = this.getMap();
-        map.on(
-            "click",
-            this._hideSuggestedLocation,
-            this
+        map.once(
+            "click", function () {
+                context._hideSuggestedLocation();
+            }
         );
-        map.on(
-            "pointerdrag",
-            this._hideSuggestedLocation,
-            this
+        map.once(
+            "pointerdrag", function () {
+                context._hideSuggestedLocation();
+            }
         );
     }
 
@@ -1925,7 +1994,7 @@ var SearchEngine = class SearchEngine extends Control {
      * (cf. this._createAutoCompleteListElement), and it selects the location.
      * this location displays a marker on the map.
      *
-     * @param {Object} e - HTMLElement
+     * @param {Event} e - HTMLElement
      * @private
      */
     onAutoCompletedResultsItemClick (e) {
@@ -1975,6 +2044,22 @@ var SearchEngine = class SearchEngine extends Control {
         if (this._displayMarker) {
             this._setMarker(position, info);
         }
+
+        var container = document.getElementById(this._addUID("GPautocompleteResults"));
+        // si aucun container !?
+        if (!container) {
+            return;
+        }
+        // on reinitialise l'ancienne proposition courrante d'autocompletion
+        var list = container.getElementsByClassName("GPautoCompleteProposal gpf-panel__items gpf-panel__items_searchengine");
+        for (let index = 0; index < list.length; index++) {
+            const element = list[index];
+            element.className = "GPautoCompleteProposal gpf-panel__items gpf-panel__items_searchengine";
+        }
+        // et, on definie la nouvelle selection de proposition d'autocompletion
+        var current = list[idx];
+        current.className = "GPautoCompleteProposal gpf-panel__items gpf-panel__items_searchengine current";
+
         /**
          * event triggered when an element of the results is clicked for autocompletion
          *
@@ -1998,7 +2083,7 @@ var SearchEngine = class SearchEngine extends Control {
      * (cf. this.), and it selects the suggest.
      * this suggest call an event to added layer on the map.
      *
-     * @param {Object} e - HTMLElement
+     * @param {Event} e - HTMLElement
      * @private
      */
     onSearchedResultsItemClick (e) {
@@ -2084,7 +2169,7 @@ var SearchEngine = class SearchEngine extends Control {
      * this value is passed as a parameter for the service geocoding.
      * the results of the request are displayed into a window.
      *
-     * @param {Object} e - HTMLElement
+     * @param {Event} e - HTMLElement
      * @private
      */
     onGeocodingSearchSubmit (e) {
@@ -2122,7 +2207,7 @@ var SearchEngine = class SearchEngine extends Control {
      * (cf. this._createGeocodeResultsListElement), and it selects the location.
      * this location displays a marker on the map.
      *
-     * @param {Object} e - HTMLElement
+     * @param {Event} e - HTMLElement
      * @private
      */
     onGeocodedResultsItemClick (e) {
@@ -2169,11 +2254,15 @@ var SearchEngine = class SearchEngine extends Control {
          * SearchEngine.on("searchengine:geocode:click", function (e) {
          *   console.log(e.location);
          * })
-         */
+        */
         this.dispatchEvent({
             type : "searchengine:geocode:click",
             location : this._geocodedLocations[idx]
         });
+        // on nettoie !
+        this._clearSuggestedLocation();
+        // on ferme le panneau de recherche avancée
+        this._showSearchEngineAdvancedButton.click();
     }
 
     // ################################################################### //
@@ -2186,7 +2275,7 @@ var SearchEngine = class SearchEngine extends Control {
      * option selected.
      * this value is passed as a parameter to create the attributs container.
      *
-     * @param {Object} e - HTMLElement
+     * @param {Event} e - HTMLElement
      * @private
      */
     onGeocodingAdvancedSearchCodeChange (e) {
@@ -2215,7 +2304,7 @@ var SearchEngine = class SearchEngine extends Control {
      * this value is passed as a parameter for the service geocoding.
      * the results of the request are displayed into a window.
      *
-     * @param {Object} e - HTMLElement
+     * @param {Event} e - HTMLElement
      * @param {Array} data - [{key: ..., value: ...}]
      * @private
      */
@@ -2482,6 +2571,9 @@ var SearchEngine = class SearchEngine extends Control {
         this._coordinateSearchLatInput.value = "";
     }
 
+    /**
+     * @private
+     */
     _updateCoordinateSearchElements () {
         var lbl = this._setCoordinateSearchLngLabelElement(this._currentCoordinateSearchType);
         var input = this._coordinateSearchLngInput = this._setCoordinateSearchLngInputElement(this._currentCoordinateSearchUnits);

@@ -15,15 +15,15 @@ __DATE__
 
 * ✨ [Added]
 
-  - searchEngine : ajout d'une option pour afficher la recherche par coordonnées dans la recherche avancée (#363)
-  - isocurve : ajout d'un panel affichant les informations du calcul d'isochrone (#364)
-  - layerSwitcher : bouton permettant de passer une couche en noir et blanc (#367) pour raster et (#370) pour tuiles vecteur en mode DSFR
-  - layerSwitcher : bouton permettant de passer une couche en noir et blanc en mode classique (#371)
+  - Territories : Ajout d'un menu option pour permettre de charger une configuration des territoires (#408)
+  - LayerSwitcher : Possibilité d'ajouter des outils externes (#418)
+  - LayerSwitcher : Option pour verrouiller une couche (#414)
+  - LayerSwitcher : Tooltips avancés en HTML sur le survol des couches (#420)
 
 * 🔨 [Changed]
 
-  - route: amélioration de la lisibilité du panel de résultats de l'itinéraire (#362)
-  - elevationPath : changement du style des résultats textuels en mode DSFR (#373)
+  - Compute : réduction du nombre de chiffres significatifs des coordonnées envoyés pour les requêtes itinéraires et isochrones (#411)
+  - Zoom : changement des icones de zoom en mode DSFR (#412)
 
 * 🔥 [Deprecated]
 
@@ -31,9 +31,11 @@ __DATE__
 
 * 🐛 [Fixed]
 
-  - export : le menu d'export des calculs n'apparait qu'une fois le calcul réalisé (#364)
-  - catalog : verification que la configuration des couches est disponible (#369)
-
+  - MousePosition : Edition des coordonnées (#407 #416)
+  - Layerswitcher : Menu contextuel en mode mobile snas items vides (#417)
+  - ControlList et ZoomOut : Tooltips cassées (#419)
+  - Coordinates : homogénéisation de l'affichage des coordonnées dans l'ordre lat,lon (#421)
+   
 * 🔒 [Security]
 
 

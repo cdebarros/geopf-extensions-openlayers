@@ -46,6 +46,7 @@ export { default as Catalog } from "./packages/Controls/Catalog/Catalog";
 export { default as Territories } from "./packages/Controls/Territories/Territories";
 export { default as ControlList } from "./packages/Controls/ControlList/ControlList";
 export { default as ContextMenu } from "./packages/Controls/ContextMenu/ContextMenu";
+export { default as Reporting } from "./packages/Controls/Reporting/Reporting";
 // Carto SP fork
 export { default as WfsFilter } from "./packages/Controls/CartospWfsFilter/WfsFilter";
 export { default as Indicator } from "./packages/Controls/CartospIndicator/Indicator";
@@ -73,6 +74,7 @@ export { default as ProxyUtils } from "./packages/Utils/ProxyUtils";
 export { default as ColorUtils  } from "./packages/Utils/ColorUtils";
 export { default as MathUtils } from "./packages/Utils/MathUtils";
 export { default as LoggerUtils } from "./packages/Utils/LoggerByDefault";
+export { default as JsonValidatorUtils } from "./packages/Utils/JsonValidatorUtils";
 
 // projections
 export { default as CRS } from "./packages/CRS/CRS";

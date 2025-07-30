@@ -4,7 +4,11 @@ import "../../CSS/Controls/Territories/GPFterritories.css";
 // import OpenLayers
 import Control from "../Control";
 import Widget from "../Widget";
-import { transformExtent as olTransformExtentProj } from "ol/proj";
+import Map from "ol/Map";
+import { 
+    transformExtent as olTransformExtentProj,
+    transform as olTransformProj
+} from "ol/proj";
 
 // import local
 import Utils from "../../Utils/Helper";
@@ -20,43 +24,54 @@ import TerritoriesDOM from "./TerritoriesDOM";
 var logger = Logger.getLogger("territories");
 
 /**
+ * @typedef {Object} TerritoriesOptions
+ * @property {boolean} [collapsed=true] - Définit si le widget est replié au chargement.
+ * @property {boolean} [draggable=false] - Permet de déplacer le panneau du widget.
+ * @property {boolean} [panel=true] - Affiche un en-tête (header) dans le panneau.
+ * @property {boolean} [auto=false] - Charge automatiquement la liste par défaut des territoires.
+ * @property {boolean} [thumbnail=false] - Affiche une imagette pour chaque territoire.
+ * @property {boolean} [reduce=false] - Affiche les tuiles en mode réduit (nom uniquement).
+ * @property {number} [tiles=3] - Nombre de tuiles affichées (0 = toutes).
+ * @property {Array<Object>} [territories=[]] - Liste personnalisée des territoires à afficher.
+ * @property {Object} [upload] - Options pour l’import de configuration.
+ * @property {boolean} [upload.active=false] - Active le menu d’import de fichier.
+ * @property {string} [upload.title="Ajouter un fichier de configuration"] - Titre du menu d’import.
+ * @property {string} [upload.description=""] - Description du menu d’import.
+ * @property {string} [title="Sélectionner un territoire"] - Titre affiché dans le panneau.
+ * @property {string} [position] - Position CSS du widget sur la carte.
+ * @property {boolean} [gutter] - Ajoute ou retire l’espace autour du panneau.
+ * @property {string|number} [id] - Identifiant unique du widget.
+ */
+
+/**
  * @classdesc
  *
  * Territories map widget
  *
- * @constructor
  * @alias ol.control.Territories
- * @type {ol.control.Territories}
- * @extends {ol.control.Control}
- * @param {Object} options - options for function call.
- *
- * @fires territories:change
- * @example
- * var territories = new ol.control.Territories({
- *   collapsed: true,
- *   panel: true,
- *   auto: true
- * });
- * map.addControl(territories);
- *
- * or/and
- *
- * var territories = new ol.control.Territories({});
- * territories.setTerritory({id: "MTQ", title: "Martinique", description: "", bbox: [], thumbnail: "data:image/png;base64,..."});
- * territories.setTerritory({id: "GLP", title: "Guadeloupe", description: "", bbox: [], thumbnail: "http://..."});
- * map.addControl(territories);
- */
-var Territories = class Territories extends Control {
-
+ * @module Territories
+*/
+class Territories extends Control {
+    
     /**
-     * See {@link ol.control.Territories}
-     * @module Territories
-     * @alias module:~controls/Territories
-     * @param {Object} [options] - options
+     * @constructor
+     * @param {TerritoriesOptions} options - options for function call.
+     *
+     * @fires territories:change
      * @example
-     * import Territories from "gpf-ext-ol/controls/Territories"
-     * ou
-     * import { Territories } from "gpf-ext-ol"
+     * var territories = new ol.control.Territories({
+     *   collapsed: true,
+     *   panel: true,
+     *   auto: true
+     * });
+     * map.addControl(territories);
+     *
+     * or/and
+     *
+     * var territories = new ol.control.Territories({});
+     * territories.setTerritory({id: "MTQ", title: "Martinique", description: "", bbox: [], thumbnail: "data:image/png;base64,..."});
+     * territories.setTerritory({id: "GLP", title: "Guadeloupe", description: "", bbox: [], thumbnail: "http://..."});
+     * map.addControl(territories);
      */
     constructor (options) {
         options = options || {};
@@ -91,7 +106,7 @@ var Territories = class Territories extends Control {
     /**
      * Overwrite OpenLayers setMap method
      *
-     * @param {ol.Map} map - Map.
+     * @param {Map} map - Map.
      */
     setMap (map) {
         if (map) {
@@ -108,12 +123,11 @@ var Territories = class Territories extends Control {
                 this.buttonTerritoriesShow.setAttribute("aria-pressed", true);
             }
 
-            // Ajout des territoires par defaut
-            if (this.auto) {
-                for (let index = 0; index < TerritoriesJson.length; index++) {
-                    const territory = TerritoriesJson[index];
-                    this.setTerritory(territory);
-                }
+            // Ajout des territoires par defaut ou customisés
+            var territories = (this.auto) ? TerritoriesJson : this.options.territories;
+            for (let index = 0; index < territories.length; index++) {
+                const territory = territories[index];
+                this.setTerritory(territory);
             }
         } else {
             // some stuff when remove widget
@@ -170,6 +184,18 @@ var Territories = class Territories extends Control {
     }
 
     /**
+     * Load a new configuration
+     * 
+     * @param {Object} config - file config
+     */
+    setTerritories (config) {
+        for (let j = 0; j < config.length; j++) {
+            const element = config[j];
+            this.setTerritory(element);
+        }
+    }
+
+    /**
      * Remove a territory
      *
      * @param {String} territory - territory id (FRA, MTQ, ...)
@@ -183,7 +209,7 @@ var Territories = class Territories extends Control {
         if (territory) {
             for (let i = 0; i < this.territories.length; i++) {
                 const o = this.territories[i];
-                if (o.data.id === territory) {
+                if (o.data.id === territory.data.id) {
                     this.territories[i].dom.remove();
                     this.territories.splice(i, 1);
                     found = true;
@@ -192,6 +218,17 @@ var Territories = class Territories extends Control {
             }
         }
         return found;
+    }
+
+    /**
+     * Remove all territories
+     */
+    removeTerritories () {
+        for (let i = 0; i < this.territories.length; i++) {
+            const territory = this.territories[i];
+            territory.dom.remove();
+        }
+        this.territories = [];
     }
 
     /**
@@ -234,7 +271,7 @@ var Territories = class Territories extends Control {
     /**
      * Get container
      *
-     * @returns {DOMElement} container
+     * @returns {HTMLElement} container
      */
     getContainer () {
         return this.container;
@@ -258,49 +295,79 @@ var Territories = class Territories extends Control {
             collapsed : true,
             draggable : false,
             panel : true, // titre
+            upload : {
+                active : false,
+                title : "Ajouter un fichier de configuration",
+                description : ""
+            }, // menu du upload
             title : "Sélectionner un territoire",
             auto : false, // chargement auto des territoires par defaut
             thumbnail : false, // imagette des territoires
             reduce : false, // tuiles reduites par defaut
             tiles : 3, // nombre de tuiles affichables, 0 = toutes !
-            territories : [] // TODO à spécifier...
+            territories : []
         };
 
         // merge with user options
+        var uploadOpts = Utils.assign(this.options.upload, options.upload);
         Utils.assign(this.options, options);
+        Utils.assign(this.options.upload, uploadOpts);
 
-        /** {Boolean} specify if control is collapsed (true) or not (false) */
+        /** 
+         * @type {Boolean} 
+         * specify if control is collapsed (true) or not (false) */
         this.collapsed = this.options.collapsed;
 
-        /** {Boolean} specify if control is draggable (true) or not (false) */
+        /** 
+         * @type {Boolean} 
+         * specify if control is draggable (true) or not (false) 
+         * */
         this.draggable = this.options.draggable;
 
-        /** {Boolean} specify if we load the list of territories by default */
+        /** 
+         * specify if we load the list of territories by default
+         * @type {Boolean} */
         this.auto = this.options.auto;
         /**
-         * {Array} list of object territories
+         * list of object territories
+         * @type {Array} 
          * @example
          * {
          *   dom : { HTMLelment },
          *   data : {
-         *     id: "MTQ", title: "Martinique", description: "", bbox: [minx, miny, maxx, maxy], thumbnail: "data:image/png;base64,..."
+         *     id: "MTQ",
+         *     title: "Martinique",
+         *     description: "", 
+         *     bbox: [minx, miny, maxx, maxy], 
+         *     thumbnail: "data:image/png;base64,..."
          *   }
          * }
          */
         this.territories = [];
 
-        this.buttonTerritoriesShow = null;
-        this.panelTerritoriesContainer = null;
-        this.panelTerritoriesHeaderContainer = null; // usefull for the dragNdrop
-        this.buttonTerritoriesClose = null;
+        /** 
+         * @type {Boolean} 
+         * specify if a list of object territories must be appended or replaced */
+        this.append = false;
 
+        /** @private */
+        this.buttonTerritoriesShow = null;
+        /** @private */
+        this.panelTerritoriesContainer = null;
+        /** @private */
+        this.panelTerritoriesHeaderContainer = null; // usefull for the dragNdrop
+        /** @private */
+        this.buttonTerritoriesClose = null;
+        /** @private */
+        this.containerTerritoriesOptions = null;
+        /** @private */
         this.panelTerritoriesEntriesContainer = null;
     }
 
     /**
      * Create control main container (DOM initialize)
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      * @private
      */
     initContainer () {
@@ -316,7 +383,8 @@ var Territories = class Territories extends Control {
         territoriesPanel.classList.add("tiles-" + this.options.tiles);
         var territoriesPanelDiv = this._createTerritoriesPanelDivElement();
         territoriesPanel.appendChild(territoriesPanelDiv);
-
+        
+        
         // container for the custom code
         var territoriesEntriesDiv = this.panelTerritoriesEntriesContainer = this._createTerritoriesElement();
         territoriesEntriesDiv.classList.add("tiles-direction");
@@ -330,8 +398,7 @@ var Territories = class Territories extends Control {
             territoriesEntriesDiv.classList.add("tiles-icon");
         }
         territoriesPanel.appendChild(territoriesEntriesDiv);
-
-
+        
         // header ?
         if (this.options.panel) {
             var territoriesPanelHeader = this.panelTerritoriesHeaderContainer = this._createTerritoriesPanelHeaderElement();
@@ -341,6 +408,11 @@ var Territories = class Territories extends Control {
             // title
             var territoriesPanelTitle = this._createTerritoriesPanelTitleElement(this.options.title);
             territoriesPanelHeader.appendChild(territoriesPanelTitle);
+            // options
+            if (this.options.upload && this.options.upload.active) {
+                var territoriesPanelOptions = this.containerTerritoriesOptions = this._createTerritoriesPanelOptionsElement(this.options.upload.title, this.options.upload.description);
+                territoriesPanelHeader.appendChild(territoriesPanelOptions);
+            }
             // close picto
             var territoriesCloseBtn = this.buttonTerritoriesClose = this._createTerritoriesPanelCloseElement();
             territoriesPanelHeader.appendChild(territoriesCloseBtn);
@@ -354,13 +426,22 @@ var Territories = class Territories extends Control {
         return container;
     }
 
+    /**
+     * Close panel option
+     * @private
+     */
+    closePanelUpLoad () {
+        this.containerTerritoriesOptions.children[0].click();
+    }
+
     // ################################################################### //
     // ######################## event dom ################################ //
     // ################################################################### //
 
     /**
      * ...
-     * @param {*} e - ...
+     * @param {Event} e - ...
+     * @private
      */
     onShowTerritoriesClick (e) {
         if (e.target.ariaPressed === "true") {
@@ -372,7 +453,8 @@ var Territories = class Territories extends Control {
 
     /**
      * ...
-     * @param {*} e - ...
+     * @param {Event} e - ...
+     * @private
      */
     onCloseTerritoriesClick (e) {
         logger.trace(e);
@@ -380,24 +462,34 @@ var Territories = class Territories extends Control {
 
     /**
      * ...
-     * @param {*} e - ...
+     * @param {Event} e - ...
      * @param {*} id - ...
-     * @todo ...
+     * @private
      */
     onImageTerritoriesClick (e, id) {
         logger.trace(e, id);
         var territory = this.territories.find(e => e.data.id === id);
         if (territory) {
             var zoom = territory.data.zoom;
-            var bbox = territory.data.bbox || []; // left, bottom, right, top
-            if (!bbox.length) {
+            var bbox = territory.data.bbox; // [left, bottom, right, top]
+            var point = territory.data.point;
+            if (bbox && !bbox.length) {
+                return;
+            }
+            if (!point && !bbox) {
                 return;
             }
 
             var map = this.getMap();
             var proj = map.getView().getProjection().getCode();
-            var extent = olTransformExtentProj(bbox, "EPSG:4326", proj);
-            map.getView().fit(extent, map.getSize());
+            if (bbox) {
+                var extent = olTransformExtentProj(bbox, "EPSG:4326", proj);
+                map.getView().fit(extent, map.getSize());
+            }
+            if (point) {
+                var coord = olTransformProj(point, "EPSG:4326", proj);
+                map.getView().setCenter(coord);
+            }
             if (zoom) {
                 map.getView().setZoom(zoom);
             }
@@ -419,6 +511,93 @@ var Territories = class Territories extends Control {
                 territory : territory
             });
         }
+    }
+
+    /**
+     * ...
+     * @param {Event} e - ...
+     * @private
+     */
+    onUploadFileClick (e) {
+        var file = e.target.files[0];
+        var target = e.target;
+        if (!file) {
+            logger.warn("Missing file to upload !");
+            return;
+        }
+        var fReader = new FileReader();
+         
+        // Définition des fonctions de callbacks associées au reader
+        var self = this;
+        /** 
+         * on readAsText error 
+         * @param {*} e  - ...
+         * @private
+         */
+        fReader.onerror = (e) => {
+            logger.log("onerror");
+        };
+        /** on readAsText progress 
+         * @param {*} e  - ...
+         * @private
+         */
+        fReader.onprogress = (e) => {
+            logger.log("onprogress");
+        };
+        /** on load start 
+         * @param {*} e  - ...
+         * @private
+         */
+        fReader.onloadstart = (e) => {
+            logger.log("onloadstart");
+        };
+        /** on readAsText abort 
+         * @param {*} e  - ...
+         * @private
+         */
+        fReader.onabort = (e) => {
+            logger.log("onabort");
+        };
+        /** on readAsText loadend 
+         * @param {*} e  - ...
+         * @private
+         */
+        fReader.onloadend = (e) => {
+            logger.log("onloadend : ", e);
+        };
+        /** on readAsText load 
+         * @param {*} e  - ...
+         * @private
+         */
+        fReader.onload = (e) => {
+            logger.log("file content : ", e.target.result);
+
+            // on ferme le panneau
+            self.closePanelUpLoad(target);
+            // on convertie string -> json
+            var config = JSON.parse(e.target.result);
+            if (!self.append) {
+                // on nettoie l'ancienne configuration
+                self.removeTerritories();
+            }
+            // et, on en ajoute une autre
+            self.setTerritories(config);
+        };
+
+        // Lecture du fichier chargé à l'aide de fileReader
+        fReader.readAsText(file);
+    }
+
+    /**
+     * ...
+     * @param {Event} e - ...
+     * @private
+     */
+    onUploadToggleClick (e) {
+        // INFO
+        // la configuration des territoires doit elle être ajoutée
+        // à la liste courrante ou remplacée ?
+        this.append = e.target.checked;
     }
 
 };

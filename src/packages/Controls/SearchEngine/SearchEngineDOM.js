@@ -17,7 +17,7 @@ var SearchEngineDOM = {
     /**
      * Main container (DOM)
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createMainContainerElement : function () {
         var container = document.createElement("div");
@@ -32,7 +32,7 @@ var SearchEngineDOM = {
 
     /**
      * SElement with picto and search input
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createSearchDivElement : function () {
         var searchDiv = document.createElement("div");
@@ -43,7 +43,7 @@ var SearchEngineDOM = {
     /**
      * Show search engine
      * @param {Boolean} collapsible - ...
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createShowSearchEnginePictoElement : function (collapsible) {
         // contexte d'execution
@@ -131,7 +131,7 @@ var SearchEngineDOM = {
      * Simple search input
      * @param {String} placeholder - placeholder
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createSearchInputElement : function (placeholder) {
         // contexte d'execution
@@ -185,11 +185,18 @@ var SearchEngineDOM = {
             // on récupère la valeur de saisie pour requête sur le service d'autocompletion
             self.onAutoCompleteSearchText(e);
         });
-
-        // FIXME ce code interfere avec le click sur la liste des suggested locations !
-        // input.addEventListener("blur", function (e) {
-        //     document.getElementById(self._addUID("GPautoCompleteList")).style.display = "none";
-        // });
+        var lastFocusedElement = null;
+        document.addEventListener("pointerdown", function (e) {
+            // Save the last focused element
+            lastFocusedElement = e.target;
+        });
+        input.addEventListener("blur", function (e) {
+            // si le clic n'est pas sur une proposition de la liste d'autocompletion, on cache la liste
+            if (!lastFocusedElement.classList.contains("GPautoCompleteProposal")) {
+                document.getElementById(self._addUID("GPautoCompleteList")).classList.replace("GPelementVisible", "GPelementHidden");
+                document.getElementById(self._addUID("GPautoCompleteList")).classList.replace("gpf-visible", "gpf-hidden");
+            }
+        });
 
         input.addEventListener("keydown", function (e) {
             // FIXME
@@ -405,7 +412,7 @@ var SearchEngineDOM = {
     /**
      * Show advanced search panel
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createShowAdvancedSearchElement : function () {
         // contexte d'execution
@@ -453,9 +460,15 @@ var SearchEngineDOM = {
             document.getElementById(self._addUID("GPgeocodeResultsList")).classList.replace("GPelementVisible", "GPelementHidden");
             document.getElementById(self._addUID("GPgeocodeResultsList")).classList.replace("gpf-visible", "gpf-hidden");
 
-            document.getElementById(self._addUID("GPcoordinateSearchPanel")).classList.replace("GPelementVisible", "GPelementHidden");
-            document.getElementById(self._addUID("GPcoordinateSearchPanel")).classList.replace("gpf-visible", "gpf-hidden");
-            document.getElementById(self._addUID("GPshowSearchByCoordinate")).setAttribute("aria-pressed", false);
+            var panelCoordinate = document.getElementById(self._addUID("GPcoordinateSearchPanel"));
+            if (panelCoordinate) {
+                panelCoordinate.classList.replace("GPelementVisible", "GPelementHidden");
+                panelCoordinate.classList.replace("gpf-visible", "gpf-hidden");
+            }
+            var btnCoordinate = document.getElementById(self._addUID("GPshowSearchByCoordinate"));
+            if (btnCoordinate) {
+                btnCoordinate.setAttribute("aria-pressed", false);
+            }
         });
 
         return button;
@@ -464,7 +477,7 @@ var SearchEngineDOM = {
     /**
      * Show geolocate button
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createShowGeolocateElement : function () {
         // contexte d'execution
@@ -493,7 +506,7 @@ var SearchEngineDOM = {
     /**
      * Show search by coordinate button
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createShowSearchByCoordinateElement : function () {
         // contexte d'execution
@@ -556,7 +569,7 @@ var SearchEngineDOM = {
      * don't call this._createAdvancedSearchPanelHeaderElement
      * don't call this._createAdvancedSearchPanelFormElement
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAdvancedSearchPanelElement : function () {
         var div = document.createElement("dialog");
@@ -583,7 +596,7 @@ var SearchEngineDOM = {
      * FIXME
      * don't call this._createGeocodeResultsListElement
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createGeocodeResultsElement : function () {
         var div = document.createElement("dialog");
@@ -611,7 +624,7 @@ var SearchEngineDOM = {
      * FIXME
      * don't call this._createAutoCompleteListElement
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAutoCompleteElement : function () {
         var div = document.createElement("div");
@@ -632,7 +645,7 @@ var SearchEngineDOM = {
      * don't call this._createCoordinateSearchPanelHeaderElement
      * don't call this._createCoordinateSearchPanelFormElement
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createCoordinateSearchPanelElement : function () {
         var div = document.createElement("dialog");
@@ -660,7 +673,7 @@ var SearchEngineDOM = {
     /**
      * Autocompletion results list.
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAutoCompleteListElement : function () {
         // contexte d'execution
@@ -792,7 +805,7 @@ var SearchEngineDOM = {
     // ################################################################### //
 
     /**
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAdvancedSearchPanelHeaderElement : function () {
         // contexte d'execution
@@ -864,7 +877,7 @@ var SearchEngineDOM = {
      * @param {Object[]} advancedSearchCodes - codes
      * @param {Boolean} coordinateSearchInAdvancedSearch - coords in advanced search?
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAdvancedSearchPanelFormElement : function (advancedSearchCodes, coordinateSearchInAdvancedSearch) {
         // contexte d'execution
@@ -925,7 +938,7 @@ var SearchEngineDOM = {
     /**
      * @param {Object[]} codes - codes
      * @param {Boolean} coordinateSearchInAdvancedSearch - coords in advanced search?
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAdvancedSearchFormCodeElement : function (codes, coordinateSearchInAdvancedSearch) {
         // contexte d'execution
@@ -975,7 +988,7 @@ var SearchEngineDOM = {
     },
 
     /**
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAdvancedSearchFormInputElement : function () {
         var input = document.createElement("input");
@@ -990,7 +1003,7 @@ var SearchEngineDOM = {
     /**
      * Filters geocoding.
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAdvancedSearchFormFiltersElement : function () {
         var container = document.createElement("div");
@@ -1005,7 +1018,7 @@ var SearchEngineDOM = {
      * @param {String} code - code of geocoding resource
      * @param {Boolean} display - display
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAdvancedSearchFiltersTableElement : function (code, display) {
         var container = document.createElement("div");
@@ -1029,7 +1042,7 @@ var SearchEngineDOM = {
      * @param {String} filterAttributes.description - description
      * @param {String} filterAttributes.value - value
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createAdvancedSearchFiltersAttributElement : function (filterAttributes) {
         // INFORMATION
@@ -1112,7 +1125,7 @@ var SearchEngineDOM = {
     // ################################################################### //
 
     /**
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createGeocodeResultsHeaderElement : function () {
         var self = this;
@@ -1156,7 +1169,7 @@ var SearchEngineDOM = {
     /**
      * Geocoding results list.
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      */
     _createGeocodeResultsListElement : function () {
         // contexte d'execution
@@ -1372,7 +1385,7 @@ var SearchEngineDOM = {
     /**
      * update Label
      * @param {String} type - Geographical or Metric
-     * @returns {DOMElement} label
+     * @returns {HTMLElement} label
      */
     _setCoordinateSearchLngLabelElement (type) {
         // type geographical ou metric
@@ -1390,7 +1403,7 @@ var SearchEngineDOM = {
     /**
      * update Input coordinate
      * @param {String} code - ex. DMS : degrés sexadecimaux
-     * @returns {DOMElement} input
+     * @returns {HTMLElement} input
      */
     _setCoordinateSearchLngInputElement (code) {
         // code DMS ou other
@@ -1413,7 +1426,6 @@ var SearchEngineDOM = {
                 input.title += " géographiques (en sexa)";
                 input.className = "GPelementHidden gpf-hidden";
                 return this._setCoordinateSearchLngDMSElement();
-                break;
             case "DEC":
                 input.title += " géographiques (en decimal)";
                 input.min = "-180";
@@ -1480,7 +1492,7 @@ var SearchEngineDOM = {
     /**
      * update Label
      * @param {String} type - Geographical or Metric
-     * @returns {DOMElement} label
+     * @returns {HTMLElement} label
      */
     _setCoordinateSearchLatLabelElement (type) {
         // type geographical ou metric
@@ -1498,7 +1510,7 @@ var SearchEngineDOM = {
     /**
      * update Input coordinate
      * @param {String} code - ex. DMS : degrés sexadecimaux
-     * @returns {DOMElement} input
+     * @returns {HTMLElement} input
      */
     _setCoordinateSearchLatInputElement (code) {
         // code DMS ou other
@@ -1521,7 +1533,6 @@ var SearchEngineDOM = {
                 input.title += " géographiques (en sexa)";
                 input.className = "GPelementHidden gpf-hidden";
                 return this._setCoordinateSearchLatDMSElement();
-                break;
             case "DEC":
                 input.title += " géographiques (en decimal)";
                 input.min = "-180";
@@ -1588,7 +1599,7 @@ var SearchEngineDOM = {
 
     /**
      * submit
-     * @returns {DOMElement} input
+     * @returns {HTMLElement} input
      */
     _createCoordinateSearchSubmitElement () {
         var input = document.createElement("input");

@@ -17,31 +17,32 @@ var logger = Logger.getLogger("sourcewfs");
  * @classdesc
  * Geoportal tile WMS source creation (inherit from ol.source.TileWMS)
  *
- * @constructor
  * @alias ol.source.GeoportalWFS
- * @type {ol.source.GeoportalWFS}
- * @extends {ol.source.Vector}
- * @param {Object} options            - options for function call.
- * @param {String} options.layer      - Layer name (e.g. "")
- * @param {Number} [options.maxFeatures] - maximum features (max: 5000) 
- * @param {Object} [options.configuration] - configuration (cf. example) 
- * @param {Boolean} [options.ssl]     - if set true, enforce protocol https (only for nodejs)
- * @param {String} [options.apiKey]   - Access key to Geoportal platform
- * @param {Array} [options.legends]   - Legends objects associated to the layer
- * @param {Array} [options.metadata]   - Metadata objects associated to the layer
- * @param {String} [options.title]   - title of the layer
- * @param {String} [options.description]   - description of the layer
- * @param {String} [options.quicklookUrl]   - quicklookUrl of the layer
- * @param {Object} [options.olParams] - other options for ol.source.Vector function (see {@link http://openlayers.org/en/latest/apidoc/ol.source.Vector.html ol.source.Vector})
- * @example
- * var sourceWFS = new ol.source.GeoportalWFS({
- *      layer: "",
- *      maxFeatures: 500,
- *      olParams: {}
- * });
- */
-var SourceWFS = class SourceWFS extends VectorSource {
-
+ * @module GeoportalWFS
+*/
+class SourceWFS extends VectorSource {
+    
+    /**
+    * @constructor
+    * @param {Object} options            - options for function call.
+    * @param {String} options.layer      - Layer name (e.g. "")
+    * @param {Number} [options.maxFeatures] - maximum features (max: 5000) 
+    * @param {Object} [options.configuration] - configuration (cf. example) 
+    * @param {Boolean} [options.ssl]     - if set true, enforce protocol https (only for nodejs)
+    * @param {String} [options.apiKey]   - Access key to Geoportal platform
+    * @param {Array} [options.legends]   - Legends objects associated to the layer
+    * @param {Array} [options.metadata]   - Metadata objects associated to the layer
+    * @param {String} [options.title]   - title of the layer
+    * @param {String} [options.description]   - description of the layer
+    * @param {String} [options.quicklookUrl]   - quicklookUrl of the layer
+    * @param {Object} [options.olParams] - other options for ol.source.Vector function (see {@link http://openlayers.org/en/latest/apidoc/ol.source.Vector.html ol.source.Vector})
+    * @example
+    * var sourceWFS = new ol.source.GeoportalWFS({
+    *      layer: "",
+    *      maxFeatures: 500,
+    *      olParams: {}
+    * });
+    */
     constructor (options) {
         // check layer params
         if (!options.layer) {
@@ -102,7 +103,7 @@ var SourceWFS = class SourceWFS extends VectorSource {
             urlParams["apikey"] = key;
         }
 
-        var loadFeatures = (self, url, success, failure) => {
+        var loadFeatures = (self, url, extent, success, failure) => {
             const xhr = new XMLHttpRequest();
             xhr.open("GET", url);
             const onError = function () {
@@ -129,7 +130,7 @@ var SourceWFS = class SourceWFS extends VectorSource {
                         for (let i = 0; i < response.links.length; i++) {
                             const link = response.links[i];
                             if (link.rel === "next") {
-                                loadFeatures(self, link.href, success, failure);
+                                loadFeatures(self, link.href, extent, success, failure);
                             }
                         }
                     }
@@ -153,7 +154,7 @@ var SourceWFS = class SourceWFS extends VectorSource {
                     "bbox=" + extent.join(",") + "," + proj
                     + "&maxFeatures=" + maxFeatures + "&count=" + maxFeatures + "&startIndex=0";
 
-                loadFeatures(self, url, success, failure);
+                loadFeatures(self, url, extent, success, failure);
             },
             strategy : olLoadingstrategyTile(olTilegrid.createXYZ({
                 minZoom : options.olParams.minZoom || 15, 

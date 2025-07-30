@@ -15,6 +15,11 @@ div[id^=GPlayerSwitcher-] [draggable] {
   -webkit-user-drag: element;
 }
 
+div[id^=GPlayerSwitcher_ID_][disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 /* Manage opening of the components through hiden checkboxes */
 
 div[id^=GPlayerSwitcher-] input[type="checkbox"] + button + dialog {
@@ -118,16 +123,27 @@ button[id^=GPshowAdvancedTools_ID_][aria-pressed="true"] + .GPlayerAdvancedTools
   opacity: 1;
 }
 
+[id^="GPlayerStylePanel"],
 [id^="GPlayerInfoPanel"] {
   left: unset;
   right: 100%;
 }
 
+[id^="GPlayerStyleList"] {
+  display: flex;
+  flex-direction: column;
+}
+
+div[id^=GPlayerStyleContent],
 div[id^=GPlayerInfoContent] {
   position: relative;
   max-height: 200px;
   overflow-y: auto;
   padding-left: 10px;
   padding-right: 10px;
+}
+
+div[id^=GPlayerStyleContent] {
+  max-height: 500px;
 }
 

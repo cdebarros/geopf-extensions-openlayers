@@ -55,11 +55,13 @@
                     var layerSwitcher = new ol.control.LayerSwitcher({
                         options : {
                             position: "top-right",
-                            allowEdit : true
+                            allowEdit : true,
+                            allowGrayScale : true
                         }
                     });
                     map.addControl(layerSwitcher);
                     layerSwitcher.on("layerswitcher:edit", (e) => {
+                        console.warn("layer", e);
                         drawing.setCollapsed(false);
                         drawing.setLayer(e.layer);
                     });

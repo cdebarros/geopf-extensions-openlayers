@@ -101,6 +101,7 @@ import Territories from "./Controls/Territories/Territories";
 import ControlList from "./Controls/ControlList/ControlList";
 import Catalog from "./Controls/Catalog/Catalog";
 import ContextMenu from "./Controls/ContextMenu/ContextMenu";
+import Reporting from "./Controls/Reporting/Reporting";
 // Carto SP fork
 import WfsFilter from "./Controls/CartospWfsFilter/WfsFilter";
 import Indicator from "./Controls/CartospIndicator/Indicator";
@@ -124,6 +125,7 @@ import LayerUtils from "./Utils/LayerUtils";
 import ProxyUtils from "./Utils/ProxyUtils";
 import ColorUtils  from "./Utils/ColorUtils";
 import MathUtils from "./Utils/MathUtils";
+import JsonValidatorUtils from "./Utils/JsonValidatorUtils";
 import Logger from "./Utils/LoggerByDefault";
 import Parser from "./Utils/Parser";
 import Register from "./Utils/Register";
@@ -202,6 +204,8 @@ export {
     ColorUtils,
     /** @see Gp.MathUtils */
     MathUtils,
+    /** @see Gp.JsonValidatorUtils */
+    JsonValidatorUtils,
     /** @see Gp.Logger */
     Logger,
     /** @see Gp.Parser */
@@ -291,6 +295,7 @@ Ol.control.Catalog = Catalog;
 Ol.control.Territories = Territories;
 Ol.control.ControlList = ControlList;
 Ol.control.ContextMenu = ContextMenu;
+Ol.control.Reporting = Reporting;
 // Carto SP fork
 Ol.control.WfsFilter = WfsFilter;
 Ol.control.Indicator = Indicator;
@@ -321,6 +326,12 @@ export {
      * @see ol.control.LocationSelector
      * @see ol.control.Export
      * @see ol.control.Legends
+     * @see ol.control.Catalog
+     * @see ol.control.Territories
+     * @see ol.control.ControlList
+     * @see ol.control.ContextMenu
+     * @see ol.control.Reporting
+     * @see ol.control.LayerImport
      * @see ol.layer.GeoportalWMTS
      * @see ol.layer.GeoportalWMS
      * @see ol.layer.GeoportalWFS

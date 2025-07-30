@@ -4,6 +4,7 @@ import "../../CSS/Controls/Catalog/GPFcatalog.css";
 // import OpenLayers
 import Widget from "../Widget";
 import Control from "../Control";
+import Map from "ol/Map";
 
 // import local
 import Utils from "../../Utils/Helper";
@@ -11,6 +12,7 @@ import SelectorID from "../../Utils/SelectorID";
 import Logger from "../../Utils/LoggerByDefault";
 import Draggable from "../../Utils/Draggable";
 import Config from "../../Utils/Config";
+import LayerConfig from "../../Utils/LayerConfigUtils";
 
 // import local des layers
 import GeoportalWFS from "../../Layers/LayerWFS";
@@ -21,96 +23,58 @@ import GeoportalMapBox from "../../Layers/LayerMapBox";
 // DOM
 import CatalogDOM from "./CatalogDOM";
 
+// Mapping de themes anglais -> français
+import Topics from "./topics.json";
+
 var logger = Logger.getLogger("widget");
 
+/**
+ * @typedef {Object} CatalogOptions
+ * @property {boolean} [collapsed=true] - Définit si le widget est replié au chargement.
+ * @property {boolean} [draggable=false] - Permet de déplacer le panneau du catalogue.
+ * @property {boolean} [auto=true] - Active l’ajout automatique des événements sur la carte.
+ * @property {string} [titlePrimary="Gérer vos couches de données"] - Titre principal du panneau.
+ * @property {string} [titleSecondary=""] - Titre secondaire du panneau.
+ * @property {string} [layerLabel="title"] - Propriété utilisée comme label pour les couches.
+ * @property {Object} [search] - Options de recherche.
+ * @property {boolean} [search.display=true] - Affiche le champ de recherche.
+ * @property {Array<string>} [search.criteria=["name","title","description"]] - Critères de recherche.
+ * @property {boolean} [addToMap=true] - Ajoute automatiquement la couche à la carte lors de la sélection.
+ * @property {Array<Object>} [categories] - Liste des catégories et sous-catégories.
+ * @property {Object} [configuration] - Configuration des sources de données.
+ * @property {string} [configuration.type="json"] - Type de configuration ("json" ou "service").
+ * @property {Array<string>} [configuration.urls] - URLs des fichiers de configuration JSON.
+ * @property {Object} [configuration.data] - Données de configuration déjà chargées.
+ * @property {string} [id] - Identifiant unique du widget.
+ * @property {string} [position] - Position CSS du widget sur la carte.
+ * @property {boolean} [gutter] - Ajoute ou retire l’espace autour du panneau.
+ */
 /**
  * @classdesc
  *
  * Catalog Data
  *
- * @constructor
  * @alias ol.control.Catalog
- * @type {ol.control.Catalog}
- * @extends {ol.control.Control}
- * @param {Object} options - options for function call.
- *
- * @fires catalog:loaded
- * @fires catalog:layer:add
- * @fires catalog:layer:remove
- * @see schema : https://raw.githubusercontent.com/IGNF/geoportal-configuration/new-url/doc/schema.json
- * @see jsdoc : https://raw.githubusercontent.com/IGNF/geoportal-configuration/new-url/doc/schema.jsdoc
- * @example
- * var widget = new ol.control.Catalog({
- *           collapsed : true,
- *           draggable : false,
- *           titlePrimary : "",
- *           titleSecondary : "Gérer vos couches de données",
- *           layerLabel : "title",
- *           layerFilter : [],
- *           search : {
- *               display : true,
- *               criteria : [
- *                   "name",
- *                   "title",
- *                   "description"
- *               ]
- *           },
- *           addToMap : true,
- *           categories : [
- *               {
- *                   title : "Données",
- *                   id : "data",
- *                   default : true,
- *                   filter : null
- *                   // sous categories
- *                   // items : [
- *                   //     {
- *                   //         title : "",
- *                   //         default : true,
- *                   //         filter : {
- *                   //             field : "",
- *                   //             value : ""
- *                   //         }
- *                   //     }
- *                   // ]
- *               }
- *           ],
- *           configuration : {
- *               type : "json", // type:"service"
- *               urls : [ // data:{}
- *                   "https://raw.githubusercontent.com/IGNF/cartes.gouv.fr-entree-carto/main/public/data/layers.json",
- *                   "https://raw.githubusercontent.com/IGNF/cartes.gouv.fr-entree-carto/main/public/data/edito.json"
- *               ]
- *           }
- * });
- * widget.on("catalog:loaded", (e) => { console.log(e.data); });
- * widget.on("catalog:layer:add", (e) => { console.log(e); });
- * widget.on("catalog:layer:remove", (e) => { console.log(e); });
- * map.addControl(widget);
- *
- * @todo filtrage des couches
- * @todo type:service
- * @todo validation du schema
- */
-var Catalog = class Catalog extends Control {
-
+ * @module Catalog
+*/
+class Catalog extends Control {
+    
     /**
-     * See {@link ol.control.Catalog}
-     * @module Catalog
-     * @alias module:~controls/Catalog
-     * @param {Object} [options] - options
-     * @example
-     * import Catalog from "gpf-ext-ol/controls/Catalog"
-     * ou
-     * import { Catalog } from "gpf-ext-ol"
+     * @constructor
+     * @param {CatalogOptions} options - options for function call.
      *
-     * var widget = new Catalog({
+     * @fires catalog:loaded
+     * @fires catalog:layer:add
+     * @fires catalog:layer:remove
+     * @see [schema - https://raw.githubusercontent.com/IGNF/geoportal-configuration/new-url/doc/schema.json]
+     * @see [jsdoc - https://raw.githubusercontent.com/IGNF/geoportal-configuration/new-url/doc/schema.jsdoc]
+     * @example
+     * var widget = new ol.control.Catalog({
      *           collapsed : true,
      *           draggable : false,
      *           titlePrimary : "",
      *           titleSecondary : "Gérer vos couches de données",
      *           layerLabel : "title",
-     *           layerFilter : [],
      *           search : {
      *               display : true,
      *               criteria : [
@@ -140,7 +104,7 @@ var Catalog = class Catalog extends Control {
      *               }
      *           ],
      *           configuration : {
-     *               type : "json", // type:"service"
+     *               type : "json",
      *               urls : [ // data:{}
      *                   "https://raw.githubusercontent.com/IGNF/cartes.gouv.fr-entree-carto/main/public/data/layers.json",
      *                   "https://raw.githubusercontent.com/IGNF/cartes.gouv.fr-entree-carto/main/public/data/edito.json"
@@ -151,6 +115,8 @@ var Catalog = class Catalog extends Control {
      * widget.on("catalog:layer:add", (e) => { console.log(e); });
      * widget.on("catalog:layer:remove", (e) => { console.log(e); });
      * map.addControl(widget);
+     *
+     * @todo validation du schema
      */
     constructor (options) {
         options = options || {};
@@ -188,18 +154,9 @@ var Catalog = class Catalog extends Control {
                 this.hideWaiting();
                 /**
                  * event triggered when data is loaded
-                 *
-                 * @event catalog:loaded
-                 * @property {Object} type - event
-                 * @property {Object} data - data
-                 * @property {Object} target - instance Catalog
-                 * @example
-                 * Catalog.on("catalog:loaded", function (e) {
-                 *   console.log(e.data);
-                 * })
                  */
                 this.dispatchEvent({
-                    type : "catalog:loaded",
+                    type : this.LOADED_CATALOG_EVENT,
                     data : data
                 });
             })
@@ -219,7 +176,7 @@ var Catalog = class Catalog extends Control {
     /**
      * Overwrite OpenLayers setMap method
      *
-     * @param {ol.Map} map - Map.
+     * @param {Map} map - Map.
      */
     setMap (map) {
         if (map) {
@@ -268,6 +225,77 @@ var Catalog = class Catalog extends Control {
         }
     }
 
+    /**
+     * Add a layer config
+     * @param {*} conf conf
+     */
+    addLayerConfig (conf) {
+        for (const key in conf) {
+            if (Object.prototype.hasOwnProperty.call(conf, key)) {
+                const layer = conf[key];
+                if (layer.serviceParams) {
+                    // si la couche a bien une configuration valide liée au service
+                    var service = layer.serviceParams.id.split(":").slice(-1)[0]; // beurk!
+                    layer.service = service; // new proprerty !
+                    layer.categories = []; // new property ! vide pour le moment
+                    layer.producer_urls = this.getInformationsCatalog("producer", layer.producer); // plus d'info
+                    layer.thematic_urls = this.getInformationsCatalog("thematic", layer.thematic); // plus d'info
+                    this.layersList[key] = layer;
+                }
+            }
+        }
+        // clean container
+        var element = document.getElementById("GPcatalogContainerTabs");
+        if (element) {
+            element.remove();
+        }
+        // on reordonne la liste
+        this.layersList.sort((a, b) => a.title.localeCompare(b.title, "fr", { sensitivity : "base" }));
+        // on va recréer le container
+        this.createCatalogContentEntries(this.layersList);
+    }
+
+    activeLayerByID (id) {
+        var name = id.split("$")[0];
+        var service = id.split(":").slice(-1)[0];
+        this.activeLayer(name, service);
+    }
+    disableLayerByID (id) {
+        var name = id.split("$")[0];
+        var service = id.split(":").slice(-1)[0];
+        this.disableLayer(name, service);
+    }
+    activeLayer (name, service) {
+        // cf. this.onSelectCatalogEntryClick
+        var id = this.getLayerId(name, service);
+        if (id) {
+            var layer = {}; // conf tech
+            if (this.options.addToMap) {
+                layer = this.addLayer(name, service);
+            }
+            this.dispatchEvent({
+                type : this.ADD_CATALOG_LAYER_EVENT,
+                name : name,
+                service : service,
+                layer : layer
+            });
+        }
+    }
+    disableLayer (name, service) {
+        var id = this.getLayerId(name, service);
+        if (id) {
+            var layer = {}; // conf tech
+            if (this.options.addToMap) {
+                layer = this.removeLayer(name, service);
+            }
+            this.dispatchEvent({
+                type : this.REMOVE_CATALOG_LAYER_EVENT,
+                name : name,
+                service : service,
+                layer : layer
+            });
+        }
+    }
     // ################################################################### //
     // ################### getters / setters ############################# //
     // ################################################################### //
@@ -275,10 +303,33 @@ var Catalog = class Catalog extends Control {
     /**
      * Get container
      *
-     * @returns {DOMElement} container
+     * @returns {HTMLElement} container
      */
     getContainer () {
         return this.container;
+    }
+
+    /**
+     * Get long layer ID
+     * @param {*} name  nom de la couche
+     * @param {*} service service de la couche
+     * @returns {String} - long layer ID
+     */
+    getLayerId (name, service) {
+        if (!this.layersList || typeof this.layersList !== "object") {
+            return null;
+        }
+
+        var regex = new RegExp(name + ".*" + service);
+        for (const key in this.layersList) {
+            if (Object.prototype.hasOwnProperty.call(this.layersList, key)) {
+                if (regex.test(key)) {
+                    return key;
+                }
+            }
+        }
+
+        return null;
     }
 
     // ################################################################### //
@@ -292,6 +343,7 @@ var Catalog = class Catalog extends Control {
      * @private
      */
     initialize (options) {
+        /** @private */
         this.uid = options.id || SelectorID.generate();
 
         // set default options
@@ -302,7 +354,6 @@ var Catalog = class Catalog extends Control {
             titlePrimary : "Gérer vos couches de données",
             titleSecondary : "",
             layerLabel : "title",
-            layerFilter : [], // TODO filtre
             search : {
                 display : true,
                 criteria : [
@@ -314,21 +365,29 @@ var Catalog = class Catalog extends Control {
             addToMap : true,
             categories : [
                 {
+                    // INFO
+                    // categories : sous forme d'un onglet par categorie
                     title : "Données",
                     id : "data",
                     default : true,
                     filter : null
                     // INFO
-                    // > sous categories avec ou sans section
+                    // subcategories : sous forme d'un bouton radio par sous categoris
                     // items : [
                     //     {
                     //         title : "",
                     //         default : true,
-                    //         section : true,
+                    //         section : true, // avec section (ex. regroupement par themes)
                     //         filter : {
-                    //             field : "",
+                    //             field : "thematic",
                     //             value : ""
                     //         }
+                    //     }
+                    //     {
+                    //         title : "Toutes les données",
+                    //         default : false,
+                    //         section : false, // sans section
+                    //         filter : null // sans filtre, on prend toutes les données
                     //     }
                     // ]
                 }
@@ -336,8 +395,9 @@ var Catalog = class Catalog extends Control {
             configuration : {
                 type : "json", // TODO type:"service"
                 urls : [ // data:{}
-                    "https://raw.githubusercontent.com/IGNF/cartes.gouv.fr-entree-carto/main/public/data/layers.json",
-                    "https://raw.githubusercontent.com/IGNF/cartes.gouv.fr-entree-carto/main/public/data/edito.json"
+                    // "https://raw.githubusercontent.com/IGNF/cartes.gouv.fr-entree-carto/main/public/data/layers.json",
+                    // "https://raw.githubusercontent.com/IGNF/cartes.gouv.fr-entree-carto/main/public/data/edito.json",
+                    "https://raw.githubusercontent.com/IGNF/geoportal-configuration/new-url/dist/entreeCarto.json"
                 ]
             }
         };
@@ -370,11 +430,17 @@ var Catalog = class Catalog extends Control {
         this.eventsListeners = [];
 
         // DOM
+        /** @private */
         this.buttonCatalogShow = null;
+        /** @private */
         this.panelCatalogContainer = null;
+        /** @private */
         this.panelCatalogHeaderContainer = null; // usefull for the dragNdrop
+        /** @private */
         this.buttonCatalogClose = null;
+        /** @private */
         this.contentCatalogContainer = null;
+        /** @private */
         this.waitingContainer = null;
 
         /**
@@ -383,7 +449,7 @@ var Catalog = class Catalog extends Control {
          * @see [schema](https://raw.githubusercontent.com/IGNF/geoportal-configuration/new-url/doc/schema.json)
          * @see [jsdoc](https://raw.githubusercontent.com/IGNF/geoportal-configuration/new-url/doc/schema.jsdoc)
          */
-        this.layersList = [];
+        this.layersList = {};
 
         /**
          * specify all categories
@@ -398,8 +464,9 @@ var Catalog = class Catalog extends Control {
                 items = cat.items.map((i) => {
                     return {
                         title : i.title,
-                        id : i.id || Math.abs(Array.from(i.title).reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0)),
+                        id : i.id || this.generateID(i.title),
                         section : i.hasOwnProperty("section") ? i.section : false,
+                        sections : [], // liste des valeurs des sections remplie ulterieurement !
                         default : i.hasOwnProperty("default") ? i.default : false,
                         filter : i.filter || null,
                     };
@@ -407,7 +474,7 @@ var Catalog = class Catalog extends Control {
             }
             return {
                 title : cat.title,
-                id : cat.id || Math.abs(Array.from(cat.title).reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0)),
+                id : cat.id || this.generateID(cat.title),
                 default : cat.hasOwnProperty("default") ? cat.default : false,
                 filter : cat.filter || null,
                 items : items || null
@@ -440,12 +507,62 @@ var Catalog = class Catalog extends Control {
          * }
          */
         this.layersListOnMap = {};
+
+        /**
+         * event triggered when layer is added
+         *
+         * @event catalog:layer:add
+         * @defaultValue "catalog:layer:add"
+         * @group Events
+         * @property {Object} type - event
+         * @property {String} name - layer name
+         * @property {String} service - service name
+         * @property {Object} layer - layer conf
+         * @property {Object} target - instance Catalog
+         * @example
+         * Catalog.on("catalog:layer:add", function (e) {
+         *   console.log(e.layer);
+         * })
+         */
+        this.ADD_CATALOG_LAYER_EVENT = "catalog:layer:add";
+        /**
+         * event triggered when layer is removed
+         *
+         * @event catalog:layer:remove
+         * @defaultValue "catalog:layer:remove"
+         * @group Events
+         * @property {Object} type - event
+         * @property {String} name - layer name
+         * @property {String} service - service name
+         * @property {Object} layer - layer conf
+         * @property {Object} target - instance Catalog
+         * @example
+         * Catalog.on("catalog:layer:remove", function (e) {
+         *   console.log(e.layer);
+         * })
+         */
+        this.REMOVE_CATALOG_LAYER_EVENT = "catalog:layer:remove";
+        /**
+         * event triggered when data is loaded
+         *
+         * @event catalog:loaded
+         * @defaultValue "catalog:loaded"
+         * @group Events
+         * @property {Object} type - event
+         * @property {Object} data - data
+         * @property {Object} target - instance Catalog
+         * @example
+         * Catalog.on("catalog:loaded", function (e) {
+         *   console.log(e.data);
+         * })
+         */
+        this.LOADED_CATALOG_EVENT = "catalog:loaded";
     }
 
     /**
      * Create control main container (DOM initialize)
      *
-     * @returns {DOMElement} DOM element
+     * @returns {HTMLElement} DOM element
      * @private
      */
     initContainer () {
@@ -524,79 +641,8 @@ var Catalog = class Catalog extends Control {
     async initLayersList () {
         var data = null; // reponse brute du service
 
-        var self = this;
-        const createCatalogContentEntries = (layers) => {
-            var container = self.contentCatalogContainer;
-
-            var widgetContentEntryTabs = self._createCatalogContentCategoriesTabs(this.categories);
-            container.appendChild(widgetContentEntryTabs);
-
-            var categories = []; // remise à plat des catégories / sous-categories
-            self.categories.forEach((category) => {
-                if (category.items) {
-                    for (let i = 0; i < category.items.length; i++) {
-                        const element = category.items[i];
-                        categories.push(element);
-                    }
-                } else {
-                    categories.push(category);
-                }
-            });
-            // INFO
-            // les containers de contenu sont definis à partir
-            // de l'ordre des catégories / sous-categories
-            // il y'a autant de catégories / sous-categories que de containers
-            var contents = container.querySelectorAll(".tabcontent");
-            for (let i = 0; i < contents.length; i++) {
-                const content = contents[i];
-                var layersCategorised = getLayersByCategory(categories[i], layers);
-                content.appendChild(self._createCatalogContentCategoryTabContent(categories[i], layersCategorised));
-            }
-        };
-
-        // traitement du contenu (liste de couches) d'une categorie
-        // en fonction d'un filtre
-        const getLayersByCategory = (category, layers) => {
-            // INFO
-            // comment gerer les listes de layers filtrées pour chaque categorie ?
-            // on doit les stocker si l'on souhaite faire des requêtes
-            // avec l'outil de recherche par la suite
-            var layersCategorised = layers;
-            var filter = category.filter;
-            if (filter) {
-                layersCategorised = {};
-                for (const key in layers) {
-                    if (Object.prototype.hasOwnProperty.call(layers, key)) {
-                        const layer = layers[key];
-                        if (layer[filter.field]) { // FIXME impl. clef multiple : property.property !
-                            var condition = Array.isArray(filter.value) ? filter.value.includes(layer[filter.field].toString()) : (filter.value === "*" || layer[filter.field].toString() === filter.value);
-                            if (condition) {
-                                layersCategorised[key] = layer;
-                                // on ajoute l'appartenance de la couche à une categorie
-                                this.layersList[key].categories.push(category.id);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return layersCategorised;
-        };
-
-        // TODO filtre sur la liste de couches à prendre en compte
-        const getLayersByFilter = (filter, layers) => {
-            // INFO
-            // definir les filtres possibles :
-            // - sur un champ spécifique : ex field:"service"
-            // - sur des valeurs : ex. value:"[WMS,TMS,WMTS]" ou "*"
-            // - ...
-            return layers;
-        };
-
         if (this.options.configuration.data) {
             data = this.options.configuration.data || {};
-
-            // TODO gestion du type service
 
             if (Config.isConfigLoaded()) {
                 Utils.mergeParams(data, Config.configuration);
@@ -616,20 +662,19 @@ var Catalog = class Catalog extends Control {
                         var service = layer.serviceParams.id.split(":").slice(-1)[0]; // beurk!
                         layer.service = service; // new proprerty !
                         layer.categories = []; // new property ! vide pour le moment
+                        layer.producer_urls = this.getInformationsCatalog("producer", layer.producer); // plus d'info
+                        layer.thematic_urls = this.getInformationsCatalog("thematic", layer.thematic); // plus d'info
                     } else {
                         // sinon on supprime l'entrée car pas de configuration valide
                         delete data.layers[key];
-                    }                
+                    }
                 }
             }
 
-            // on applique un filtre sur la liste des couches
-            var layers = getLayersByFilter(this.options.layerFilter, data.layers);
-
             // sauvegarde de la liste des couches
-            this.layersList = layers;
+            this.layersList = data.layers;
 
-            createCatalogContentEntries(layers);
+            this.createCatalogContentEntries(data.layers);
             return new Promise((resolve, reject) => {
                 resolve(data);
             });
@@ -674,8 +719,6 @@ var Catalog = class Catalog extends Control {
                     Utils.mergeParams(data, value);
                 }
 
-                // TODO gestion du type service
-
                 if (Config.isConfigLoaded()) {
                     Utils.mergeParams(data, Config.configuration);
                 }
@@ -694,6 +737,8 @@ var Catalog = class Catalog extends Control {
                             var service = layer.serviceParams.id.split(":").slice(-1)[0]; // beurk!
                             layer.service = service; // new proprerty !
                             layer.categories = []; // new property ! vide pour le moment
+                            layer.producer_urls = this.getInformationsCatalog("producer", layer.producer); // plus d'info
+                            layer.thematic_urls = this.getInformationsCatalog("thematic", layer.thematic); // plus d'info
                         } else {
                             // sinon on supprime l'entrée car pas de configuration valide
                             delete data.layers[key];
@@ -701,13 +746,10 @@ var Catalog = class Catalog extends Control {
                     }
                 }
 
-                // on applique un filtre sur la liste des couches
-                var layers = getLayersByFilter(this.options.layerFilter, data.layers);
-
                 // sauvegarde de la liste des couches
-                this.layersList = layers;
+                this.layersList = data.layers;
 
-                createCatalogContentEntries(layers);
+                this.createCatalogContentEntries(data.layers);
                 return await new Promise((resolve, reject) => {
                     resolve(data);
                 });
@@ -719,14 +761,135 @@ var Catalog = class Catalog extends Control {
         }
     }
 
+    /**
+     * Create DOM content categories and entries
+     * @param {*} layers couches
+     */
+    createCatalogContentEntries (layers) {
+        // traitement du contenu (liste de couches) d'une categorie
+        // en fonction d'un filtre
+        var self = this;
+        const getLayersByCategory = (category, layers) => {
+            // INFO
+            // comment gerer les listes de layers filtrées pour chaque categorie ?
+            // on doit les stocker si l'on souhaite faire des requêtes
+            // avec l'outil de recherche par la suite
+            var layersCategorised = layers;
+            var filter = category.filter;
+            if (filter) {
+                layersCategorised = {};
+                for (const key in layers) {
+                    if (Object.prototype.hasOwnProperty.call(layers, key)) {
+                        const layer = layers[key];
+                        if (layer[filter.field]) { // FIXME impl. clef multiple : property.property !
+                            var condition = Array.isArray(filter.value) ? filter.value.includes(layer[filter.field].toString()) : (filter.value === "*" || layer[filter.field].toString() === filter.value);
+                            if (condition) {
+                                layersCategorised[key] = layer;
+                                // on ajoute l'appartenance de la couche à une categorie
+                                self.layersList[key].categories.push(category.id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return layersCategorised;
+        };
+
+        var container = this.contentCatalogContainer;
+
+        var widgetContentEntryTabs = this._createCatalogContentCategoriesTabs(this.categories);
+        container.appendChild(widgetContentEntryTabs);
+
+        var categories = []; // remise à plat des catégories / sous-categories
+        this.categories.forEach((category) => {
+            if (category.items) {
+                for (let i = 0; i < category.items.length; i++) {
+                    const element = category.items[i];
+                    categories.push(element);
+                }
+            } else {
+                categories.push(category);
+            }
+        });
+        // INFO
+        // les containers de contenu sont definis à partir
+        // de l'ordre des catégories / sous-categories
+        // il y'a autant de catégories / sous-categories que de containers
+        var contents = container.querySelectorAll(".tabcontent");
+        for (let i = 0; i < contents.length; i++) {
+            const content = contents[i];
+            var layersCategorised = getLayersByCategory(categories[i], layers);
+            content.appendChild(this._createCatalogContentCategoryTabContent(categories[i], layersCategorised));
+        }
+    }
+
+    /**
+     * Get information in the catalog
+     * @param {*} key type de catégorisation 'producer' ou 'thematic'
+     * @param {*} value tableau de couches
+     * @private
+     * @returns {Object} fiche d'information
+     * @todo récuperer l'url du service du catalogue selon l'environnement !
+     * @example
+     * // OUTPUT ?
+     */
+    getInformationsCatalog (key, value) {
+        if (!value) {
+            return null;
+        }
+        var url = "https://cartes.gouv.fr/catalogue/search?";
+        var data = [];
+        // INFO liens vers le catalogue
+        //
+        // - comment recuperer la fiche si pas renseigné dans metadata_urls ?
+        // ex. https://cartes.gouv.fr/catalogue/dataset/IGNF_PLAN-IGN
+        // > la conf nous fournit une liste via le champ 'metada_urls'
+        //
+        // - comment avoir l'info sur le producteur à partir de la liste des acronymes ?
+        // ex. https://cartes.gouv.fr/catalogue/search?organization=IGN
+        // > la conf nous fournit une liste via le champ 'producer'
+        if (key === "producer") {
+            for (let i = 0; i < value.length; i++) {
+                const element = value[i];
+                if (element === "Autres") {
+                    continue;
+                }
+                data.push({
+                    name : element,
+                    url : url + "organization=" + element
+                });
+            }
+        }
+        // - comment faire le lien entre les noms pour obtenir les données du theme ?
+        // ex. pour Agriculture, l'url est https://cartes.gouv.fr/catalogue/search?topic=farming
+        // > un fichier de mapping est disponible
+        if (key === "thematic") {
+            for (let j = 0; j < value.length; j++) {
+                const element = value[j];
+                if (element === "Autres") {
+                    continue;
+                }
+                var mapping = Object.keys(Topics).find((key) => Topics[key] === element);
+                data.push({
+                    name : element,
+                    url : url + "topic=" + mapping
+                });
+            }
+        }
+        if (data.length === 0) {
+            data = null;
+        }
+        return data;
+    }
     // ################################################################### //
-    // ######################## methods on map ########################### //
+    // ######################## methods on listeners ##################### //
     // ################################################################### //
 
     /**
      * Add events listeners on map (called by setMap)
      *
-     * @param {*} map - map
+     * @param {Map} map - map
      * @private
      */
     addEventsListeners (map) {
@@ -778,6 +941,10 @@ var Catalog = class Catalog extends Control {
         delete this.eventsListeners["map:remove"];
     }
 
+    // ################################################################### //
+    // ######################## methods on map ########################### //
+    // ################################################################### //
+
     /**
      * Add layer on map
      *
@@ -789,27 +956,36 @@ var Catalog = class Catalog extends Control {
     addLayer (name, service) {
         var layerConf = null;
         var layer = null;
+        var id = this.getLayerId(name, service);
+        if (!id) {
+            return;
+        }
+        var c = (!Config.isConfigLoaded()) ? LayerConfig.getLayerConfig(this.layersList[id]) : null;
         switch (service) {
             case "WMS":
                 layer = new GeoportalWMS({
-                    layer : name
+                    layer : name,
+                    configuration : c
                 });
                 break;
             case "WMTS":
                 layer = new GeoportalWMTS({
-                    layer : name
+                    layer : name,
+                    configuration : c
                 });
                 break;
             case "TMS":
                 layer = new GeoportalMapBox({
-                    layer : name
+                    layer : name,
+                    configuration : c
                 },{
                     declutter : true
                 });
                 break;
             case "WFS":
                 layer = new GeoportalWFS({
-                    layer : name
+                    layer : name,
+                    configuration : c
                 });
                 break;
             default:
@@ -864,6 +1040,7 @@ var Catalog = class Catalog extends Control {
     showWaiting () {
         this.waitingContainer.className = "GPwaitingContainerVisible gpf-waiting--visible";
     }
+
     // ################################################################### //
     // ######################## methods search ########################### //
     // ################################################################### //
@@ -882,7 +1059,7 @@ var Catalog = class Catalog extends Control {
             if (Object.prototype.hasOwnProperty.call(this.layersList, key)) {
                 const layer = this.layersList[key];
                 layer.hidden = false;
-                this.updateFilteredLayersListDOM(layer.name, layer.service, layer.hidden);
+                this.updateVisibilityFilteredLayersDOM(layer.name, layer.service, layer.hidden);
             }
         }
     }
@@ -894,6 +1071,8 @@ var Catalog = class Catalog extends Control {
      * @private
      */
     setFilteredLayersList (value) {
+        // on rend invisible les couches qui ne respecte pas la valeur 
+        // selon le critère de recherche
         var criteria = this.options.search.criteria;
         for (const key in this.layersList) {
             if (Object.prototype.hasOwnProperty.call(this.layersList, key)) {
@@ -906,9 +1085,12 @@ var Catalog = class Catalog extends Control {
                     }
                 }
                 layer.hidden = !words.includes(value.toLowerCase());
-                this.updateFilteredLayersListDOM(layer.name, layer.service, layer.hidden);
+                // on met à jour pour chaque couche la visibilité
+                this.updateVisibilityFilteredLayersDOM(layer.name, layer.service, layer.hidden);
             }
         }
+        // on rend invisible les sections qui ne possède plus de couches visibles
+        this.updateVisibilitySectionsDOM();
     }
 
     /**
@@ -919,8 +1101,8 @@ var Catalog = class Catalog extends Control {
      * @param {*} hidden  - ...
      * @private
      */
-    updateFilteredLayersListDOM (id, service, hidden) {
-        var categories = []; // remise à plat des catégories / sous-categories
+    updateVisibilityFilteredLayersDOM (id, service, hidden) {
+        var categories = []; // remise à plat des catégories / sous-categories pour obtenir leur id
         this.categories.forEach((category) => {
             if (category.items) {
                 for (let i = 0; i < category.items.length; i++) {
@@ -934,6 +1116,7 @@ var Catalog = class Catalog extends Control {
 
         for (let i = 0; i < categories.length; i++) {
             const category = categories[i];
+            // on modifie la visibilité du container pour chaque couche
             var container = document.getElementById(`fieldset-${category}_${id}-${service}`);
             if (container) {
                 if (hidden) {
@@ -947,13 +1130,65 @@ var Catalog = class Catalog extends Control {
         }
     }
 
+    /**
+     * Update DOM sections visibility if no layers are visible
+     *
+     * @todo cacher les section si elles sont vides
+     * @private
+     */
+    updateVisibilitySectionsDOM () {
+        // il faut savoir si les couches d'une section sont toutes à hidden
+        // si oui, on cache la section
+        // si non, on met à jour le compteur des couches visibles
+
+        // ID d'une section : section-${categoryId}-${id}
+        // avec id = this.generateID(title) où title est le titre de la section
+        // le title d'une section est disponible pour une category qui possède des sections
+
+        // on compte le nombre de couches encore visible, 
+        // si 0 alors la section est hidden : 
+        // var count = [...data.matchAll(/"fr-fieldset__element"/g)].length;
+        // avec data est la liste des couches (DOM)
+
+        for (let i = 0; i < this.categories.length; i++) {
+            const category = this.categories[i];
+            if (category.items) {
+                for (let j = 0; j < category.items.length; j++) {
+                    const subcategory = category.items[j];
+                    // sous categorie ayant des sections
+                    if (subcategory.section) {
+                        for (let k = 0; k < subcategory.sections.length; k++) {
+                            const section = subcategory.sections[k];
+                            var id = `section-${subcategory.id}-${this.generateID(section)}`;
+                            var container = document.getElementById(id);
+                            if (container) {
+                                var data = container.innerHTML;
+                                var count = [...data.matchAll(/"fr-fieldset__element"/g)].length;
+                                var countDom = document.getElementById(`section-count-${subcategory.id}-${this.generateID(section)}`);
+                                if (count === 0) {
+                                    container.classList.add("gpf-hidden");
+                                    container.classList.add("GPelementHidden");
+                                } else {
+                                    if (countDom) {
+                                        countDom.textContent = count;
+                                    }
+                                    container.classList.remove("gpf-hidden");
+                                    container.classList.remove("GPelementHidden");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     // ################################################################### //
     // ######################## event dom ################################ //
     // ################################################################### //
 
     /**
      * ...
-     * @param {*} e - ...
+     * @param {Event} e - ...
      * @private
      */
     onShowCatalogClick (e) {
@@ -965,7 +1200,7 @@ var Catalog = class Catalog extends Control {
 
     /**
      * ...
-     * @param {*} e - ...
+     * @param {Event} e - ...
      * @private
      */
     onCloseCatalogClick (e) {
@@ -974,7 +1209,7 @@ var Catalog = class Catalog extends Control {
 
     /**
      * ...
-     * @param {*} e - ...
+     * @param {Event} e - ...
      * @private
      */
     onSelectCatalogTabClick (e) {
@@ -988,7 +1223,7 @@ var Catalog = class Catalog extends Control {
 
     /**
      * ...
-     * @param {*} e - ...
+     * @param {Event} e - ...
      * @private
      */
     onSelectCatalogEntryClick (e) {
@@ -1008,20 +1243,9 @@ var Catalog = class Catalog extends Control {
             }
             /**
              * event triggered when layer is added
-             *
-             * @event catalog:layer:add
-             * @property {Object} type - event
-             * @property {String} name - layer name
-             * @property {String} service - service name
-             * @property {Object} layer - layer conf
-             * @property {Object} target - instance Catalog
-             * @example
-             * Catalog.on("catalog:layer:add", function (e) {
-             *   console.log(e.layer);
-             * })
              */
             this.dispatchEvent({
-                type : "catalog:layer:add",
+                type : this.ADD_CATALOG_LAYER_EVENT,
                 name : name,
                 service : service,
                 layer : layer
@@ -1032,20 +1256,9 @@ var Catalog = class Catalog extends Control {
             }
             /**
              * event triggered when layer is removed
-             *
-             * @event catalog:layer:remove
-             * @property {Object} type - event
-             * @property {String} name - layer name
-             * @property {String} service - service name
-             * @property {Object} layer - layer conf
-             * @property {Object} target - instance Catalog
-             * @example
-             * Catalog.on("catalog:layer:remove", function (e) {
-             *   console.log(e.layer);
-             * })
              */
             this.dispatchEvent({
-                type : "catalog:layer:remove",
+                type : this.REMOVE_CATALOG_LAYER_EVENT,
                 name : name,
                 service : service,
                 layer : layer
@@ -1054,7 +1267,7 @@ var Catalog = class Catalog extends Control {
     }
 
     /**
-     *
+     * ...
      * @private
      */
     onSearchCatalogButtonClick () {
@@ -1069,7 +1282,7 @@ var Catalog = class Catalog extends Control {
     }
 
     /**
-     *
+     * ...
      * @private
      */
     onSearchCatalogInputChange () {
