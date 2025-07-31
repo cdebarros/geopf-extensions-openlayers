@@ -825,7 +825,7 @@ var IsoDOM = {
 
         var tag = document.createElement("div");
         tag.id = layerobj.layername + "-" + layerobj.time + "-div";
-        tag.className = "fr-tag fr-tag--sm fr-tag--dismiss fr-tag--cartosp";
+        tag.className = "fr-tag fr-tag--sm fr-tag--cartosp";
         tag.textContent = layerobj.location + " - " + layerobj.layername + " - " + layerobj.ride + " - " + layerobj.time;
 
         var coche = document.createElement("button");

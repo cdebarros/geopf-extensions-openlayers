@@ -140,19 +140,7 @@ div[id^=GPisochronTypologyLocationSelect], div[id^=GPisochronTypologyLayerSelect
   padding-bottom: 10px;
 }
 
-.fr-tag.fr-tag--dismiss.fr-tag--cartosp {
-  color: var(--text-action-high-grey);
-  background-color: var(--background-action-low-blue-france);
-  --idle: transparent;
-  --hover: var(--background-action-low-blue-france-hover);
-}
- 
-.fr-tag.fr-tag--dismiss.fr-tag--cartosp:hover {
-  color: var(--text-action-high-grey);
-  background-color: var(--background-action-low-blue-france-hover);
-}
-
-.fr-tag--cartosp:active {
+.fr-tag--cartosp:active, .fr-tag--cartosp, .fr-tag--cartosp:hover {
   background-color: var(--background-action-low-blue-france-hover) !important;
 }
 
