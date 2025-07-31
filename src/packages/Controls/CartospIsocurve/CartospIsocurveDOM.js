@@ -823,14 +823,24 @@ var IsoDOM = {
     _createTypologyLayerTagElement : function (layerobj) {
         var context = this;
 
-        var tag = document.createElement("button");
-        tag.id = layerobj.layername + "-" + layerobj.time;
+        var tag = document.createElement("div");
+        tag.id = layerobj.layername + "-" + layerobj.time + "-div";
         tag.className = "fr-tag fr-tag--sm fr-tag--dismiss fr-tag--cartosp";
-        tag.innerHTML = layerobj.location + " - " + layerobj.layername + " - " + layerobj.ride + " - " + layerobj.time;
+        tag.textContent = layerobj.location + " - " + layerobj.layername + " - " + layerobj.ride + " - " + layerobj.time;
 
-        tag.addEventListener("click", function (e) {
+        var coche = document.createElement("button");
+        coche.id = layerobj.layername + "-" + layerobj.time;
+        coche.className = "fr-tag--cartosp";
+        coche.style.fontSize = "16px";
+        coche.style.lineHeight = "16px";
+        coche.innerHTML = "x";
+        coche.title = "Supprimer la couche";
+
+        coche.addEventListener("click", function (e) {
             context.onTagClick(e);
         });
+
+        tag.appendChild(coche);
 
         return tag;
     },

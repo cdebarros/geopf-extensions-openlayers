@@ -1431,8 +1431,8 @@ var Isocurve = class Isocurve extends Control {
     }
 
     onTagClick (e) {
-        var result = e.target.innerHTML.split(" - ");
-        var obj = {location : result[0], layername : result[1], ride : result[2], time : result[3] };
+        var result = document.getElementById(e.target.id + "-div").textContent.split(" - ");
+        var obj = {location : result[0], layername : result[1], ride : result[2], time : result[3].substring(0, result[3].length - 1) };
         this._typologyLayersOnMap = this._typologyLayersOnMap.filter((item) => !( item.location === obj.location & item.layername === obj.layername & item.time === obj.time & item.ride === obj.ride));
         this.getMap().getAllLayers().forEach((layer) => {
             if (layer.values_.location == obj.location & layer.values_.layername == obj.layername & layer.values_.time == obj.time & layer.values_.ride == obj.ride){
@@ -1443,7 +1443,7 @@ var Isocurve = class Isocurve extends Control {
                 });
             }
         });        
-        e.target.remove();
+        document.getElementById(e.target.id + "-div").remove();
         document.getElementById("GPisochroneCounter").innerHTML = this._typologyLayersOnMap.length;
     }
 

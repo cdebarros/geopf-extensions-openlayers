@@ -145,12 +145,16 @@ div[id^=GPisochronTypologyLocationSelect], div[id^=GPisochronTypologyLayerSelect
   background-color: var(--background-action-low-blue-france);
   --idle: transparent;
   --hover: var(--background-action-low-blue-france-hover);
- }
+}
  
- .fr-tag.fr-tag--dismiss.fr-tag--cartosp:hover {
+.fr-tag.fr-tag--dismiss.fr-tag--cartosp:hover {
   color: var(--text-action-high-grey);
   background-color: var(--background-action-low-blue-france-hover);
- }
+}
+
+.fr-tag--cartosp:active {
+  background-color: var(--background-action-low-blue-france-hover) !important;
+}
 
 div[id^=GPisochronTypologyLayerListSelector] {
   position: absolute;
