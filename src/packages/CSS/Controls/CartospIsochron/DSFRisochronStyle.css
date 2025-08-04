@@ -7,7 +7,6 @@
 .fr-icon-cartosp-isocurve::before {
   -webkit-mask: url("img/isochrone.svg");
   mask: url("img/isochrone.svg");
-  background-image: url("img/isochrone.svg");
   mask-repeat: no-repeat;
   mask-size: 24px 24px;
   mask-position: center center;
