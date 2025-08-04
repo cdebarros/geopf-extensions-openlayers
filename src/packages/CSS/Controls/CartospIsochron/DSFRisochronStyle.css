@@ -1,6 +1,18 @@
-.gpf-btn-icon-isocurve::after {
+.gpf-btn-icon-isocurve-cartosp::after {
   -webkit-mask: url("img/isochrone.svg") center no-repeat;
   mask: url("img/isochrone.svg") center no-repeat;
+  mask-size: 24px 24px;
+}
+
+.fr-icon-cartosp-isocurve::before {
+  -webkit-mask: url("img/isochrone.svg");
+  mask: url("img/isochrone.svg");
+  background-image: url("img/isochrone.svg");
+  mask-repeat: no-repeat;
+  mask-size: 24px 24px;
+  mask-position: center center;
+  margin-right: 5px;
+  color: var(--text-action-high-blue-france);
 }
 
 .gpf-flex-isocurve {

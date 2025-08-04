@@ -75,6 +75,7 @@ module.exports = (env, argv) => {
                 path.join(rootdir, "src", "packages", "CSS", "Controls/CartospIndicator", "DSFRindicatorStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/CartospLayerselector", "DSFRlayerselectorStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/CartospSearchdialog", "DSFRsearchdialogStyle.css"),
+                path.join(rootdir, "src", "packages", "CSS", "Controls/CartospIsochron", "DSFRisochronStyle.css"),
             ],
         }
     };

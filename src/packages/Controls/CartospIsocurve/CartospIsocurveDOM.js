@@ -43,7 +43,7 @@ var IsoDOM = {
         var span = document.createElement("span");
         button.appendChild(span);
         button.id = this._addUID("GPshowIsochronPicto");
-        button.className = "GPshowOpen GPshowAdvancedToolPicto GPshowIsochronPicto gpf-btn gpf-btn--tertiary gpf-btn-icon gpf-btn-icon-isocurve fr-btn fr-btn--tertiary";
+        button.className = "GPshowOpen GPshowAdvancedToolPicto GPshowIsochronPicto gpf-btn gpf-btn--tertiary gpf-btn-icon gpf-btn-icon-isocurve-cartosp fr-btn fr-btn--tertiary";
         button.setAttribute("aria-label", "Calculer une isochrone");
         button.setAttribute("tabindex", "0");
         button.setAttribute("aria-pressed", false);
@@ -118,7 +118,7 @@ var IsoDOM = {
         container.className = "GPpanelHeader gpf-panel__header fr-modal__header";
 
         var div = document.createElement("div");
-        div.className = "GPpanelTitle gpf-panel__title fr-modal__title fr-pt-4w";
+        div.className = "GPpanelTitle gpf-panel__title fr-modal__title fr-pt-4w fr-icon-cartosp-isocurve";
         div.innerHTML = "Calcul d'isochrone";
         container.appendChild(div);
 
