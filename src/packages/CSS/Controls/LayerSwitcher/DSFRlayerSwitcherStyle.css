@@ -147,8 +147,9 @@ div[id^=GPadvancedTools_ID_] {
 .gpf-btn-icon-layers {
     background-image: url("img/dsfr/layers.svg");
     background-repeat: no-repeat;
-    background-size: auto auto;
+    background-size: 24px 24px;
     background-position: center center;
+    margin-left: 5px;
 }
 
 .gpf-panel__body_ls {
