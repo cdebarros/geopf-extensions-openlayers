@@ -138,7 +138,7 @@
             map.addLayer(gpMaps);
 
             var wfslayer = new ol.layer.GeoportalWFS({
-                layer: "services_publics_test_20250428_v2:carto_sp_20250428_2",
+                layer: "base_carto_sp_18_02_gpkg_18-02-2026_wfs:carto_sp_18_02__base_carto_sp",
                 olParams : {
                     minZoom: 10,
                     style: function(feature){
@@ -166,7 +166,7 @@
             var WfsFilter = new ol.control.WfsFilter({
                 position: "top-left",
                 panel: true,
-                cartospLayerName: "services_publics_test_20250428_v2:carto_sp_20250428_2",
+                cartospLayerName: "base_carto_sp_18_02_gpkg_18-02-2026_wfs:carto_sp_18_02__base_carto_sp",
                 cartospThemesInfo: ThemesInfo
             });
             map.addControl(WfsFilter);

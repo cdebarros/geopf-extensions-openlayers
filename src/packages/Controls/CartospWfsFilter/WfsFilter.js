@@ -177,44 +177,25 @@ var WfsFilter = class Wfsfilter extends Control {
         var self = this;
         var thematique;
         var typologie;
-        var featureTheme;
         var featureStructure;
         layer.setStyle(function (feature) {
-            thematique = feature.getProperties().service_thematique;
-            typologie = feature.getProperties().service_typologie;
+            thematique = feature.getProperties().thematique;
+            typologie = feature.getProperties().typologie;
             featureStructure = feature.getProperties().type_structure.toLowerCase();
-            if (featureStructure == "permanence") {
+            if (featureStructure == "implantation" || "itinérance" || "permanence") {
                 if (
-                    self.spFilters.sptopo.includes(feature.getProperties().permanence_typologie) &&
+                    self.spFilters.sptopo.includes(feature.getProperties().typologie) &&
                     (self.spFilters.spcarac.length == 0 || self.spFilters.spcarac.includes(feature.getProperties().type_structure)) &&
-                    (self.spFilters.spvolume.length == 0 || self.spFilters.spvolume.includes(feature.getProperties().permanence_categorie_niveau_d_ouverture)) &&
-                    (self.spFilters.spmoda.length == 0 || self.spFilters.spmoda.includes(feature.getProperties().permanence_modalite_d_accueil)) &&
-                    (self.spFilters.spfreq.length == 0 || self.spFilters.spfreq.includes(feature.getProperties().permanence_frequentation_annuelle_categorie))
+                    (self.spFilters.spvolume.length == 0 || self.spFilters.spvolume.includes(feature.getProperties().categorie_niveau_d_ouverture)) &&
+                    (self.spFilters.spmoda.length == 0 || self.spFilters.spmoda.includes(feature.getProperties().modalite_d_accueil)) &&
+                    (self.spFilters.spfreq.length == 0 || self.spFilters.spfreq.includes(feature.getProperties().frequentation_categorie))                
                 ) {
                     return new Style({
                         image : new Icon({
                             anchor : [0.5, 37],
                             anchorXUnits : "fraction",
                             anchorYUnits : "pixels",
-                            src : self.cartospThemesInfo[feature.getProperties().permanence_thematique].markerPath + featureStructure + ".svg",
-                        })
-                    });
-                } 
-            }
-            else if (featureStructure == "implantation" || "itinérance") {
-                if (
-                    self.spFilters.sptopo.includes(feature.getProperties().service_typologie) &&
-                    (self.spFilters.spcarac.length == 0 || self.spFilters.spcarac.includes(feature.getProperties().type_structure)) &&
-                    (self.spFilters.spvolume.length == 0 || self.spFilters.spvolume.includes(feature.getProperties().service_categorie_niveau_d_ouverture)) &&
-                    (self.spFilters.spmoda.length == 0 || self.spFilters.spmoda.includes(feature.getProperties().service_modalite_d_accueil)) &&
-                    (self.spFilters.spfreq.length == 0 || self.spFilters.spfreq.includes(feature.getProperties().service_frequentation_categories))                
-                ) {
-                    return new Style({
-                        image : new Icon({
-                            anchor : [0.5, 37],
-                            anchorXUnits : "fraction",
-                            anchorYUnits : "pixels",
-                            src : self.cartospThemesInfo[feature.getProperties().service_thematique].markerPath + featureStructure + ".svg",
+                            src : self.cartospThemesInfo[feature.getProperties().thematique].markerPath + featureStructure + ".svg",
                         })
                     });
                 };
