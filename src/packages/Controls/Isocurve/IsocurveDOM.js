@@ -43,8 +43,11 @@ var IsoDOM = {
         var span = document.createElement("span");
         button.appendChild(span);
         button.id = this._addUID("GPshowIsochronPicto");
-        button.className = "GPshowOpen GPshowAdvancedToolPicto GPshowIsochronPicto gpf-btn gpf-btn--tertiary gpf-btn-icon gpf-btn-icon-isocurve fr-btn fr-btn--tertiary";
-        button.setAttribute("aria-label", "Calculer une isochrone");
+        button.classList.add("GPshowOpen", "GPshowAdvancedToolPicto", "GPshowIsochronPicto");
+        button.classList.add("gpf-btn", "gpf-btn--tertiary", "gpf-btn-icon", "gpf-btn-icon-isocurve");
+        button.classList.add("icon--ri", "icon--ri--map-pin-time-line");
+        button.classList.add("fr-btn", "fr-btn--tertiary");
+        button.setAttribute("aria-label", "Zone selon le temps de trajet ou distance");
         button.setAttribute("tabindex", "0");
         button.setAttribute("aria-pressed", false);
         button.setAttribute("type", "button");

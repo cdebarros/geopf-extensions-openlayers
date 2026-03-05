@@ -6,6 +6,8 @@ module.exports = (env, argv) => {
         entry : {
             // CSS themes portail
             "Classic" : [
+                // INFO dépendances externes !
+                // path.join(rootdir, "src", "packages", "CSS", "Iconify", "ri.css"),
                 path.join(rootdir, "src", "packages", "CSS", "GPFwaiting.css"),
                 path.join(rootdir, "src", "packages", "CSS", "GPFgeneralWidget.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/Drawing", "GPFdrawingStyle.css"),
@@ -26,6 +28,7 @@ module.exports = (env, argv) => {
                 path.join(rootdir, "src", "packages", "CSS", "Controls/ReverseGeocoding", "GPFreverseGeocodingStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/Route", "GPFrouteStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/SearchEngine", "GPFsearchEngineStyle.css"),
+                path.join(rootdir, "src", "packages", "CSS", "Controls/SearchEngine", "GPFadvancedSearchEngineStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/ToolBoxMeasure", "GPFtoolBoxMeasureStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/Zoom", "GPFzoomStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/FullScreen", "GPFfullScreenStyle.css"),
@@ -40,6 +43,7 @@ module.exports = (env, argv) => {
             // CSS themes dsfr
             "Dsfr" : [
                 // INFO dépendances externes !
+                // path.join(rootdir, "src", "packages", "CSS", "Iconify", "ri.css"),
                 // path.join(rootdir, "node_modules/@gouvfr/dsfr/dist/dsfr.css"),
                 // path.join(rootdir, "node_modules/@gouvfr/dsfr/dist/utility/icons/icons.css"),
                 path.join(rootdir, "src", "packages", "CSS", "DSFRgeneralWidget.css"),
@@ -61,6 +65,7 @@ module.exports = (env, argv) => {
                 path.join(rootdir, "src", "packages", "CSS", "Controls/ReverseGeocoding", "DSFRreverseGeocodingStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/Route", "DSFRrouteStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/SearchEngine", "DSFRsearchEngineStyle.css"),
+                path.join(rootdir, "src", "packages", "CSS", "Controls/SearchEngine", "DSFRadvancedSearchEngineStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/ToolBoxMeasure", "DSFRtoolBoxMeasureStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/Zoom", "DSFRzoomStyle.css"),
                 path.join(rootdir, "src", "packages", "CSS", "Controls/FullScreen", "DSFRfullScreenStyle.css"),

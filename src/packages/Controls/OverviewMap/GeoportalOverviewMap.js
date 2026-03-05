@@ -6,6 +6,7 @@ import SelectorID from "../../Utils/SelectorID";
 import GeoportalWMTS from "../../Layers/LayerWMTS";
 // import ol
 import Map from "ol/Map";
+import View from "ol/View";
 import OverviewMap from "ol/control/OverviewMap";
 
 var logger = Logger.getLogger("overviewMap");
@@ -251,13 +252,18 @@ class GeoportalOverviewMap extends OverviewMap {
             options.collapsed = true;
         }
         options.label = options.label || "";
-        options.tipLabel = "Carte générale";
+        options.tipLabel = "Mini-carte";
         options.layers = options.layers || [
             new GeoportalWMTS({
                 layer : "GEOGRAPHICALGRIDSYSTEMS.MAPS.OVERVIEW",
                 configuration : LAYER_CONFIG
             })
         ];
+        options.view = options.view || new View({
+            minZoom : 1,
+            maxZoom : 8
+        });
+
 
         super(options);
         /**
@@ -304,7 +310,10 @@ class GeoportalOverviewMap extends OverviewMap {
         // button
         var button = elements[1];
         button.id = "GPshowOverviewMap-" +  this._uid;
-        button.classList.add("GPshowOpen", "GPshowAdvancedToolPicto", "GPshowOverviewMap", "gpf-btn-icon", "gpf-btn-icon-overviewmap", "fr-btn", "fr-btn--tertiary", "gpf-btn--tertiary");
+        button.classList.add("GPshowOpen", "GPshowAdvancedToolPicto", "GPshowOverviewMapPicto");
+        button.classList.add("gpf-btn-icon", "gpf-btn--tertiary", "gpf-btn-icon-overviewmap");
+        // button.classList.add("icon--ri", "icon--ri--navigation-line");
+        button.classList.add("fr-btn", "fr-btn--tertiary");
         button.setAttribute("tabindex", "0");
         button.setAttribute("aria-pressed", !this.options.collapsed);
         button.setAttribute("type", "button");

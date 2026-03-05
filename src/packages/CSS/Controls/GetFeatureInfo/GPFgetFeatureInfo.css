@@ -2,6 +2,11 @@ div[id^=GPgetFeatureInfo-] {
     top: 260px;
     left: 10px;
   }
+  
+div[id^=GPgetFeatureInfoAccordionGroup-] {
+  user-select: text;
+  max-height: 300px;
+}
 
 /* Showing/hiding */
 
@@ -28,9 +33,8 @@ dialog[id^="GPgetFeatureInfoPanel-"] {
 }
 
 .GPgetFeatureInfoAccordionGroup {
-  overflow-y: scroll;
+  overflow-y: auto;
   scrollbar-width: thin;
-  max-height: calc(52vh - 92px);
 }
 
 .GPgetFeatureInfoAccordionContent {

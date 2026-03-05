@@ -273,8 +273,19 @@ class ContextMenu extends Control {
      * @private
      */
     addEventsListeners () {
-        this.contextmenu.on("open", (evt) => {evt.this = this; this.onOpenContextMenu(evt);});
-        this.contextmenu.on("close", (evt) => {evt.this = this; this.onCloseContextMenu(evt);});
+        this.contextmenu.on("open", (evt) => {
+            evt.this = this; 
+            this.onOpenContextMenu(evt);
+        });
+        this.contextmenu.on("close", (evt) => {
+            evt.this = this; 
+            this.onCloseContextMenu(evt);
+        });
+        document.addEventListener("click", (event) => {
+            if (!this.container.contains(event.target)) {
+                this.contextmenu.closeMenu();
+            }
+        });
     }
 
     /**
@@ -291,6 +302,12 @@ class ContextMenu extends Control {
      */
     getAvailableContextMenuControls () {
         var allItems = [
+            {
+                text : "Informations sur des couches",
+                classname : "ol-context-menu-custom fr-text--md",
+                callback : this.getFeatureInfo.bind(this),
+                control_CLASSNAME : "GetFeatureInfo"
+            },
             {
                 text : "Adresse / Coordonnées",
                 classname : "ol-context-menu-custom fr-text--md",
@@ -310,7 +327,7 @@ class ContextMenu extends Control {
                 control_CLASSNAME : "Route"
             },
             {
-                text : "Isochrone - à proximité",
+                text : "Zone selon temps de trajet",
                 classname : "ol-context-menu-custom fr-text--md",
                 callback : this.computeIsochrone.bind(this),
                 control_CLASSNAME : "Isocurve"
@@ -415,6 +432,34 @@ class ContextMenu extends Control {
     }
 
     /**
+     * Fonction qui lance le GFI 
+     * pour les coordonnées sous le clic
+     * 
+     * @param {*} evt event
+     */
+    getFeatureInfo (evt) {
+        var gfi = this.getMap().getControls().getArray().filter(control => control.CLASSNAME == "GetFeatureInfo")[0];
+        // Enregistrement de l'état actif ou non du GFI
+        var activatedGFI;
+        if (gfi.buttonGetFeatureInfoShow.getAttribute("aria-pressed") === "false") {
+            activatedGFI = false;
+        }
+        gfi.buttonGetFeatureInfoShow.click();
+        gfi.buttonGetFeatureInfoShow.setAttribute("aria-pressed", true);
+        let pixel = this.getMap().getPixelFromCoordinate(evt.coordinate);
+        let fakeEvent = {
+            pixel : pixel,
+            map : this.getMap(),
+            coordinate : evt.coordinate
+        };
+        this.getMap().dispatchEvent({ type : "singleclick", ...fakeEvent });
+        // on re-désactive le bouton GFI s'il était désactivé
+        if (activatedGFI === false) {
+            gfi.buttonGetFeatureInfoShow.setAttribute("aria-pressed", false);
+        }
+    }
+
+    /**
      * Fonction qui ouvre le widget des légendes
      * 
      * @param {*} evt event
@@ -469,7 +514,7 @@ class ContextMenu extends Control {
             },
             onFailure : function (error) {},
             // spécifique au service
-            positions : [{lon : clickedCoordinate[1], lat : clickedCoordinate[0]}],
+            positions : [{lon : clickedCoordinate[0], lat : clickedCoordinate[1]}],
             outputFormat : "json" // json|xml
         };
         Gp.Services.getAltitude(altiOptions);
@@ -493,13 +538,13 @@ class ContextMenu extends Control {
             let config = {
                 id : "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
                 layer : "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
-                attributes : ["nom"]
+                attributes : ["code_postal","nom_officiel"]
             };
             const result = await OGCRequest.computeGenericGPFWFS(
                 config.layer,
                 config.attributes,
                 config.around || 0,
-                config.geom_name || "geom",
+                config.geom_name || "geometrie",
                 config.additional_cql || "",
                 config.epsg || 4326,
                 config.get_geom || false,
@@ -507,7 +552,7 @@ class ContextMenu extends Control {
                 clickedCoordinate[1]
             );
             if (result.length) {
-                address.innerHTML = result[0];
+                address.innerHTML = result[0].join(", ");
             }
         };
 
@@ -581,6 +626,16 @@ class ContextMenu extends Control {
      * @private
      */
     onOpenContextMenu (e) {
+        // Récupère le canvas de la carte
+        const mapViewport = this.getMap().getViewport();
+        const canvas = mapViewport.querySelector("canvas");
+        // Vérifie que le clic droit est bien sur le canvas de la carte
+        if (!canvas || e.originalEvent.target !== canvas) {
+            // On ne fait rien si ce n’est pas sur le canvas de la carte
+            this.contextmenu.clear();
+            this.contextmenu.closeMenu();
+            return;
+        }
         var addMenuToolsEventListeners = () => {
             e.this.controlList = []; 
             var controlArray = e.this.getMap().getControls().getArray().filter(control => control.CLASSNAME == "Route");

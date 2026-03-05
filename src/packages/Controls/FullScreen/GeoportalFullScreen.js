@@ -36,7 +36,7 @@ class GeoportalFullScreen extends FullScreen {
         options.labelActive = options.labelActive || "";
         options.activeClassName = options.activeClassName || className + "-true";
         options.inactiveClassName =  options.inactiveClassName || className + "-false";
-        options.tipLabel = options.tipLabel || "Basculer en mode plein écran";
+        options.tipLabel = options.tipLabel || "Plein écran";
 
         super(options);
         /**
@@ -90,7 +90,9 @@ class GeoportalFullScreen extends FullScreen {
         // INFO: Ajout d'une SPAN pour enlever des marges de 6px dans CHROMIUM (?!)
         var span = document.createElement("span");
         button.appendChild(span);
-        button.classList.add("GPshowOpen", "GPshowAdvancedToolPicto", "GPfullScreenPicto", "fr-btn", "fr-btn--tertiary", "gpf-btn--tertiary", "gpf-btn", "gpf-btn-icon");
+        button.classList.add("GPshowOpen", "GPshowAdvancedToolPicto", "GPfullScreenPicto");
+        button.classList.add("fr-btn", "fr-btn--tertiary");
+        button.classList.add("gpf-btn--tertiary", "gpf-btn", "gpf-btn-icon");
         button.setAttribute("tabindex", "0");
         button.setAttribute("aria-pressed", false);
         button.setAttribute("type", "button");

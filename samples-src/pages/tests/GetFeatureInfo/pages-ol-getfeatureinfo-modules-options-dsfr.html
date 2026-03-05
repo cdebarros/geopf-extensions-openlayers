@@ -87,9 +87,17 @@
                 })
             });
             map.addLayer(gpHydro);
+
+            var mapbox = new ol.layer.GeoportalMapBox({
+                layer  : "PLAN.IGN",
+                style  : "gris"
+            });
+            map.addLayer(mapbox);
+            
             // 3. Ajout du GetFeatureInfo
             var getFeatureInfo = new ol.control.GetFeatureInfo({
-                position: "bottom-left"
+                position: "bottom-left",
+                noDataMessage : "<h6 style='text-align: center;'> Pas d'infos disponibles </h6> <p style='text-align: center;'> Il n'y a pas de données interrogeables ici </p>"
             });
             map.addControl(getFeatureInfo);
 
@@ -195,7 +203,8 @@
             // 5. Ajout du contrôle de gestion de l'empilement des couches (layerSwitcher)
             var layerSwitcher = new ol.control.LayerSwitcher({
                 options : {
-                    collapsed: false
+                    collapsed: false,
+                    panel: true
                 }
             });
             map.addControl(layerSwitcher);

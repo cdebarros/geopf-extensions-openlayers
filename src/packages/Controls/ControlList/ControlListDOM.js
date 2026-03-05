@@ -42,10 +42,12 @@ var ControlListDOM = {
         // INFO: Ajout d'une SPAN pour enlever des marges de 6px dans CHROMIUM (?!)
         var span = document.createElement("span");
         button.appendChild(span);
-        span.innerText = "+";
         button.id = this._addUID("GPshowControlListPicto");
-        button.className = "GPshowOpen GPshowAdvancedToolPicto GPshowControlListPicto gpf-btn gpf-btn--tertiary gpf-btn-icon gpf-btn-icon-controllist fr-btn fr-btn--tertiary";
-        button.setAttribute("aria-label", "Tous mes outils");
+        button.classList.add("GPshowOpen", "GPshowAdvancedToolPicto", "GPshowControlListPicto");
+        button.classList.add("gpf-btn", "gpf-btn--tertiary", "gpf-btn-icon", "gpf-btn-icon-controllist");
+        // button.classList.add("icon--ri", "icon--ri--list-check");
+        button.classList.add("fr-btn", "fr-btn--tertiary");
+        button.setAttribute("aria-label", "Afficher plus");
         button.setAttribute("tabindex", "0");
         button.setAttribute("aria-pressed", false);
         button.setAttribute("type", "button");

@@ -43,8 +43,11 @@ var ElevationPathDOM = {
         var span = document.createElement("span");
         button.appendChild(span);
         button.id = this._addUID("GPshowElevationPathPicto");
-        button.className = "GPshowOpen GPshowAdvancedToolPicto gpf-btn gpf-btn--tertiary gpf-btn-icon gpf-btn-icon-elevation fr-btn fr-btn--tertiary";
-        button.setAttribute("aria-label", "Calculer un profil altimétrique");
+        button.classList.add("GPshowOpen", "GPshowAdvancedToolPicto", "GPshowElevationPathPicto");
+        button.classList.add("gpf-btn", "gpf-btn--tertiary", "gpf-btn-icon", "gpf-btn-icon-elevation");
+        // button.classList.add("icon--ri", "icon--ri--line-chart-line");
+        button.classList.add("fr-btn", "fr-btn--tertiary");
+        button.setAttribute("aria-label", "Profil altimétrique");
         button.setAttribute("tabindex", "0");
         button.setAttribute("aria-pressed", false);
         button.setAttribute("type", "button");
