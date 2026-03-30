@@ -915,28 +915,26 @@ var IsoDOM = {
 
         // set checkbox list
         layerList.forEach(element => {
-            if (element.time == time) {
-                var fieldset = document.createElement("div");
-                fieldset.className = "fr-fieldset__element";
-                var checkboxgroup = document.createElement("div");
-                checkboxgroup.className = "fr-checkbox-group";
-                var inputcheckbox = document.createElement("input");
-                inputcheckbox.type = "checkbox";
-                inputcheckbox.id = "checkbox_"+element.layername;
-                inputcheckbox.value = element.layername;
-                var labelcheckbox = document.createElement("label");
-                labelcheckbox.className = "fr-label";
-                labelcheckbox.innerHTML = element.title;
-                labelcheckbox.setAttribute("for", "checkbox_"+element.layername);
+            var fieldset = document.createElement("div");
+            fieldset.className = "fr-fieldset__element";
+            var checkboxgroup = document.createElement("div");
+            checkboxgroup.className = "fr-checkbox-group";
+            var inputcheckbox = document.createElement("input");
+            inputcheckbox.type = "checkbox";
+            inputcheckbox.id = "checkbox_"+element.nom;
+            inputcheckbox.value = element.nom;
+            var labelcheckbox = document.createElement("label");
+            labelcheckbox.className = "fr-label";
+            labelcheckbox.innerHTML = element.nom;
+            labelcheckbox.setAttribute("for", "checkbox_"+element.nom);
 
-                inputcheckbox.addEventListener("click", (e) => {
-                    this.onSelecTypologyClick(e);
-                });
+            inputcheckbox.addEventListener("click", (e) => {
+                this.onSelecTypologyClick(e);
+            });
 
-                checkboxgroup.append(inputcheckbox, labelcheckbox);
-                fieldset.appendChild(checkboxgroup);
-                layerListSelector.appendChild(fieldset);
-            }
+            checkboxgroup.append(inputcheckbox, labelcheckbox);
+            fieldset.appendChild(checkboxgroup);
+            layerListSelector.appendChild(fieldset);
         });
 
         // add event listener div button layer list
@@ -1015,8 +1013,8 @@ var IsoDOM = {
         input20min.id = this._addUID("GPisochronRideTimeChoice20min");
         input20min.type = "radio";
         input20min.name = "GPisochronRideTime";
-        input20min.value = "20 min";
-        if (time == "20 min") {
+        input20min.value = "20";
+        if (time == "20") {
             input30min.checked = true;
         }
 
@@ -1040,8 +1038,8 @@ var IsoDOM = {
         input30min.id = this._addUID("GPisochronRideTimeChoice30min");
         input30min.type = "radio";
         input30min.name = "GPisochronRideTime";
-        input30min.value = "30 min";
-        if (time == "30 min") {
+        input30min.value = "30";
+        if (time == "30") {
             input30min.checked = true;
         }
         input30min.style.paddingLeft = "10px";
@@ -1059,8 +1057,6 @@ var IsoDOM = {
         label30min.innerHTML = "30 min";
         label30min.style.display = "inline-flex";
         div.appendChild(label30min);
-
-
 
         return div;
     },

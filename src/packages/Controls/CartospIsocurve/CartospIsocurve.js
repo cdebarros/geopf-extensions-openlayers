@@ -8,9 +8,7 @@ import Control from "../Control";
 import { unByKey as olObservableUnByKey } from "ol/Observable";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import {transformExtent} from "ol/proj";
-import GeoportalWMS from "../../Layers/LayerWMS";
-// import GeoJSON from "ol/format/GeoJSON";
+import GeoJSON from "ol/format/GeoJSON";
 import {
     Fill,
     Stroke,
@@ -514,7 +512,7 @@ var Isocurve = class Isocurve extends Control {
                 title : "Isochrone/Isodistance",
                 description : "isochrone/isodistance basé sur un graphe"
             },
-            typologyLocations : []
+            locations : []
         };
 
         // merge with user options
@@ -530,10 +528,13 @@ var Isocurve = class Isocurve extends Control {
         this._uid = this.options.id || SelectorID.generate();
 
         // Typology location
-        this.typologyLocations = this.options.typologyLocations;
+        this.locations = this.options.locations;
 
         // Typology layers
-        this.typologyLayers = this.options.typologyLayers;
+        this.typologies = this.options.typologies;
+
+        // Cartosp api URL
+        this.cartospApi = this.options.cartospApi;
 
         // Options du service paramétrables via l'interface (graph, method, exclusions)
         // Mode de transport selectionné : 'Voiture' ou 'Pieton'
@@ -574,7 +575,7 @@ var Isocurve = class Isocurve extends Control {
         this._typologyServicesSelected = [];
         this._typologyServicesCount = 0;
         this._typologyRideSelected = "En voiture";
-        this._typologyTimeSelected = "30 min";
+        this._typologyTimeSelected = "30";
         this._typologyLayersOnMap = [];
         this.eventsListeners = [];
 
@@ -888,11 +889,11 @@ var Isocurve = class Isocurve extends Control {
         typologyPanel.appendChild(typologyTagsContainer);
 
         // Typology Location selector
-        var typologyLocation = this._typologyLocationContainer = this._createTypologyLocationSelectorElement(this.typologyLocations);
+        var typologyLocation = this._typologyLocationContainer = this._createTypologyLocationSelectorElement(this.locations);
         typologyPanel.appendChild(typologyLocation);
 
         // Typology Location selector
-        var typologyLayerSelector = this._typologyLayerSelectorContainer = this._createTypologyLayerSelectorElement(this.typologyLayers, this._typologyTimeSelected);
+        var typologyLayerSelector = this._typologyLayerSelectorContainer = this._createTypologyLayerSelectorElement(this.typologies, this._typologyTimeSelected);
         typologyPanel.appendChild(typologyLayerSelector);
 
         // Typology Ride selector
@@ -1407,23 +1408,46 @@ var Isocurve = class Isocurve extends Control {
     }
 
     onSubmitTopologyIsochrones (e) {
-        var obj = null;
         this._typologyServicesSelected.forEach((service) => {
+            var obj = null;
             obj = {location : this._typologyLocationSelected, layername : service, time : this._typologyTimeSelected, ride : this._typologyRideSelected };
             if (this._typologyLayersOnMap.some((item) => (item.layername === obj.layername & item.time === obj.time & item.location === obj.location)) == false){
                 this._typologyLayersOnMap.push(obj);
                 this._typologyTagsContainer.appendChild(this._createTypologyLayerTagElement(obj));
-                var layernew = new GeoportalWMS({ layer : obj.layername });  
-                layernew.set("location", obj.location);
-                layernew.set("name_location", this.typologyLocations.find((list) => list.code === obj.location).nom);
-                layernew.set("layername", obj.layername);
-                layernew.set("time", obj.time); 
-                layernew.set("ride", obj.ride);
-                layernew.setExtent(transformExtent(this.typologyLocations.find((list) => list.code === obj.location).bbox, "EPSG:4326", "EPSG:3857"));       
-                this.getMap().addLayer(layernew);
-                this.dispatchEvent({
-                    type : "isochrone:add",
-                    layer : layernew
+                // request cartosp api
+                var results = this._GetIsochroneGeometries(obj.layername, obj.location, obj.time);
+                var layernew = null;
+                
+                results.then((data) => {
+                    layernew = new VectorLayer({
+                        source : new VectorSource({
+                            features : new GeoJSON().readFeatures(data, {
+                                featureProjection : "EPSG:3857"
+                            }) 
+                        }),
+                        style : (feature) => {
+                            return new Style({
+                                fill : new Fill({
+                                    color : feature.getProperties().color ? feature.getProperties().color + "4A" : "rgba(255, 0, 0, 0.5)"
+                                }),
+                                stroke : new Stroke({
+                                    color : feature.getProperties().color ? feature.getProperties().color : "rgba(255, 0, 0, 1)",
+                                    width : 2
+                                })
+                            });
+                        }
+                    });
+                    layernew.set("location", obj.location);
+                    layernew.set("name_location", this.locations.find((list) => list.code === obj.location).nom);
+                    layernew.set("layername", obj.layername);
+                    layernew.set("time", obj.time); 
+                    layernew.set("ride", obj.ride);
+                    this.getMap().addLayer(layernew);
+                    this.getMap().getView().fit(layernew.getSource().getExtent(), { duration : 1000 });
+                    this.dispatchEvent({
+                        type : "isochrone:add",
+                        layer : layernew
+                    });
                 });
                 document.getElementById("GPisochroneCounter").innerHTML = this._typologyLayersOnMap.length;
             }
@@ -1452,7 +1476,7 @@ var Isocurve = class Isocurve extends Control {
         this._typologyServicesSelected = [];
         this._typologyTimeSelected = e.target.value;
         this._updateTypologySubmitState();
-        this._typologyLayerSelectorContainer.replaceChildren(this._createTypologyLayerSelectorElement(this.typologyLayers, this._typologyTimeSelected));
+        this._typologyLayerSelectorContainer.replaceChildren(this._createTypologyLayerSelectorElement(this.typologies, this._typologyTimeSelected));
     }
 
     // ################################################################### //
@@ -1907,6 +1931,28 @@ var Isocurve = class Isocurve extends Control {
             this._formContainer.style.display = "none";
             this._typologyContainer.style.display = "inline";
         }
+    }
+
+    /*
+     *  Request Cartosp API to get isochrones
+     *  request: typology, location, time 
+     *  return: array
+     *  @private
+     */
+    _GetIsochroneGeometries (typology, location, time) {
+        // Squelette de requête GET via XMLHttpRequest (compatible) ou fetch
+        var url = this.cartospApi;
+        var params = {
+            typologie : typology,
+            code_dep : location,
+            temps : time
+        };
+
+        // Construction des paramètres
+        var queryString = Object.keys(params).map(key => key + "=" + params[key]).join("&");
+
+        // Exemple avec fetch
+        return fetch(url + "?" + queryString, { method : "GET" }).then(response => response.json()).then(data => {return data;}).catch(error => { console.error(error); return [];});
     }
 
 };
