@@ -1442,6 +1442,7 @@ var Isocurve = class Isocurve extends Control {
                     layernew.set("layername", obj.layername);
                     layernew.set("time", obj.time); 
                     layernew.set("ride", obj.ride);
+                    layernew.set("title", this.locations.find((list) => list.code === obj.location).code + " - " + obj.layername + " - " + obj.ride + " - " + obj.time + "min");
                     this.getMap().addLayer(layernew);
                     this.getMap().getView().fit(layernew.getSource().getExtent(), { duration : 1000 });
                     this.dispatchEvent({

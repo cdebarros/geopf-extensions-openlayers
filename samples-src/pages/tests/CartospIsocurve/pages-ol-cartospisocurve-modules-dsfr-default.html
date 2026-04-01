@@ -4,6 +4,8 @@
         
         <link rel="stylesheet" href="{{ baseurl }}/dist/modules/GpfExtOlCartospIsocurve.css" />
         <script src="{{ baseurl }}/dist/modules/GpfExtOlCartospIsocurve.js"></script>
+        <link rel="stylesheet" href="{{ baseurl }}/dist/modules/GpfExtOlLayerSwitcher.css" />
+        <script src="{{ baseurl }}/dist/modules/GpfExtOlLayerSwitcher.js"></script>
         <script src="{{ baseurl }}/dist/modules/GpfExtOlLayers.js"></script>
 {{/content}}
 
@@ -49,6 +51,17 @@
                   })
                 });
 
+                // Appel du LayerSwitcher
+                var layerSwitcher = new ol.control.LayerSwitcher({
+                    options : {
+                        position : "top-left",
+                        collapsed : true,
+                        panel : true,
+                        counter : true
+                    }
+                });
+                map.addControl(layerSwitcher);
+
                 iso = new ol.control.Isocurve({
                   draggable: true,
                   position: "bottom-left",
@@ -72,6 +85,11 @@
                   ],
                   cartospApi: "http://localhost:8000/api/isochrone"
                 });
+
+                iso.addEventListener("isochrone:add", function(event) {
+                  console.log(map.getLayers().getArray());
+                });
+
                 map.addControl(iso);
              };
              Gp.Services.getConfig({
