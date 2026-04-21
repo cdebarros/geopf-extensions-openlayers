@@ -69,6 +69,9 @@ var Layerselector = class Layerselector extends Control {
         // ajout du container
         (this.element) ? this.element.appendChild(this.container) : this.element = this.container;
 
+        // Set element ID to match the regex pattern for Widget panel management
+        this.element.id = this._addUID("GPlayerselector");
+
         return this;
     }
 
@@ -270,26 +273,54 @@ var Layerselector = class Layerselector extends Control {
     onSelecLayerChange (e) {
         var self = this;
         var layerToAdd = null;
+        var layersCollection = self.getMap().getLayers();
+        var allLayers = layersCollection.getArray();
+        var managedLayers = allLayers.filter((layer) => self.layerSelectorListNames.includes(layer.name));
+        var selectedLayer = null;
         var newlayer = null;
-
-        // remove existing layer
-        self.getMap().getAllLayers().some(layer => {
-            if (self.layerSelectorListNames.includes(layer.name)){
-                self.getMap().removeLayer(layer);
-                return true;
-            }
-        });
+        var layersToRemove = [];
+        var selectedIndex = -1;
 
         // find layer info to add
-        layerToAdd = self.layerSelectorList.find(element => element.layername == e.target.value);
-
-        // add layer to map
-        if (layerToAdd.layertype == "TMS"){
-            newlayer = new GeoportalTMS({ layer : layerToAdd.layername, style : layerToAdd.style });   
-        } else {
-            newlayer = new GeoportalWMS({ layer : layerToAdd.layername });   
+        layerToAdd = self.layerSelectorList.find((element) => element.layername === e.target.value);
+        if (!layerToAdd) {
+            return;
         }
-        self.getMap().setLayers([newlayer].concat(self.getMap().getLayers().getArray()));
+
+        // reuse existing layer when available
+        selectedLayer = managedLayers.find((layer) => layer.name === layerToAdd.layername);
+
+        // otherwise create it once and insert it where the active baselayer is
+        if (!selectedLayer) {
+            if (layerToAdd.layertype === "TMS") {
+                newlayer = new GeoportalTMS({ layer : layerToAdd.layername, style : layerToAdd.style });
+            } else {
+                newlayer = new GeoportalWMS({ layer : layerToAdd.layername });
+            }
+            layersCollection.push(newlayer);
+            selectedLayer = newlayer;
+        }
+
+        // collect only previously managed selector layers except the selected one
+        layersToRemove = managedLayers.filter((layer) => layer !== selectedLayer);
+
+        // ensure selected baselayer is visible
+        selectedLayer.setVisible(true);
+
+        // remove only previous selector baselayers from map
+        layersToRemove.forEach((layer) => {
+            layersCollection.remove(layer);
+        });
+
+        // ensure selected baselayer is at the last index of the collection
+        selectedIndex = layersCollection.getArray().indexOf(selectedLayer);
+        if (selectedIndex !== layersCollection.getLength() - 1) {
+            layersCollection.remove(selectedLayer);
+            layersCollection.push(selectedLayer);
+        }
+
+        // set low zIndex on selected layer to render at bottom
+        selectedLayer.setZIndex(0);
     }
 
 };

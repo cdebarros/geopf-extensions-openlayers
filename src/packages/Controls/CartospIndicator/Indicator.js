@@ -68,6 +68,9 @@ var Indicator = class Indicator extends Control {
         // ajout du container
         (this.element) ? this.element.appendChild(this.container) : this.element = this.container;
 
+        // Set element ID to match the regex pattern for Widget panel management
+        this.element.id = this._addUID("GPindicator");
+
         return this;
     }
 

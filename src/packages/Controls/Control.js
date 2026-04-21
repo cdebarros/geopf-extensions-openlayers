@@ -1,5 +1,6 @@
 import Control from "ol/control/Control";
 import checkDsfr from "./Utils/CheckDsfr";
+import SelectorID from "../Utils/SelectorID";
 
 class ControlExtended extends Control {
 
@@ -106,6 +107,27 @@ class PositionFactory {
         div.className = "position position-container-" + name ;
 
         this.container.appendChild(div);
+    }
+
+    /**
+     * Ensure panel manager can parse control ids with /(\w+)-[0-9]+/
+     * @private
+     */
+    #normalizeControlId () {
+        var element = this.caller.element;
+        if (!element) {
+            return;
+        }
+        var id = element.id || "";
+        if (id.match(/(\w+)-[0-9]+/)) {
+            return;
+        }
+        var baseName = id || this.caller.CLASSNAME || "GPcontrol";
+        baseName = baseName.replace(/[^\w]/g, "");
+        if (!baseName) {
+            baseName = "GPcontrol";
+        }
+        element.id = baseName + "-" + SelectorID.generate();
     }
 
     /**
@@ -225,6 +247,7 @@ class PositionFactory {
         if (!ANCHORS.includes(pos.toLowerCase())) {
             return;
         }
+        this.#normalizeControlId();
         // positionnement de l'element
         this.#setAnchor(pos, false);
 

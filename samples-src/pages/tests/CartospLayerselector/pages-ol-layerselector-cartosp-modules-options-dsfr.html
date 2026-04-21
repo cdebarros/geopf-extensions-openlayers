@@ -42,9 +42,9 @@
     <script>
 
         var LayerSelectorList = [
-            {layername : "PLAN.IGN", title : "Gris", layertype : "TMS", style : "gris", img: "http://localhost:4200/assets/images/layerselector/Gris.png" },
-            {layername : "ORTHOIMAGERY.ORTHOPHOTOS", title : "Aérienne", layertype : "WMS", style : null, img: "http://localhost:4200/assets/images/layerselector/Aérienne.png" }, 
-            {layername : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", title : "Relief", layertype : "WMS", style : null, img: "http://localhost:4200/assets/images/layerselector/Relief.png" }   
+            {layername : "CADASTRALPARCELS.PARCELLAIRE_EXPRESS", title : "Gris", layertype : "WMTS", style : null, img: "http://localhost:4200/assets/images/layerselector/Gris.png" },
+            {layername : "ORTHOIMAGERY.ORTHOPHOTOS", title : "Aérienne", layertype : "WMTS", style : null, img: "http://localhost:4200/assets/images/layerselector/Aérienne.png" }, 
+            {layername : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", title : "Relief", layertype : "WMTS", style : null, img: "http://localhost:4200/assets/images/layerselector/Relief.png" }   
         ];
 
         var map;
@@ -61,20 +61,15 @@
             });
 
             // Ajout de plusieurs couches différentes.
-            var gpMaps = new ol.layer.GeoportalWMTS({
+            var gpMaps = new ol.layer.GeoportalWMS({
                 layer: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2"
             });
             map.addLayer(gpMaps);
 
-            var gpCad = new ol.layer.GeoportalWMTS({
-                layer: "CADASTRALPARCELS.PARCELLAIRE_EXPRESS"
-            });
-            map.addLayer(gpCad);
-
             // Appel du LayerSwitcher
             var layerSwitcher = new ol.control.LayerSwitcher({
                 options : {
-                    position : "bottom-right",
+                    position : "top-left",
                     collapsed : true,
                     panel : true,
                     counter : true

@@ -134,6 +134,9 @@ var Isocurve = class Isocurve extends Control {
         // ajout du container
         (this.element) ? this.element.appendChild(this._container) : this.element = this._container;
 
+        // Set element ID to match the regex pattern for Widget panel management
+        this.element.id = this._addUID("GPisocurve");
+
         return this;
     }
 

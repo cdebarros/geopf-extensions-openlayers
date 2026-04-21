@@ -824,12 +824,12 @@ var IsoDOM = {
         var context = this;
 
         var tag = document.createElement("div");
-        tag.id = layerobj.layername + "-" + layerobj.time + "-div";
+        tag.id = layerobj.location  + "-" + layerobj.layername + "-" + layerobj.time + "-div";
         tag.className = "fr-tag fr-tag--sm fr-tag--cartosp";
         tag.textContent = layerobj.location + " - " + layerobj.layername + " - " + layerobj.ride + " - " + layerobj.time;
 
         var coche = document.createElement("button");
-        coche.id = layerobj.layername + "-" + layerobj.time;
+        coche.id = layerobj.location  + "-" + layerobj.layername + "-" + layerobj.time;
         coche.className = "fr-tag--cartosp";
         coche.style.fontSize = "16px";
         coche.style.lineHeight = "16px";
