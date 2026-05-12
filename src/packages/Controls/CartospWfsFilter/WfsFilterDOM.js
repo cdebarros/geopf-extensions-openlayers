@@ -285,59 +285,64 @@ var WfsFilterDOM = {
                             </label>
                         </div>
                     </div>
-                    <div class="filter-title">Fréquentation (visiteurs par an)</div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="Moins de 100" name="filtersp-spfreq" id="filtersp-Moins de 100" type="checkbox">
-                            <label class="fr-label" for="filtersp-Moins de 100">
-                                Moins de 100
-                            </label>
-                        </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="De 100 à 999" name="filtersp-spfreq" id="filtersp-De 100 à 999" type="checkbox">
-                            <label class="fr-label" for="filtersp-De 100 à 999">
-                                De 100 à 999
-                            </label>
-                        </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="De 1000 à 4999" name="filtersp-spfreq" id="filtersp-De 1000 à 4999" type="checkbox">
-                            <label class="fr-label" for="filtersp-De 1000 à 4999">
-                                De 1000 à 4999
-                            </label>
-                        </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="De 5000 à 9999" name="filtersp-spfreq" id="filtersp-De 5000 à 9999" type="checkbox">
-                            <label class="fr-label" for="filtersp-De 5000 à 9999">
-                                De 5000 à 9999
-                            </label>
-                        </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="De 10000 à 49999" name="filtersp-spfreq" id="filtersp-De 10000 à 49999" type="checkbox">
-                            <label class="fr-label" for="filtersp-De 10000 à 49999">
-                                De 10000 à 49999
-                            </label>
-                        </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="Plus de 50000" name="filtersp-spfreq" id="filtersp-Plus de 50000" type="checkbox">
-                            <label class="fr-label" for="filtersp-Plus de 50000">
-                                Plus de 50000
-                            </label>
-                        </div>
-                    </div>
                 </div>
                 <button class="fr-link margin-link" name="spfilter-more" id="filtersp-more">Afficher plus de filtres &#709;</button>
             </div>
         `;
+
+        /**
+         **  à remettre dans strContainer avant le bouton "Afficher plus de filtres" si on veut réintégrer les filtres de fréquentation
+         **  Réactiver plus bas dans le code l'écouteur d'évènement sur les checkbox de fréquentation
+         **/            
+        /*<div class="filter-title">Fréquentation (visiteurs par an)</div>
+        <div class="fr-fieldset__element">
+            <div class="fr-checkbox-group">
+                <input value="Moins de 100" name="filtersp-spfreq" id="filtersp-Moins de 100" type="checkbox">
+                <label class="fr-label" for="filtersp-Moins de 100">
+                    Moins de 100
+                </label>
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-checkbox-group">
+                <input value="De 100 à 999" name="filtersp-spfreq" id="filtersp-De 100 à 999" type="checkbox">
+                <label class="fr-label" for="filtersp-De 100 à 999">
+                    De 100 à 999
+                </label>
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-checkbox-group">
+                <input value="De 1000 à 4999" name="filtersp-spfreq" id="filtersp-De 1000 à 4999" type="checkbox">
+                <label class="fr-label" for="filtersp-De 1000 à 4999">
+                    De 1000 à 4999
+                </label>
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-checkbox-group">
+                <input value="De 5000 à 9999" name="filtersp-spfreq" id="filtersp-De 5000 à 9999" type="checkbox">
+                <label class="fr-label" for="filtersp-De 5000 à 9999">
+                    De 5000 à 9999
+                </label>
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-checkbox-group">
+                <input value="De 10000 à 49999" name="filtersp-spfreq" id="filtersp-De 10000 à 49999" type="checkbox">
+                <label class="fr-label" for="filtersp-De 10000 à 49999">
+                    De 10000 à 49999
+                </label>
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-checkbox-group">
+                <input value="Plus de 50000" name="filtersp-spfreq" id="filtersp-Plus de 50000" type="checkbox">
+                <label class="fr-label" for="filtersp-Plus de 50000">
+                    Plus de 50000
+                </label>
+            </div>
+        </div> */
 
         // Final HTML content
         var entry = stringToHTML(strContainer);
@@ -368,12 +373,16 @@ var WfsFilterDOM = {
             });
         });
 
-        var inputFreq = shadow.querySelectorAll("[name=filtersp-spfreq]");
+        /*
+         * Filtre frequence désactivé pour le moment (à remettre)
+         * Réintégrer dans le html de strContainer (plus haut) les checkbox
+         */
+        /*var inputFreq = shadow.querySelectorAll("[name=filtersp-spfreq]");
         inputFreq.forEach((input) => {
             input.addEventListener("click", (e) => {
                 this.onSelecFilterFreqClick(e);
             });
-        });
+        });*/
 
         // checkbox event click
         var inputMore = shadow.querySelector("[name=spfilter-more]");
@@ -469,7 +478,7 @@ var WfsFilterDOM = {
         var strContainer = `
             <section id="${o.thematique}" class="fr-accordion">
                 <h3 class="fr-accordion__title" style="height: 48px;">
-                    <button id="GPcollapseWfsfilter_ID_${o.thematique}" class="GPfilterButton fr-accordion__btn" aria-expanded="false" aria-controls="GPwfsfilter_ID_${o.thematique}">${o.thematique} (${o.typologies.length})</button>
+                    <button id="GPcollapseWfsfilter_ID_${o.thematique}" class="GPfilterButton fr-accordion__btn" aria-expanded="false" aria-controls="GPwfsfilter_ID_${o.thematique}">${o.thematique}</button>
                 </h3>
                 <div id="GPwfsfilter_ID_${o.thematique}" class="fr-collapse GPelementHidden" style="margin:unset;">
                     <fieldset class="fr-fieldset" id="checkboxes-${o.thematique}">
