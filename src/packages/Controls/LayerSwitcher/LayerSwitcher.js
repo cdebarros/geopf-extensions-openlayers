@@ -47,6 +47,7 @@ var logger = Logger.getLogger("layerswitcher");
  * @property {string} [position] - Position CSS du widget sur la carte.
  * @property {Array<HeaderButton>} [headerButtons] - Liste d’outils personnalisés à afficher pour chaque couche.
  * @property {Array<AdvancedToolOption>} [advancedTools] - Liste d’outils personnalisés à afficher pour chaque couche.
+ * @property {number} [hiddenLayerCount=0] - Nombre de couches cachées à exclure du compteur.
  * Par défaut, les boutons d'info, de style, noir et blanc et recentrer sont ajoutés.
  */
 
@@ -1489,6 +1490,10 @@ class LayerSwitcher extends Control {
     _updateLayerCounter () {
         if (this._layerSwitcherCounter) {
             this._layerSwitcherCounter.innerHTML = Object.keys(this._layers).length;
+            // count out hidden layers in layer switcher counter
+            if (this.options.hiddenLayerCount) {
+                this._layerSwitcherCounter.innerHTML = this._layerSwitcherCounter.innerHTML - this.options.hiddenLayerCount;
+            }
         }
     }
 

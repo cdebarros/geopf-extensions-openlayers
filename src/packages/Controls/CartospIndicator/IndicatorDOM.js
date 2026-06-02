@@ -210,7 +210,7 @@ var IndicatorDOM = {
         var strContainer = `
             <section id="${o.thematique}" class="fr-accordion">
                 <h3 class="fr-accordion__title" style="height: 48px;">
-                    <button id="GPcollapseIndicator_ID_${o.thematique}" class="GPfilterButton fr-accordion__btn" aria-expanded="false" aria-controls="GPindicator_ID_${o.thematique}">${o.thematique} (${o.indicators.filter((indicator) => indicator.layername != "").length})</button>
+                    <button id="GPcollapseIndicator_ID_${o.thematique}" class="GPfilterButton fr-accordion__btn" aria-expanded="false" aria-controls="GPindicator_ID_${o.thematique}">${o.thematique}</button>
                 </h3>
                 <div id="GPindicator_ID_${o.thematique}" class="fr-collapse GPelementHidden" style="margin:unset;">
                     <fieldset class="fr-fieldset" id="checkboxes-${o.thematique}">
