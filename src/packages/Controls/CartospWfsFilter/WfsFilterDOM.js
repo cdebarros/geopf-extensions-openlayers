@@ -171,7 +171,7 @@ var WfsFilterDOM = {
     _createFilterInfosDiv : function () {
         // info
         var infos = document.createElement("div");
-        infos.innerHTML = "Les filtres s'appliquent seulement aux services publics ayant la donnée disponible. <br><br> Lorsqu'un filtre est activé, seuls les services correspondants à la catégorie sélectionnée s'affichent.";
+        infos.innerHTML = "Les filtres s'appliquent seulement aux services publics ayant la donnée disponible. <br><br> Lorsqu'un filtre est activé, seuls les services correspondant à la catégorie sélectionnée s'affichent.";
         infos.className = "fr-callout";
         infos.id = "filter-infos";
 
