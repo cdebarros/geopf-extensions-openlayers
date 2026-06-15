@@ -105,6 +105,15 @@ class SourceWFS extends VectorSource {
             urlParams["apikey"] = key;
         }
 
+        // Le server WFS peut émettre des liens de pagination mal formés comme /wfs/wfs.
+        // Normaliser ces liens avant de demander la page suivante.
+        var normalizePaginationLink = (href) => {
+            if (!href || typeof href !== "string") {
+                return href;
+            }
+            return href.replace(/(\/wfs)(?:\/wfs)+(\?|$)/i, "$1$2");
+        };
+
         var loadFeatures = (self, url, extent, success, failure) => {
             const xhr = new XMLHttpRequest();
             xhr.open("GET", url);
@@ -132,7 +141,7 @@ class SourceWFS extends VectorSource {
                         for (let i = 0; i < response.links.length; i++) {
                             const link = response.links[i];
                             if (link.rel === "next") {
-                                loadFeatures(self, link.href, extent, success, failure);
+                                loadFeatures(self, normalizePaginationLink(link.href), extent, success, failure);
                             }
                         }
                     }
