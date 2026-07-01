@@ -153,7 +153,7 @@ var WfsFilterDOM = {
 
         // reset
         var reset = document.createElement("button");
-        reset.className = "fr-link margin-link zero-count"; // afficher en dsfr
+        reset.className = "fr-btn fr-btn--tertiary fr-btn--sm margin-link zero-count"; // afficher en dsfr
         reset.innerText = "Réinitialiser (0)";
         reset.title = "Réinitialiser la sélection de filtres";
         reset.id = "reset-filter-selection";
@@ -286,7 +286,7 @@ var WfsFilterDOM = {
                         </div>
                     </div>
                 </div>
-                <button class="fr-link margin-link" name="spfilter-more" id="filtersp-more">Afficher plus de filtres &#709;</button>
+                <button id="sp-more-filter-btn" class="fr-btn fr-btn--tertiary fr-btn--sm margin-link fr-icon-arrow-down-s-line fr-btn--icon-right" name="spfilter-more" id="filtersp-more">Afficher plus de filtres</button>
             </div>
         `;
 
@@ -390,10 +390,14 @@ var WfsFilterDOM = {
             var element = document.getElementById("spfilter-more-content");
             if (element.style.display === "none") {
                 element.style.display = "inline";
-                e.target.innerHTML = "Afficher moins de filtres &#708;";
+                e.target.innerHTML = "Afficher moins de filtres";
+                e.target.classList.add("fr-icon-arrow-up-s-line");
+                e.target.classList.remove("fr-icon-arrow-down-s-line");
             } else {
                 element.style.display = "none";
-                e.target.innerHTML = "Afficher plus de filtres &#709;";
+                e.target.innerHTML = "Afficher plus de filtres";
+                e.target.classList.add("fr-icon-arrow-down-s-line");
+                e.target.classList.remove("fr-icon-arrow-up-s-line");
             }
         });
 
@@ -406,7 +410,7 @@ var WfsFilterDOM = {
 
         // select
         var select = document.createElement("button");
-        select.className = "fr-link"; // afficher en dsfr
+        select.className = "fr-btn fr-btn--tertiary fr-btn--sm"; // afficher en dsfr
         select.innerText = "Tout sélectionner";
         select.title = "Sélectionner toutes les typologies";
         select.id = "select-sp-selection";
@@ -417,7 +421,7 @@ var WfsFilterDOM = {
 
         // reset
         var reset = document.createElement("button");
-        reset.className = "fr-link zero-count"; // afficher en dsfr
+        reset.className = "fr-btn fr-btn--tertiary fr-btn--sm zero-count"; // afficher en dsfr
         reset.innerText = "Réinitialiser (0)";
         reset.title = "Réinitialiser la sélection de services publics";
         reset.id = "reset-sp-selection";
@@ -462,7 +466,7 @@ var WfsFilterDOM = {
 
         // create checkboxes by typologie_services
         var content = "";
-        content+=`<button title="Sélectionner toutes les typologies du thème" class="fr-link margin-link" value="${o.thematique}" name="checkboxes-all-${o.thematique}" id="checkboxes-all-${o.thematique}">Tout sélectionner</button>`;
+        content+=`<button title="Sélectionner toutes les typologies du thème" class="fr-btn fr-btn--tertiary fr-btn--sm fr-ml-2v fr-mb-4v margin-link" value="${o.thematique}" name="checkboxes-all-${o.thematique}" id="checkboxes-all-${o.thematique}">Tout sélectionner</button>`;
         o.typologies.forEach(typologie_service => {
             content+=`<div class="fr-fieldset__element">
                 <div class="fr-checkbox-group">

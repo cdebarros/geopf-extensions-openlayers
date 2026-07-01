@@ -77,20 +77,26 @@
 
 #select-sp-selection, .margin-link {
     margin-bottom: 10px;
-    text-decoration: underline;
-    text-underline-offset: 4px;
 }
 
 #reset-sp-selection, #reset-filter-selection {
     margin-bottom: 10px;
-    text-decoration: underline;
-    text-underline-offset: 4px;
     left: 170px;
     position: relative;
 }
 
+#sp-more-filter-btn {
+    box-shadow: none;
+}
+
+#reset-sp-selection {
+    box-shadow: none;
+    left: 149px;
+}
+
 #reset-filter-selection {
-    left: 251px;
+    left: 237px;
+    box-shadow: none;
 }
 
 #filter-label {
