@@ -636,7 +636,7 @@ class Isocurve extends Control {
          *   console.log(e.target.getData());
          * })
          */
-        this.COMPUTE_ISOCURVE_EVENT = "isocurve:comput";
+        this.COMPUTE_ISOCURVE_EVENT = "isocurve:compute";
         /**
          * event triggered when user clear points to compute isochrone
          *
@@ -1155,6 +1155,7 @@ class Isocurve extends Control {
         // on met en place l'affichage des resultats dans la fenetre de resultats.
         var context = this;
         var isoRequestOptions = {
+            serverUrl : options.serverUrl,
             position : position,
             graph : options.graph || this._currentTransport,
             exclusions : options.exclusions || this._currentExclusions,
@@ -1412,13 +1413,6 @@ class Isocurve extends Control {
          * @private
          * sauvegarde de l'etat des resultats */
         this._currentIsoInformations = results;
-
-        /**
-         * event triggered when the compute is finished
-         */
-        this.dispatchEvent({
-            type : this.COMPUTE_ISOCURVE_EVENT
-        });
 
         // mise à jour du controle !
         this._formContainer.className = "GPelementHidden gpf-hidden gpf-panel__content fr-modal__content";

@@ -103,6 +103,7 @@ import ControlList from "./Controls/ControlList/ControlList";
 import Catalog from "./Controls/Catalog/Catalog";
 import ContextMenu from "./Controls/ContextMenu/ContextMenu";
 import Reporting from "./Controls/Reporting/Reporting";
+import Panoramax from "./Controls/Panoramax/Panoramax";
 // Carto SP fork
 import WfsFilter from "./Controls/CartospWfsFilter/WfsFilter";
 import Indicator from "./Controls/CartospIndicator/Indicator";
@@ -298,6 +299,7 @@ Ol.control.Territories = Territories;
 Ol.control.ControlList = ControlList;
 Ol.control.ContextMenu = ContextMenu;
 Ol.control.Reporting = Reporting;
+Ol.control.Panoramax = Panoramax;
 // Carto SP fork
 Ol.control.WfsFilter = WfsFilter;
 Ol.control.Indicator = Indicator;
@@ -334,6 +336,7 @@ export {
      * @see ol.control.ControlList
      * @see ol.control.ContextMenu
      * @see ol.control.Reporting
+     * @see ol.control.Panoramax
      * @see ol.control.LayerImport
      * @see ol.layer.GeoportalWMTS
      * @see ol.layer.GeoportalWMS

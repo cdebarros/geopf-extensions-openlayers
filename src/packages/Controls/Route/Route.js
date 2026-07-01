@@ -72,7 +72,6 @@ class Route extends Control {
      * @fires route:drawstart
      * @fires route:drawend
      * @fires route:compute
-     * @fires route:compute
      * @fires route:newresults
      * @example
      *  var route = ol.control.Route({
@@ -1154,6 +1153,7 @@ class Route extends Control {
         // on met en place l'affichage des resultats dans la fenetre de resultats.
         var context = this;
         this._requestRouting({
+            serverUrl : routeOptions.serverUrl,
             startPoint : start,
             endPoint : end,
             viaPoints : step,
