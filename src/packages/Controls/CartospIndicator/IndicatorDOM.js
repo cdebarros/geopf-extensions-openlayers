@@ -1,4 +1,5 @@
 import Filter from "../Editor/Filter";
+import getFeatureIcon from "../../CSS/Controls/CartospIndicator/img/dsfr/getFeature.svg";
 
 var IndicatorDOM = {
 
@@ -197,7 +198,7 @@ var IndicatorDOM = {
                     <div class="fr-checkbox-group">
                         <input value="${indicator.layername}" data-opacity="${indicator.opacity}" name="checkboxes-${o.thematique}" id="checkboxes-${indicator.layername}" type="checkbox" ${checked ? "checked": ""}>
                         <label class="fr-label" for="checkboxes-${indicator.layername}">
-                            ${indicator.title}
+                            ${indicator.title}${indicator.getFeatureInfo ? `<span class="indicator-getfeature-tooltip"><img src="${getFeatureIcon}" alt="GetFeatureInfo" class="indicator-getfeature-icon" /></span>` : ""}
                         </label>
                     </div>
                 </div>`;
@@ -230,6 +231,18 @@ var IndicatorDOM = {
         // accordeon dropdown event click
         var button = shadow.querySelector("button, button.fr-accordion__btn");
         if (button) {
+            // Listen for other accordions opening → close this one instantly
+            document.addEventListener("indicator:accordion:open", (e) => {
+                if (e.detail.thematique !== o.thematique) {
+                    var element = document.getElementById("GPindicator_ID_" + o.thematique);
+                    if (element && element.classList.contains("fr-collapse--expanded")) {
+                        button.setAttribute("aria-expanded", "false");
+                        element.classList.remove("fr-collapse--expanded");
+                        element.classList.add("GPelementHidden");
+                    }
+                }
+            });
+
             button.addEventListener("click", (e) => {
                 var status = (e.target.ariaExpanded === "true");
                 e.target.setAttribute("aria-expanded", !status);
@@ -238,6 +251,8 @@ var IndicatorDOM = {
                     element.classList.remove("fr-collapse--expanded");
                     element.classList.add("GPelementHidden");
                 } else {
+                    // Notify other accordions to close
+                    document.dispatchEvent(new CustomEvent("indicator:accordion:open", { detail : { thematique : o.thematique } }));
                     element.classList.add("fr-collapse--expanded");
                     element.classList.remove("GPelementHidden");
                 }

@@ -66,15 +66,15 @@
             {
                 thematique: "Zonage",
                 indicators: [
-                    {title:"Limites administratives", layername: "pilotes_insee_menages_pauvres", opacity: 1},
-                    {title:"Quartiers prioritaires de la ville", layername: "ANCT_QPV_wms", opacity: 1},
+                    {title:"Limites administratives", layername: "pilotes_insee_menages_pauvres", opacity: 1, getFeatureInfo: true},
+                    {title:"Quartiers prioritaires de la ville", layername: "ANCT_QPV_wms", opacity: 1, getFeatureInfo: true},
                 ]
             },
             {
                 thematique: "Santé et accès aux soins",
                 indicators: [
                     {title:"Professionnels de premier recours", layername: ""},
-                    {title:"Médecins généralistes", layername: "total_sante_nb_generalistes", opacity: 1},
+                    {title:"Médecins généralistes", layername: "total_sante_nb_generalistes", opacity: 1, getFeatureInfo: true},
                     {title:"Infirmiers", layername: "total_sante_nb_infirmiers", opacity: 1},
                     {title:"Kinésithérapeuthes", layername: "total_sante_nb_kines", opacity: 1},
                     {title:"Chirurgiens-dentistes", layername: "total_sante_nb_dentistes", opacity: 1},
@@ -83,7 +83,7 @@
                     {title:"Territoire", layername: ""},
                     {title:"Densité médicale", layername: "total_sante_densite_medicale", opacity: 1},
                     {title:"Moyenne d'âge des médecins", layername: "total_sante_moyenne_age_medecin", opacity: 1},
-                    {title:"Accessibilité aux soins de premier recours", layername: "total_sante_accessibilite", opacity: 1},
+                    {title:"Accessibilité aux soins de premier recours", layername: "total_sante_accessibilite", opacity: 1, getFeatureInfo: true},
                     {title:"Zonage CPTS", layername: "pilotes_insee_menages_pauvres", opacity: 1},
                 ]
             },
