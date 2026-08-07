@@ -1,5 +1,4 @@
 import Filter from "../Editor/Filter";
-import getFeatureIcon from "../../CSS/Controls/CartospIndicator/img/dsfr/getFeature.svg";
 
 var IndicatorDOM = {
 
@@ -198,7 +197,7 @@ var IndicatorDOM = {
                     <div class="fr-checkbox-group">
                         <input value="${indicator.layername}" data-opacity="${indicator.opacity}" name="checkboxes-${o.thematique}" id="checkboxes-${indicator.layername}" type="checkbox" ${checked ? "checked": ""}>
                         <label class="fr-label" for="checkboxes-${indicator.layername}">
-                            ${indicator.title}${indicator.getFeatureInfo ? `<span class="indicator-getfeature-tooltip"><img src="${getFeatureIcon}" alt="GetFeatureInfo" class="indicator-getfeature-icon" /></span>` : ""}
+                            ${indicator.title}${indicator.getFeatureInfo ? `<span class="indicator-getfeature-tooltip"><span class="indicator-getfeature-icon" aria-label="GetFeatureInfo"></span></span>` : ""}
                         </label>
                     </div>
                 </div>`;
