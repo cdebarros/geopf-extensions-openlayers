@@ -115,12 +115,21 @@ var IsoDOM = {
         var self = this;
 
         var container = document.createElement("div");
-        container.className = "GPpanelHeader gpf-panel__header fr-modal__header";
+        container.className = "GPpanelHeader gpf-panel__header fr-p-1w";
 
-        var div = document.createElement("div");
+        var icon = document.createElement("span");
+        icon.className = "fr-icon-cartosp-isocurve fr-icon--sm fr-mr-1w";
+        container.appendChild(icon);
+
+        var title = document.createElement("span");
+        title.className = "GPpanelTitle gpf-panel__title";
+        title.innerHTML = "Calcul d'isochrone";
+        container.appendChild(title);
+
+        /*var div = document.createElement("div");
         div.className = "GPpanelTitle gpf-panel__title fr-modal__title fr-pt-4w fr-icon-cartosp-isocurve";
         div.innerHTML = "Calcul d'isochrone";
-        container.appendChild(div);
+        container.appendChild(div);*/
 
         // on desactive l'impl. reduction de la fenetre
         // var divReduce  = document.createElement("div");
@@ -147,7 +156,7 @@ var IsoDOM = {
 
         var divClose = document.createElement("button");
         divClose.id = this._addUID("GPisochronPanelClose");
-        divClose.className = "GPpanelClose GPisochronPanelClose gpf-btn gpf-btn-icon-close fr-btn--close fr-btn fr-btn--tertiary-no-outline fr-m-1w";
+        divClose.className = "GPpanelClose fr-btn fr-btn--sm fr-icon-close-line fr-btn--tertiary-no-outline fr-ml-auto";
         divClose.title = "Fermer le panneau";
 
         // Link panel close / visibility checkbox
@@ -213,6 +222,7 @@ var IsoDOM = {
         divNew.className = "GPresetPicto gpf-btn gpf-btn-icon-reset fr-btn fr-btn--secondary gpf-btn--secondary fr-m-2w";
         divNew.title = "Modifier le calcul";
         divNew.addEventListener("click", function (e) {
+            document.getElementById(self._addUID("GPisochronModeChoice")).classList.remove("GPelementHidden", "gpf-hidden");
             document.getElementById(self._addUID("GPisoResultsPanel")).className = "GPelementHidden gpf-hidden";
             document.getElementById(self._addUID("GPisochronForm")).className = "gpf-panel__content fr-modal__content";
             self.onShowIsoResultsNewClick(e);
@@ -756,50 +766,57 @@ var IsoDOM = {
 
         var divContainer = document.createElement("div");
         divContainer.id = this._addUID("GPisochronModeChoice");
-        
-        var radioContainer = document.createElement("div");
-        radioContainer.className = "GPisochronModeChoice gpf-flex gpf-radio-group fr-radio-group";
+        divContainer.className = "GPisochronModeChoice gpf-flex";
 
         // par adresse
+        var radioAdresse = document.createElement("div");
+        radioAdresse.className = "gpf-radio-group fr-radio-group";
+
         var inputAdresse = document.createElement("input");
         inputAdresse.id = this._addUID("GPisochronModeChoiceAdresse");
         inputAdresse.type = "radio";
         inputAdresse.name = "GPisochronMode";
         inputAdresse.value = "Par adresse";
         inputAdresse.checked = true;
-        radioContainer.appendChild(inputAdresse);
+        radioAdresse.appendChild(inputAdresse);
 
         var labelAdresse = document.createElement("label");
         labelAdresse.className = "GPisochronModeChoiceAdresseImg gpf-label fr-label";
         labelAdresse.htmlFor = this._addUID("GPisochronModeChoiceAdresse");
         labelAdresse.title = "Par adresse";
         labelAdresse.innerHTML = "Par adresse";
-        radioContainer.appendChild(labelAdresse);
+        radioAdresse.appendChild(labelAdresse);
 
         inputAdresse.addEventListener("change", function (e) {
             context._ShowSelectedIsochroneMod();
         });
 
+        divContainer.appendChild(radioAdresse);
+
         // par typologie de service
+        var radioTypologie = document.createElement("div");
+        radioTypologie.className = "gpf-radio-group fr-radio-group fr-pl-1w";
+
         var inputTypologie = document.createElement("input");
         inputTypologie.id = this._addUID("GPisochronModeChoiceTypologie");
         inputTypologie.type = "radio";
         inputTypologie.name = "GPisochronMode";
-        inputTypologie.value = "Par adresse";
-        radioContainer.appendChild(inputTypologie);
+        inputTypologie.value = "Par typologie de service";
+        inputTypologie.checked = false;
+        radioTypologie.appendChild(inputTypologie);
 
         var labelTypologie = document.createElement("label");
         labelTypologie.className = "GPisochronModeChoiceTypologieImg gpf-label fr-label";
         labelTypologie.htmlFor = this._addUID("GPisochronModeChoiceTypologie");
         labelTypologie.title = "Par typologie de service";
         labelTypologie.innerHTML = "Par typologie de service";
-        radioContainer.appendChild(labelTypologie);
+        radioTypologie.appendChild(labelTypologie);
 
         inputTypologie.addEventListener("change", function (e) {
             context._ShowSelectedIsochroneMod();
         });
-        
-        divContainer.appendChild(radioContainer);
+
+        divContainer.appendChild(radioTypologie);
 
         return divContainer;
     },
@@ -807,8 +824,8 @@ var IsoDOM = {
     _createIsoPanelTypologyElement : function () {
         var div = document.createElement("div");
         div.id = this._addUID("GPisochronTypology");
-        div.className = "gpf-panel gpf-panel__content fr-modal__content";
-        div.style.display = "none";
+        div.className = "gpf-panel gpf-panel__content fr-modal__content GPelementHidden gpf-hidden";
+        // div.style.display = "none";
 
         return div;
     },
@@ -911,7 +928,8 @@ var IsoDOM = {
         // layer List selector
         var layerListSelector = document.createElement("div");
         layerListSelector.id = "GPisochronTypologyLayerListSelector";
-        layerListSelector.style.display = "none";
+        // layerListSelector.style.display = "none";
+        layerListSelector.className = "GPelementHidden gpf-hidden";
 
         // set checkbox list
         layerList.forEach(element => {
@@ -940,10 +958,10 @@ var IsoDOM = {
         // add event listener div button layer list
         selectLocation.addEventListener("click", function (e) {
             var LayerListPanel = document.getElementById("GPisochronTypologyLayerListSelector");
-            if (LayerListPanel.style.display === "none") {
-                LayerListPanel.style.display = "inline";
+            if (LayerListPanel.classList.contains("GPelementHidden")) {
+                LayerListPanel.classList.remove("GPelementHidden", "gpf-hidden");
             } else {
-                LayerListPanel.style.display = "none";
+                LayerListPanel.classList.add("GPelementHidden", "gpf-hidden");
             }
         });
 
@@ -951,7 +969,7 @@ var IsoDOM = {
             if (e.target.id != "GPisochronTypologyLayerListSelector") {
                 var LayerListPanel = document.getElementById("GPisochronTypologyLayerListSelector");
                 if (e.target.id != "GPisochronTypologyLayerSelect" && e.target.type != "checkbox" && e.target.className != "fr-label") {
-                    LayerListPanel.style.display = "none";
+                    LayerListPanel.classList.add("GPelementHidden", "gpf-hidden");
                 }
             }
         });

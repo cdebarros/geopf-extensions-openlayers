@@ -21,7 +21,7 @@ button[id^="GPshowLayerselectorPicto-"][aria-pressed="true"] + dialog {
     visibility: visible;
     opacity: 100%;
     width: 300px;
-    height: 130px !important;
+    height: 140px !important;
     bottom: 0px !important;
     top: unset !important;
 }

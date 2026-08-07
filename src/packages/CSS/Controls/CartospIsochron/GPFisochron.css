@@ -102,13 +102,12 @@ div[id^=GPisochronTransportChoice] > div, div[id^=GPisochronModeChoice] > div {
 }
 
 div[id^=GPisochronModeChoice]{
-  overflow: auto;
-  padding: 0 2rem 2rem 2rem;
+  padding: 1rem 1rem 0rem 1rem;
 }
 
 div[id^=GPisochronTypology] {
   width: 100%;
-  padding: 0 2rem 2rem 2rem;
+  padding: 1rem;
 }
 
 div[id^=GPisochronTypologyLocation] {

@@ -124,3 +124,7 @@
 .zero-count {
     color: rgba(146, 146, 146, 1);
 }
+
+.gpf-panel__wfsfilter > .fr-modal__content {
+    margin-top: 1.5rem;
+}

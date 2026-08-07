@@ -1,9 +1,11 @@
 {
   "name": "geopf-extensions-openlayers",
   "description": "French Geoportal Extensions for OpenLayers libraries",
-  "version": "1.0.0-beta.12-560",
-  "date": "24/06/2026",
+  "version": "1.0.0-beta.13-571",
+  "date": "17/07/2026",
   "module": "src/index.js",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "directories": {},
   "engines": {
     "node": ">=20"
@@ -45,7 +47,7 @@
     "@panoramax/web-viewer": "^4.4.0"
   },
   "dependencies": {
-    "@gouvfr/dsfr": "^1.13.1",
+    "@gouvfr/dsfr": "1.14.4",
     "@mapbox/mapbox-gl-style-spec": "14.8.0",
     "@xmldom/xmldom": "^0.9.0",
     "ajv": "^8.17.1",
@@ -82,6 +84,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^7.0.0",
+    "eslint-plugin-security": "^4.0.1",
     "eslint-webpack-plugin": "^4.0.1",
     "exports-loader": "^5.0.0",
     "expose-loader": "^5.0.0",

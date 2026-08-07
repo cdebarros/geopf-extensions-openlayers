@@ -8,9 +8,8 @@
   -webkit-mask: url("img/isochrone.svg");
   mask: url("img/isochrone.svg");
   mask-repeat: no-repeat;
-  mask-size: 24px 24px;
+  mask-size: 16px 16px;
   mask-position: center center;
-  margin-right: 5px;
   color: var(--text-action-high-blue-france);
 }
 

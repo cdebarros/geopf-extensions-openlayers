@@ -165,3 +165,7 @@ div[id^=GPindicator_] > fieldset > h6 {
 .indicator-getfeature-tooltip:hover::before {
     opacity: 1;
 }
+
+.gpf-panel__indicator > .fr-modal__content {
+    margin-top: 1.5rem;
+}

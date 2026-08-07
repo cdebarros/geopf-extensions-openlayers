@@ -96,10 +96,16 @@ var IndicatorDOM = {
     },
 
     _createIndicatorPanelTitleDivElement : function () {
-        var div = document.createElement("div");
-        div.className = "gpf-panel__title__indicator fr-modal__title fr-icon-cartosp-indicator";
-        div.innerHTML = " Indicateurs";
+        var div = document.createElement("span");
+        div.className = "GPpanelTitle gpf-panel__title";
+        div.innerHTML = "Indicateurs";
         return div;
+    },
+
+    _createIndicatorPanelTitleIconElement : function () {
+        var div = document.createElement("span");
+        div.className = "fr-icon-cartosp-indicator fr-icon--sm fr-mr-1w";
+        return div;      
     },
 
     /**
@@ -109,15 +115,16 @@ var IndicatorDOM = {
      */
     _createIndicatorPanelHeaderElement : function () {
         var container = document.createElement("div");
-        container.className = "gpf-panel__header_indicator fr-modal__header";
+        container.className = "GPpanelHeader gpf-panel__header fr-p-1w";
         return container;
     },
+
     _createIndicatorPanelCloseElement : function () {
         // contexte
         var self = this;
 
         var btnClose = document.createElement("button");
-        btnClose.className = "gpf-btn gpf-btn-icon-close fr-btn--close fr-btn fr-btn--tertiary-no-outline";
+        btnClose.className = "GPpanelClose fr-btn fr-btn--sm fr-icon-close-line fr-btn--tertiary-no-outline fr-ml-auto";
         btnClose.title = "Fermer le panneau";
 
         var span = document.createElement("span");

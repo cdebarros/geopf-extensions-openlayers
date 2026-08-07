@@ -263,7 +263,6 @@ var WfsFilter = class Wfsfilter extends Control {
         this.panelWfsfilterContainer = null;
         this.panelWfsfilterEntriesContainer = null; // c'est là où on ajoute nos entrées Cartosp !
         this.panelWfsfilterHeaderContainer = null; // c'est pour le dragNdrop
-        this.panelWfsfilterHeaderTitleContainer = null;
         this.buttonWfsfilterClose = null; // utile ?
         this.PanelWfsfilterContentElement = null;
         this.WfsThematiqueResetLink = null;
@@ -340,9 +339,6 @@ var WfsFilter = class Wfsfilter extends Control {
         // Content with title + reset buttton and SP entries
         var WfsfilterContentDiv = this.PanelWfsfilterContentElement = this._createWfsfilterPanelContentElement();
         wfsfilterPanelDiv.appendChild(WfsfilterContentDiv);
-
-        var WfsfilterHeaderContainerTitleDiv = this.panelWfsfilterHeaderTitleContainer = this._createWfsfilterPanelTitleDivElement();
-        WfsfilterContentDiv.appendChild(WfsfilterHeaderContainerTitleDiv);
 
         var WfsFilterFilterContainerDiv = this.filterContainerDiv = this._createFilterDiv();
         WfsfilterContentDiv.appendChild(WfsFilterFilterContainerDiv);

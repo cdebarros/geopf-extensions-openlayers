@@ -15,11 +15,9 @@ __DATE__
 
 * ✨ [Added]
 
-  - Catalog : recherche non sensible à la casse ou aux accents (#558)
-
 * 🔨 [Changed]
 
-  - Panoramax : possibilité de déclencher l'ouverture du _PhotoViewer_ programmatiquement (#550)
+  - Tooltips : les tooltips au survol des boutons ne peuvent pas être survolées (#571)
 
 * 🔥 [Deprecated]
 
@@ -27,15 +25,6 @@ __DATE__
 
 * 🐛 [Fixed]
 
-  - Panoramax : correctif sur l'orientation dans la minimap au chargement de la photo (#551)
-  - Panoramax : modification du z-index par défaut du photoviewer pour être au-dessus des modales DFSR (#552)
-  - Panoramax : reinitialisation des filtres (#556)
-  - Catalog : améliorer la gestion des critères de recherche pour inclure des valeurs issues de tableaux (#555)
-  - Isocurve : correctif sur l'évenement de fin de traitement (#557)
-  - Drawing : correctif sur l'ouverture du panneau de dessin (#557)
-  - MousePosition : conservation de l'ordre lat/lon y/x pour l'affichage des coordonnées (#560)
-  
 * 🔒 [Security]
-
 
 ---

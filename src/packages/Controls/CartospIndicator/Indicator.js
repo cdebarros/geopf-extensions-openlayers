@@ -270,6 +270,10 @@ var Indicator = class Indicator extends Control {
         // header with close button
         var indicatorPanelHeader = this.panelIndicatorHeaderContainer = this._createIndicatorPanelHeaderElement();
         var indicatorCloseBtn = this.buttonIndicatorClose = this._createIndicatorPanelCloseElement();
+        var IndicatorHeaderContainerTitleDiv = this.panelIndicatorHeaderTitleContainer = this._createIndicatorPanelTitleDivElement();
+        var IndicatorHeaderContainerTitleIconDiv = this.panelIndicatorHeaderTitleIconContainer = this._createIndicatorPanelTitleIconElement();
+        indicatorPanelHeader.appendChild(IndicatorHeaderContainerTitleIconDiv);
+        indicatorPanelHeader.appendChild(IndicatorHeaderContainerTitleDiv);
         indicatorPanelHeader.appendChild(indicatorCloseBtn);
         indicatorPanelDiv.appendChild(indicatorPanelHeader);
         
@@ -278,8 +282,6 @@ var Indicator = class Indicator extends Control {
         var IndicatorContentDiv = this.PanelIndicatorContentElement = this._createIndicatorPanelContentElement();
         indicatorPanelDiv.appendChild(IndicatorContentDiv);
 
-        var IndicatorHeaderContainerTitleDiv = this.panelIndicatorHeaderTitleContainer = this._createIndicatorPanelTitleDivElement();
-        IndicatorContentDiv.appendChild(IndicatorHeaderContainerTitleDiv);
         var WfsThematiqueResetLinkDiv = this.WfsThematiqueResetLink = this._createThematiqueResetLink();
         IndicatorContentDiv.appendChild(WfsThematiqueResetLinkDiv);
 

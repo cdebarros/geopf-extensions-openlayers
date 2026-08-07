@@ -162,7 +162,6 @@ var Searchdialog = class Searchdialog extends Control {
         this.panelSearchdialogContainer = null;
         this.panelSearchdialogEntriesContainer = null; // c'est là où on ajoute nos entrées Cartosp !
         this.panelSearchdialogHeaderContainer = null; // c'est pour le dragNdrop
-        this.panelSearchdialogHeaderTitleContainer = null;
         this.buttonSearchdialogClose = null; // utile ?
         this.PanelSearchdialogContentElement = null;
 
@@ -199,9 +198,6 @@ var Searchdialog = class Searchdialog extends Control {
         // Content with title + reset buttton and SP entries
         var SearchdialogContentDiv = this.PanelSearchdialogContentElement = this._createSearchdialogPanelContentElement();
         searchdialogPanelDiv.appendChild(SearchdialogContentDiv);
-
-        var SearchdialogHeaderContainerTitleDiv = this.panelSearchdialogHeaderTitleContainer = this._createSearchdialogPanelTitleDivElement();
-        SearchdialogContentDiv.appendChild(SearchdialogHeaderContainerTitleDiv);
 
         container.appendChild(searchdialogPanel);
 

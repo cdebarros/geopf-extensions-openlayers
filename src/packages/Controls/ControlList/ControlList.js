@@ -15,6 +15,7 @@ import checkDsfr from "../Utils/CheckDsfr";
 
 // DOM
 import ControlListDOM from "./ControlListDOM";
+import PanelDOM from "../PanelDOM";
 
 var logger = Logger.getLogger("controlList");
 /**
@@ -134,12 +135,7 @@ class ControlList extends Control {
         if ((collapsed && this.collapsed) || (!collapsed && !this.collapsed)) {
             return;
         }
-        if (collapsed) {
-            document.getElementById("GPcontrolListPanelClose-" + this._uid).click();
-        } else {
-            this._pictoIsoButton.click();
-        }
-        this.collapsed = collapsed;
+        this._pictoControlListButton.click();
     }
 
     /**
@@ -249,14 +245,18 @@ class ControlList extends Control {
 
         // panneau
         var panel = this._ControlListPanelContainer = this._createControlListPanelElement();
-        var panelDiv = this._createControlListPanelDivElement();
-        panel.appendChild(panelDiv);
 
         // header
         if (this.options.header) {
-            var header = this._ControlListPanelHeaderContainer = this._createControlListPanelHeaderElement();
-            panelDiv.appendChild(header);
+            var header = this._ControlListPanelHeaderContainer = this._createPanelHeaderElement({
+                title : "Mes outils",
+                btnClassForClose : "GPshowControlListPicto",
+            });
+            panel.appendChild(header);
         }
+
+        var panelDiv = this._createControlListPanelDivElement();
+        panel.appendChild(panelDiv);
 
         // content
         var content = this._createControlListPanelContentElement();
@@ -289,9 +289,6 @@ class ControlList extends Control {
         var map = this.getMap();
         var opened = this._pictoControlListButton.ariaPressed;
         this.collapsed = !(opened === "true");
-        // on génère nous même l'evenement OpenLayers de changement de propriété
-        // (utiliser ol.control.ControlList.on("change:collapsed", function ) pour s'abonner à cet évènement)
-        this.dispatchEvent("change:collapsed");
         // on recalcule la position
         if (this.options.position && !this.collapsed) {
             this.updatePosition(this.options.position);
@@ -321,6 +318,9 @@ class ControlList extends Control {
             this._stopControlListStateObserver();
             this._ControlListPanelContentContainer.innerHTML = "";
         }
+        // on génère nous même l'evenement OpenLayers de changement de propriété
+        // (utiliser ol.control.ControlList.on("change:collapsed", function ) pour s'abonner à cet évènement)
+        this.dispatchEvent("change:collapsed");
     }
 
     _registerControlListStateSync (button, listElement) {
@@ -375,6 +375,7 @@ class ControlList extends Control {
 };
 
 // on récupère les méthodes de la classe commune ControlList
+Object.assign(ControlList.prototype, PanelDOM);
 Object.assign(ControlList.prototype, ControlListDOM);
 Object.assign(ControlList.prototype, Widget);
 

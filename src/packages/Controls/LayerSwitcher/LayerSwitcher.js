@@ -28,6 +28,7 @@ import Config from "../../Utils/Config";
 import ToolTips from "../../Utils/ToolTips";
 // DOM
 import LayerSwitcherDOM from "./LayerSwitcherDOM";
+import PanelDOM from "../PanelDOM";
 
 var logger = Logger.getLogger("layerswitcher");
 
@@ -1258,24 +1259,18 @@ class LayerSwitcher extends Control {
         // header ?
         if (this.options.panel) {
             // header
-            var panelHeader = this._createLayersPanelHeaderElement();
+            var panelHeader = this._createPanelHeaderElement({
+                icon : "ign-layerswitcher",
+                title : "Couches",
+                btnClassForClose : "GPshowLayersListPicto",
+            });
             divL.appendChild(panelHeader);
-            // icon
-            var panelIcon = this._createLayersPanelIconElement();
-            panelHeader.appendChild(panelIcon);
-            // title
-            var panelTitle = this._createLayersPanelTitleElement();
-            panelHeader.appendChild(panelTitle);
-            // close picto
-            var panelClose = this._createLayersPanelCloseElement();
-            panelHeader.appendChild(panelClose);
         }
 
         var div = this._createMainLayersDivElement();
         divL.appendChild(div);
 
         // Bouton de header
-
         if (this.options.headerButtons.length) {
             let bodyHeader = this._createHeaderButtonsDivElement();
 
@@ -1579,7 +1574,7 @@ class LayerSwitcher extends Control {
 
         var opacityValue = e.target.value;
         var opacityId = document.getElementById(this._addUID("GPopacityValue_ID_" + layerID));
-        opacityId.innerHTML = opacityValue + "%";
+        opacityId.innerText = opacityValue + "%";
 
         layer.setOpacity(opacityValue / 100);
     }
@@ -2777,6 +2772,7 @@ class LayerSwitcher extends Control {
 };
 
 // on récupère les méthodes de la classe commune LayerSwitcherDOM
+Object.assign(LayerSwitcher.prototype, PanelDOM);
 Object.assign(LayerSwitcher.prototype, LayerSwitcherDOM);
 Object.assign(LayerSwitcher.prototype, Widget);
 

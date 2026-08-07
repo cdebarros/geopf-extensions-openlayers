@@ -108,7 +108,17 @@ var SearchdialogDOM = {
      */
     _createSearchdialogPanelHeaderElement : function () {
         var container = document.createElement("div");
-        container.className = "gpf-panel__header_searchdialog fr-modal__header";
+        container.className = "GPpanelHeader gpf-panel__header fr-p-1w";
+
+        var icon = document.createElement("span");
+        icon.className = "fr-icon-cartosp-searchengine fr-icon--sm fr-mr-1w";
+        container.appendChild(icon);
+
+        var title = document.createElement("span");
+        title.className = "GPpanelTitle gpf-panel__title";
+        title.innerHTML = "Rechercher une localisation";
+        container.appendChild(title);
+
         return container;
     },
     _createSearchdialogPanelCloseElement : function () {
@@ -116,7 +126,7 @@ var SearchdialogDOM = {
         var self = this;
 
         var btnClose = document.createElement("button");
-        btnClose.className = "gpf-btn gpf-btn-icon-close fr-btn--close fr-btn fr-btn--tertiary-no-outline";
+        btnClose.className = "GPpanelClose fr-btn fr-btn--sm fr-icon-close-line fr-btn--tertiary-no-outline fr-ml-auto";
         btnClose.title = "Fermer le panneau";
 
         var span = document.createElement("span");

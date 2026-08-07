@@ -1560,6 +1560,7 @@ var Isocurve = class Isocurve extends Control {
 
         // mise à jour du controle !
         this._formContainer.className = "GPelementHidden gpf-hidden gpf-panel__content fr-modal__content";
+        this._IsoPanelHeaderContainer.classList.add("GPelementHidden", "gpf-hidden");
         this._hideWaitingContainer();
         this._resultsIsoContainer.className = "gpf-flex GPflex";
     }
@@ -1928,12 +1929,12 @@ var Isocurve = class Isocurve extends Control {
      * @private
      */
     _ShowSelectedIsochroneMod (){
-        if (this._formContainer.style.display === "none") {
-            this._formContainer.style.display = "inline";
-            this._typologyContainer.style.display = "none";
+        if (this._formContainer.classList.contains("GPelementHidden")) {
+            this._formContainer.classList.remove("GPelementHidden", "gpf-hidden");
+            this._typologyContainer.classList.add("GPelementHidden", "gpf-hidden");
         } else {
-            this._formContainer.style.display = "none";
-            this._typologyContainer.style.display = "inline";
+            this._formContainer.classList.add("GPelementHidden", "gpf-hidden");
+            this._typologyContainer.classList.remove("GPelementHidden", "gpf-hidden");
         }
     }
 
