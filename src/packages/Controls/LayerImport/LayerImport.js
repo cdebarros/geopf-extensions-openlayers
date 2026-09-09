@@ -89,8 +89,10 @@ class LayerImport extends Control {
     * @fires render:failure
     * @param {Object} options - options for function call.
     * @param {Number} [options.id] - Ability to add an identifier on the widget (advanced option)
+    * @param {String} [options.title = "Import de données"] - Title of the widget panel
     * @param {Boolean} [options.collapsed = true] - Specify if LayerImport control should be collapsed at startup. Default is true.
     * @param {Boolean} [options.draggable = false] - Specify if widget is draggable
+    * @param {Boolean} [options.dragAndDropUI = false] - Specify if the static import form is displayed with a drag and drop area (without name input nor local/url choice). Default is false.
     * @param {Array} [options.layerTypes = ["KML", "GPX", "GeoJSON", "WMS", "WMTS", "MAPBOX"]] - data types that could be imported : "KML", "GPX", "GeoJSON", "WMS", "WMTS" and "MAPBOX". Values will be displayed in the same order in widget list.
     * @param {Object} [options.webServicesOptions = {}] - Options to import WMS or WMTS layers
     * @param {String} [options.webServicesOptions.proxyUrl] - Proxy URL to avoid cross-domain problems. Mandatory to import WMS and WMTS layer.
@@ -381,8 +383,10 @@ class LayerImport extends Control {
 
         // set default options
         this.options = {
+            title : "Import de données",
             collapsed : true,
             draggable : false,
+            dragAndDropUI : false,
             layerTypes : ["KML", "GPX", "GeoJSON", "WMS", "WMTS", "MAPBOX"],
             webServicesOptions : {},
             vectorStyleOptions : {
@@ -740,21 +744,28 @@ class LayerImport extends Control {
         // header
         var panelHeader = this._importPanelHeader = this._createPanelHeaderElement({
             icon : "ign-layerimport",
-            title : "Import de données",
+            title : this.options.title,
             btnClassForClose : "GPshowImportPicto",
+            backBtn : true,
         });
 
         importPanel.appendChild(panelHeader);
         importPanel.appendChild(importPanelPanelDiv);
 
-        // return
-        var panelReturn = this._importPanelReturnPicto = this._createImportPanelReturnPictoElement();
-        importPanelPanelDiv.appendChild(panelReturn);
-
         // panel title
         this._importPanelTitle = panelHeader._title;
         // close picto
         this._panelCloseButton = panelHeader._closeBtn;
+        // return btn
+        this._importPanelReturnPicto = panelHeader._backBtn;
+        this._importPanelReturnPicto.addEventListener("click", (e) => {
+            // on ferme le panneau
+            document.getElementById(this._addUID("GPshowImportPicto")).click();
+            // on nettoie la fenêtre de résultats
+            this._onReturnPictoClick(e);
+            // on rouvre le panneau vierge
+            document.getElementById(this._addUID("GPshowImportPicto")).click();
+        });
 
         // form : initialisation du formulaire d'import des couches (types d'import et saisie de l'url / du fichier)
         var importForm = this._formContainer = this._initInputFormElement();
@@ -807,37 +818,47 @@ class LayerImport extends Control {
         // params for KML/GPX/GeoJSON
 
         var importStaticParamsContainer = this._createImportStaticParamsContainer(this.options.layerTypes[0]);
-        // static file name
-        var staticNameLabel = this._createStaticNameLabel();
-        importStaticParamsContainer.appendChild(staticNameLabel);
-        // static import choice (local / url)
-        var staticImportChoice = this._createStaticModeChoiceDiv();
-        // TODO : passer un paramètre "checked" ??
-        var staticLocalImportChoice = this._createStaticLocalChoiceDiv();
-        staticImportChoice.appendChild(staticLocalImportChoice);
-        var staticUrlImportChoice = this._createStaticUrlChoiceDiv();
-        staticImportChoice.appendChild(staticUrlImportChoice);
-        importStaticParamsContainer.appendChild(staticImportChoice);
+
+        if (!this.options.dragAndDropUI) {
+            // static file name
+            var staticNameLabel = this._createStaticNameLabel();
+            importStaticParamsContainer.appendChild(staticNameLabel);
+            // static import choice (local / url)
+            var staticImportChoice = this._createStaticModeChoiceDiv();
+            // TODO : passer un paramètre "checked" ??
+            var staticLocalImportChoice = this._createStaticLocalChoiceDiv();
+            staticImportChoice.appendChild(staticLocalImportChoice);
+            var staticUrlImportChoice = this._createStaticUrlChoiceDiv();
+            staticImportChoice.appendChild(staticUrlImportChoice);
+            importStaticParamsContainer.appendChild(staticImportChoice);
+        }
 
         // div for local file import
         var staticLocalInputDiv = this._createStaticLocalInputDiv();
-        // label
-        staticLocalInputDiv.appendChild(this._createStaticLocalInputLabel());
         // file input
         this._staticLocalImportInput = this._createStaticLocalInput();
-        staticLocalInputDiv.appendChild(this._staticLocalImportInput);
+        if (this.options.dragAndDropUI) {
+            // zone de glisser/déposer avec un bouton "Parcourir"
+            staticLocalInputDiv.appendChild(this._createStaticLocalDropZone(this._staticLocalImportInput));
+        } else {
+            // label
+            staticLocalInputDiv.appendChild(this._createStaticLocalInputLabel());
+            staticLocalInputDiv.appendChild(this._staticLocalImportInput);
+        }
         // append div to params container
         importStaticParamsContainer.appendChild(staticLocalInputDiv);
 
-        // div for url input (info: séparation pour récupérer l'élément input)
-        var staticUrlInputDiv = this._createStaticUrlInputDiv();
-        // label
-        staticUrlInputDiv.appendChild(this._createStaticUrlInputLabel());
-        // url input
-        this._staticUrlImportInput = this._createStaticUrlInput();
-        staticUrlInputDiv.appendChild(this._staticUrlImportInput);
-        // append div to params container
-        importStaticParamsContainer.appendChild(staticUrlInputDiv);
+        if (!this.options.dragAndDropUI) {
+            // div for url input (info: séparation pour récupérer l'élément input)
+            var staticUrlInputDiv = this._createStaticUrlInputDiv();
+            // label
+            staticUrlInputDiv.appendChild(this._createStaticUrlInputLabel());
+            // url input
+            this._staticUrlImportInput = this._createStaticUrlInput();
+            staticUrlInputDiv.appendChild(this._staticUrlImportInput);
+            // append div to params container
+            importStaticParamsContainer.appendChild(staticUrlInputDiv);
+        }
 
         // append static params container to form container
         importForm.appendChild(importStaticParamsContainer);
@@ -966,8 +987,7 @@ class LayerImport extends Control {
     _onMapBoxPanelClose () {
         this.cleanMapBoxResultsList();
         this._loadingContainer.className = "";
-        this._importPanelReturnPicto.classList.replace("GPelementVisible", "GPelementHidden");
-        this._importPanelReturnPicto.classList.replace("gpf-visible", "gpf-hidden");
+        this._importPanelReturnPicto.classList.add("GPelementHidden", "gpf-hidden");
         this._mapBoxPanel.classList.replace("GPelementVisible", "GPelementHidden");
         this._mapBoxPanel.classList.replace("gpf-visible", "gpf-hidden");
     }
@@ -1570,8 +1590,7 @@ class LayerImport extends Control {
                                                 self._importPanelHeader.classList.replace("gpf-hidden", "gpf-visible");
                                                 self._mapBoxPanel.classList.replace("GPelementHidden", "GPelementVisible");
                                                 self._mapBoxPanel.classList.replace("gpf-hidden", "gpf-visible");
-                                                self._importPanelReturnPicto.classList.replace("GPelementHidden", "GPelementVisible");
-                                                self._importPanelReturnPicto.classList.replace("gpf-hidden", "gpf-visible");
+                                                self._importPanelReturnPicto.classList.remove("GPelementHidden", "gpf-hidden");
                                             }
                                         })
                                         .then(function () {
@@ -1700,7 +1719,10 @@ class LayerImport extends Control {
                 // lecture du fichier GPX : création d'un format ol.format.GPX, qui possède une méthode readFeatures (et readProjection)
                 vectorStyle = this.options.vectorStyleOptions.GPX.defaultStyle;
                 vectorFormat = new GPXExtended({
-                    defaultStyle : vectorStyle
+                    defaultStyle : vectorStyle,
+                    readExtensions : function (feature, node) {
+                        this.readExtensions(feature, node);
+                    }
                 });
             } else if (this._currentImportType === "GeoJSON") {
                 // lecture du fichier GeoJSON : création d'un format ol.format.GeoJSON, qui possède une méthode readFeatures (et readProjection)
@@ -1878,7 +1900,10 @@ class LayerImport extends Control {
             } else if (this._currentImportType === "GPX") {
                 // lecture du fichier GPX : création d'un format ol.format.GPX, qui possède une méthode readFeatures (et readProjection)
                 vectorFormat = new GPXExtended({
-                    defaultStyle : this.options.vectorStyleOptions.GPX.defaultStyle
+                    defaultStyle : this.options.vectorStyleOptions.GPX.defaultStyle,
+                    readExtensions : function (feature, node) {
+                        this.readExtensions(feature, node);
+                    }
                 });
             } else if (this._currentImportType === "GeoJSON") {
                 // lecture du fichier GeoJSON : création d'un format ol.format.GeoJSON, qui possède une méthode readFeatures (et readProjection)
@@ -2261,8 +2286,7 @@ class LayerImport extends Control {
         this._getCapPanel.classList.replace("GPelementHidden", "GPelementVisible");
         this._getCapPanel.classList.replace("gpf-hidden", "gpf-visible");
         this._importPanelTitle.innerHTML = "Couches accessibles";
-        this._importPanelReturnPicto.classList.replace("GPelementHidden", "GPelementVisible");
-        this._importPanelReturnPicto.classList.replace("gpf-hidden", "gpf-visible");
+        this._importPanelReturnPicto.classList.remove("GPelementHidden", "gpf-hidden");
         this._hasGetCapResults = true;
         // Parse GetCapabilities Response
         if (this._currentImportType === "WMS") {
@@ -3282,7 +3306,7 @@ class LayerImport extends Control {
     _displayFormContainer () {
         this._formContainer.classList.replace("GPelementHidden", "GPelementVisible");
         this._formContainer.classList.replace("gpf-hidden", "gpf-visible");
-        this._importPanelTitle.innerHTML = "Import de données";
+        this._importPanelTitle.innerHTML = this.options.title;
         // this._importPanelHeader.classList.replace("GPelementHidden", "GPelementVisible");
         // this._importPanelHeader.classList.replace("gpf-hidden", "gpf-visible");
     }
