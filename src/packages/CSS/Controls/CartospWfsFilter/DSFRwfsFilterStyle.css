@@ -72,7 +72,8 @@
 }
 
 #allSpSelectors, #filters {
-    position: relative;
+    justify-content: space-between;
+    display: flex;
 }
 
 #select-sp-selection, .margin-link {
@@ -81,7 +82,6 @@
 
 #reset-sp-selection, #reset-filter-selection {
     margin-bottom: 10px;
-    left: 170px;
     position: relative;
 }
 
@@ -91,11 +91,9 @@
 
 #reset-sp-selection {
     box-shadow: none;
-    left: 149px;
 }
 
 #reset-filter-selection {
-    left: 237px;
     box-shadow: none;
 }
 
