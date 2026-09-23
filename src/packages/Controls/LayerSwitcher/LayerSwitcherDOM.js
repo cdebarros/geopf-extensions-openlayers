@@ -763,7 +763,7 @@ var LayerSwitcherDOM = {
         opacity.id = this._addUID("GPopacityContainer_ID_" + obj.id);
         opacity.className = "GPopacityContainer";
 
-        let array = this._createOpacityElement(obj.id, obj.opacity);
+        let array = this._createOpacityElement(obj.id, obj.opacity, obj.title);
         for (let i = 0; i < array.length; i++) {
             opacity.appendChild(array[i]);
         }
@@ -1235,7 +1235,7 @@ var LayerSwitcherDOM = {
      * 
      * @returns {HTMLElement[]} Tableau de 2 containers
      */
-    _createOpacityElement : function (id, opacity) {
+    _createOpacityElement : function (id, opacity, title) {
         // exemple :
         // <div id="GPopacity_ID_Layer1" class="GPlayerOpacity" title="Opacité">
         //   <input id="GPopacityRange_ID_Layer1" type="range" value="100" oninput="GPchangeLayerOpacity(this);" onchange="GPchangeLayerOpacity(this);">
@@ -1263,7 +1263,7 @@ var LayerSwitcherDOM = {
         input.id = this._addUID("GPopacityValueDiv_ID_" + id);
         input.type = "range";
         input.value = _opacity;
-        input.ariaLabel = "Opacité";
+        input.ariaLabel = "Opacité de " + title || "Opacité";
 
         // add event for opacity change
         var context = this;

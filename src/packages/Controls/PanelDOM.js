@@ -46,6 +46,8 @@ let PanelDOM = {
         let titleElement = document.createElement("span");
         titleElement.classList.add("GPpanelTitle", "gpf-panel__title");
         titleElement.innerText = title;
+        titleElement.ariaLevel = 2;
+        titleElement.role = "heading";
         return titleElement;
     },
     _createPanelCloseElement : function (btnClassForClose) {

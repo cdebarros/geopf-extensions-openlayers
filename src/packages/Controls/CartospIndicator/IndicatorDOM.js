@@ -96,7 +96,7 @@ var IndicatorDOM = {
     },
 
     _createIndicatorPanelTitleDivElement : function () {
-        var div = document.createElement("span");
+        var div = document.createElement("h2");
         div.className = "GPpanelTitle gpf-panel__title";
         div.innerHTML = "Indicateurs";
         return div;

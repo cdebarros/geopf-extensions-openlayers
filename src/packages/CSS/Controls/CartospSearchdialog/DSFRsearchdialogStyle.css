@@ -8,3 +8,11 @@
     -webkit-mask: url("img/dsfr/rechercher.svg") center no-repeat;
     mask: url("img/dsfr/rechercher.svg") center no-repeat;
 }
+
+.gpf-panel__title {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    margin: 0px;
+    color: var(--text-title-blue-france);
+    font-weight: 400;   
+}

@@ -105,7 +105,7 @@ var LayerselectorDOM = {
         icon.className = "fr-icon-cartosp-layerselector fr-icon--sm fr-mr-1w";
         container.appendChild(icon);
 
-        var title = document.createElement("span");
+        var title = document.createElement("h2");
         title.className = "GPpanelTitle gpf-panel__title";
         title.innerHTML = "Changer de fond de carte";
         container.appendChild(title);
