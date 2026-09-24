@@ -212,82 +212,88 @@ var WfsFilterDOM = {
         // accordeon section for each thematique
         var strContainer = `
             <div id="filters-content">
-                <div class="filter-title">Caractéristiques du service</div>
-                <div class="fr-fieldset__element">
-                    <div class="fr-checkbox-group">
-                        <input value="Implantation" name="filtersp-spcara" id="filtersp-Implantation" type="checkbox">
-                        <label class="fr-label" for="filtersp-Implantation">
-                            Implantation
-                        </label>
+                <fieldset class="fr-fieldset">
+                    <legend class="filter-title fr-fieldset__legend">Caractéristiques du service</legend>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Implantation" name="filtersp-spcara" id="filtersp-Implantation" type="checkbox">
+                            <label class="fr-label" for="filtersp-Implantation">
+                                Implantation
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="fr-fieldset__element">
-                    <div class="fr-checkbox-group">
-                        <input value="Permanence" name="filtersp-spcara" id="filtersp-Permanence" type="checkbox">
-                        <label class="fr-label" for="filtersp-Permanence">
-                            Permanence
-                        </label>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Permanence" name="filtersp-spcara" id="filtersp-Permanence" type="checkbox">
+                            <label class="fr-label" for="filtersp-Permanence">
+                                Permanence
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="fr-fieldset__element">
-                    <div class="fr-checkbox-group">
-                        <input value="Itinérance" name="filtersp-spcara" id="filtersp-Itinérance" type="checkbox">
-                        <label class="fr-label" for="filtersp-Itinérance">
-                            Dispositif itinérant
-                        </label>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group">
+                            <input value="Itinérance" name="filtersp-spcara" id="filtersp-Itinérance" type="checkbox">
+                            <label class="fr-label" for="filtersp-Itinérance">
+                                Dispositif itinérant
+                            </label>
+                        </div>
                     </div>
-                </div>
+                </fieldset>
                 <div id="spfilter-more-content" style="display: none;">
-                    <div class="filter-title">Volume horaire (par semaine)</div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="Moins de 10h" name="filtersp-spvolume" id="filtersp-Moins de 10h" type="checkbox">
-                            <label class="fr-label" for="filtersp-Moins de 10h">
-                                Moins de 10 heures
-                            </label>
+                    <fieldset class="fr-fieldset">
+                        <legend class="filter-title fr-fieldset__legend">Volume horaire (par semaine)</legend>
+                        <div class="fr-fieldset__element">
+                            <div class="fr-checkbox-group">
+                                <input value="Moins de 10h" name="filtersp-spvolume" id="filtersp-Moins de 10h" type="checkbox">
+                                <label class="fr-label" for="filtersp-Moins de 10h">
+                                    Moins de 10 heures
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="Entre 10h et 24h" name="filtersp-spvolume" id="filtersp-Entre 10h et 24h" type="checkbox">
-                            <label class="fr-label" for="filtersp-Entre 10h et 24h">
-                                Entre 10 et 24 heures
-                            </label>
+                        <div class="fr-fieldset__element">
+                            <div class="fr-checkbox-group">
+                                <input value="Entre 10h et 24h" name="filtersp-spvolume" id="filtersp-Entre 10h et 24h" type="checkbox">
+                                <label class="fr-label" for="filtersp-Entre 10h et 24h">
+                                    Entre 10 et 24 heures
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="Plus de 24h" name="filtersp-spvolume" id="filtersp-Plus de 24h" type="checkbox">
-                            <label class="fr-label" for="filtersp-Plus de 24h">
-                                Plus de 24 heures
-                            </label>
+                        <div class="fr-fieldset__element">
+                            <div class="fr-checkbox-group">
+                                <input value="Plus de 24h" name="filtersp-spvolume" id="filtersp-Plus de 24h" type="checkbox">
+                                <label class="fr-label" for="filtersp-Plus de 24h">
+                                    Plus de 24 heures
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="filter-title">Modalité d'accueil</div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="Avec rendez-vous" name="filtersp-spmoda" id="filtersp-Avec rendez-vous" type="checkbox">
-                            <label class="fr-label" for="filtersp-Avec rendez-vous">
-                                Avec rendez-vous
-                            </label>
+                    </fieldset>
+                    <fieldset class="fr-fieldset">
+                        <legend class="filter-title fr-fieldset__legend">Modalité d'accueil</legend>
+                        <div class="fr-fieldset__element">
+                            <div class="fr-checkbox-group">
+                                <input value="Avec rendez-vous" name="filtersp-spmoda" id="filtersp-Avec rendez-vous" type="checkbox">
+                                <label class="fr-label" for="filtersp-Avec rendez-vous">
+                                    Avec rendez-vous
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="Sans rendez-vous" name="filtersp-spmoda" id="filtersp-Sans rendez-vous" type="checkbox">
-                            <label class="fr-label" for="filtersp-Sans rendez-vous">
-                                Sans rendez-vous
-                            </label>
+                        <div class="fr-fieldset__element">
+                            <div class="fr-checkbox-group">
+                                <input value="Sans rendez-vous" name="filtersp-spmoda" id="filtersp-Sans rendez-vous" type="checkbox">
+                                <label class="fr-label" for="filtersp-Sans rendez-vous">
+                                    Sans rendez-vous
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-checkbox-group">
-                            <input value="Avec et sans rendez-vous" name="filtersp-spmoda" id="filtersp-Avec et sans rendez-vous" type="checkbox">
-                            <label class="fr-label" for="filtersp-Avec et sans rendez-vous">
-                                Avec et sans rendez-vous
-                            </label>
+                        <div class="fr-fieldset__element">
+                            <div class="fr-checkbox-group">
+                                <input value="Avec et sans rendez-vous" name="filtersp-spmoda" id="filtersp-Avec et sans rendez-vous" type="checkbox">
+                                <label class="fr-label" for="filtersp-Avec et sans rendez-vous">
+                                    Avec et sans rendez-vous
+                                </label>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
                 </div>
                 <button id="sp-more-filter-btn" class="fr-btn fr-btn--tertiary fr-btn--sm margin-link fr-icon-arrow-down-s-line fr-btn--icon-right" name="spfilter-more" id="filtersp-more">Afficher plus de filtres</button>
             </div>
@@ -488,7 +494,7 @@ var WfsFilterDOM = {
                     <button id="GPcollapseWfsfilter_ID_${o.thematique}" class="GPfilterButton fr-accordion__btn" aria-expanded="false" aria-controls="GPwfsfilter_ID_${o.thematique}">${o.thematique}</button>
                 </h3>
                 <div id="GPwfsfilter_ID_${o.thematique}" class="fr-collapse GPelementHidden" style="margin:unset;">
-                    <fieldset class="fr-fieldset" id="checkboxes-${o.thematique}">
+                    <fieldset class="fr-fieldset" id="checkboxes-${o.thematique}" aria-labelledby="GPcollapseWfsfilter_ID_${o.thematique}">
                         ${content}
                     </fieldset>
                 </div>

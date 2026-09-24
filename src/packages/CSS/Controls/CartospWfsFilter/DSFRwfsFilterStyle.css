@@ -68,6 +68,10 @@
     font-weight: 400;   
 }
 
+.fr-fieldset {
+    margin-bottom: 0px;
+}
+
 .fr-icon-cartosp-building::before, .fr-icon-cartosp-building::after {
     -webkit-mask-image: url("img/dsfr/services-publics.svg");
     mask-image: url("img/dsfr/services-publics.svg");
@@ -120,7 +124,12 @@
 
 .filter-title {
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
+}
+
+.fr-fieldset__element {
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .fr-accordion__title{

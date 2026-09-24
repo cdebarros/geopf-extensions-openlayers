@@ -450,6 +450,8 @@ var IsoDOM = {
         var div = document.createElement("div");
         div.id = this._addUID("GPisochronChoice");
         div.className = "fr-mt-2w";
+        div.setAttribute("role", "group");
+        div.setAttribute("aria-label", "Type de calcul");
 
         // div.appendChild(this._createIsoPanelFormTypeChoiceChronElement());
         // div.appendChild(this._createIsoPanelFormTypeChoiceDistElement());
@@ -767,6 +769,8 @@ var IsoDOM = {
         var divContainer = document.createElement("div");
         divContainer.id = this._addUID("GPisochronModeChoice");
         divContainer.className = "GPisochronModeChoice gpf-flex";
+        divContainer.setAttribute("role", "group");
+        divContainer.setAttribute("aria-label", "Mode de sélection");
 
         // par adresse
         var radioAdresse = document.createElement("div");
@@ -984,6 +988,8 @@ var IsoDOM = {
         var div = document.createElement("div");
         div.className = "GPisochronRideChoice gpf-radio-group fr-radio-group";
         div.id = "selectRide";
+        div.setAttribute("role", "group");
+        div.setAttribute("aria-label", "Mode de transport");
 
         // label location
         var labelRide = document.createElement("label");
@@ -1017,6 +1023,8 @@ var IsoDOM = {
         var div = document.createElement("div");
         div.className = "GPisochronRideTimeChoice gpf-radio-group fr-radio-group";
         div.id = "selectRideTime";
+        div.setAttribute("role", "group");
+        div.setAttribute("aria-label", "Durée du trajet");
 
         // label location
         var labelRideTime = document.createElement("label");
@@ -1109,6 +1117,8 @@ var IsoDOM = {
 
         var divContainer = document.createElement("div");
         divContainer.id = this._addUID("GPisochronTransportChoice");
+        divContainer.setAttribute("role", "group");
+        divContainer.setAttribute("aria-label", "Mode de déplacement");
 
         var label = document.createElement("label");
         label.className = "GPisochronModeLabel gpf-label fr-label";

@@ -220,7 +220,7 @@ var IndicatorDOM = {
                     <button id="GPcollapseIndicator_ID_${o.thematique}" class="GPfilterButton fr-accordion__btn" aria-expanded="false" aria-controls="GPindicator_ID_${o.thematique}">${o.thematique}</button>
                 </h3>
                 <div id="GPindicator_ID_${o.thematique}" class="fr-collapse GPelementHidden" style="margin:unset;">
-                    <fieldset class="fr-fieldset" id="checkboxes-${o.thematique}">
+                    <fieldset class="fr-fieldset" id="checkboxes-${o.thematique}" aria-labelledby="GPcollapseIndicator_ID_${o.thematique}">
                         ${content}
                     </fieldset>
                 </div>
