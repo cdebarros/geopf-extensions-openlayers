@@ -79,9 +79,9 @@ div.radio { text-align: center; }
 div.radio:hover img , div.radio:hover .sub-label, div.radio:hover label{ cursor: pointer; }
 div.radio img { border: solid 1px #bbb; width: 50%;  border-radius: 4px;}
 div.radio label { font-family: arial; font-size: 12px;}
-input[type=radio]{ display: none; }
-input[type=radio]:checked + img { border: solid 2px var(--text-action-high-blue-france); border-radius: 4px; }
-input[type=radio]:checked + img + .sub-label { color: var(--text-action-high-blue-france); font-weight: 700; font-size: 12px; }
+[id^="GPlayerselector"] input[type=radio]{ display: none; }
+[id^="GPlayerselector"] input[type=radio]:checked + img { border: solid 2px var(--text-action-high-blue-france); border-radius: 4px; }
+[id^="GPlayerselector"] input[type=radio]:checked + img + .sub-label { color: var(--text-action-high-blue-france); font-weight: 700; font-size: 12px; }
 
 #GPlayerselector_ID_layerlist{
     display: flex;

@@ -273,6 +273,15 @@ class SearchEngineAdvanced extends Control {
         options.searchButton = true;
         options.search = true;
         this.baseSearchEngine = new SearchEngineGeocodeIGN(options);
+        const searchInput = this.baseSearchEngine.input;
+        if (!searchInput.id) {
+            searchInput.id = Helper.getUid("GPsearchEngineAdvancedInput-");
+        }
+        const searchLabel = document.createElement("label");
+        searchLabel.className = "fr-sr-only";
+        searchLabel.htmlFor = searchInput.id;
+        searchLabel.textContent = "Rechercher un lieu, une adresse, une carte ou une donnée";
+        searchInput.parentNode.insertBefore(searchLabel, searchInput);
         this.baseSearchEngine.on(["select", "search", "autocomplete"], (e) => {
             this.dispatchEvent(e);
         });

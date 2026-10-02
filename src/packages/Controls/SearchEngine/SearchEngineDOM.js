@@ -160,12 +160,16 @@ var SearchEngineDOM = {
             return false;
         });
 
+        var inputId = this._addUID("GPsearchInputText");
+        var autoCompleteListId = this._addUID("GPautoCompleteList");
+
         var input = document.createElement("input");
-        input.id = this._addUID("GPsearchInputText");
+        input.id = inputId;
         input.className = "GPsearchInputText gpf-input fr-input";
         input.type = "text";
         input.placeholder = placeholder;
         input.autocomplete = "off";
+        input.setAttribute("aria-controls", autoCompleteListId);
         // Manage autocomplete list appearance when filling the address input
         input.addEventListener("keyup", function (e) {
             var charCode = e.which || e.keyCode;

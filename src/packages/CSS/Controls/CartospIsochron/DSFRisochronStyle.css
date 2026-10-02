@@ -30,12 +30,12 @@
   margin-top: 0;
 }
 
-div[id^="GPisochronChoice"] {
+[id^="GPisochronChoice"] {
   justify-content: left;
   gap: 1em;
 }
 
-div[id^=GPisochronTransportChoice] > div {
+[id^=GPisochronTransportChoice] > div {
   margin-top: 0.5rem;
 }
 

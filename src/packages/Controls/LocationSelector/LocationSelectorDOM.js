@@ -90,6 +90,23 @@ var LocationSelectorDOM = {
     },
 
     /**
+     * Create label for autocomplete point input
+     *
+     * @param {Number} id - tag ID
+     * @param {String} text - label
+     * @returns {HTMLElement} DOM element
+     */
+    _createLocationAutoCompleteLabelElement : function (id, text) {
+        var labelOrigin = document.createElement("label");
+        labelOrigin.id = this._addUID("GPlocationOriginInputLabel_" + id);
+        labelOrigin.htmlFor = this._addUID("GPlocationOrigin_" + id);
+        labelOrigin.innerHTML = text;
+        labelOrigin.className = "fr-sr-only";
+
+        return labelOrigin;
+    },
+
+    /**
      * Create Input AutoComplete Point tag
      *
      * @param {Number} id - tag ID
@@ -105,6 +122,7 @@ var LocationSelectorDOM = {
         inputOrigin.type = "text";
         inputOrigin.placeholder = "Saisir une adresse, un lieu...";
         inputOrigin.autocomplete = "off";
+        inputOrigin.setAttribute("aria-controls", this._addUID("GPlocationAutoCompleteList_" + id));
         inputOrigin.addEventListener("keyup", function (e) {
             var charCode = e.which || e.keyCode;
             if (charCode === 13 || charCode === 10 || charCode === 38 || charCode === 40) {

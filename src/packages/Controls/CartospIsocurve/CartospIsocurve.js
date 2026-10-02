@@ -1341,7 +1341,7 @@ var Isocurve = class Isocurve extends Control {
         }
         // on la retire si la valeur existe et est deselectionnée
         if (bFound && checked) {
-            this._currentExclusions[iFound] = null;
+            this._currentExclusions.splice(iFound, 1);
         }
     }
 

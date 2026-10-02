@@ -42,7 +42,7 @@ input[id^="GPisochronOriginPointer"]:checked + .GPisochronOriginPointerImg {
 
 /* Alternative choice */
 
-div[id^=GPisochronChoice] {
+[id^=GPisochronChoice] {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: -webkit-box;
@@ -96,12 +96,19 @@ input[id^=GPisochronChoiceAltDist]:checked + .GPisochronChoiceAltImg {
   color: var(--grey-200-850);
 }
 
-div[id^=GPisochronTransportChoice] > div, div[id^=GPisochronModeChoice] > div {
+.GPisochronRadioFieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+[id^=GPisochronTransportChoice] > div, [id^=GPisochronModeChoice] > div {
   display: inline-flex;
   gap: 1rem;
 }
 
-div[id^=GPisochronModeChoice]{
+[id^=GPisochronModeChoice]{
   padding: 1rem 1rem 0rem 1rem;
 }
 
@@ -163,6 +170,12 @@ div[id^=GPisochronTypologyLayerListSelector] {
   padding-bottom: 10px;
 }
 
+.GPisochronRideTimeOptions {
+  gap: 10px;
+  flex-wrap: wrap;
+  display: flex;
+}
+
 input[id^=GPtypologyisochronSubmit] {
   width: 100%;
   margin-top: 15px;
@@ -183,26 +196,32 @@ button[id^="GPshowIsoExclusions"][aria-pressed="true"] {
   transform: translateY(-100%) rotateX(180deg);
 }
 
-button[id^=GPshowIsoExclusions][aria-pressed="false"] + div[id^=GPisoExclusions] {
+button[id^=GPshowIsoExclusions][aria-pressed="false"] + [id^=GPisoExclusions] {
+  display: none;
   max-height: 0;
   opacity: 0;
   margin-bottom: 0;
 }
 
-button[id^=GPshowIsoExclusions][aria-pressed="true"] + div[id^=GPisoExclusions] {
+button[id^=GPshowIsoExclusions][aria-pressed="true"] + [id^=GPisoExclusions] {
   display: block;
-  max-height: 76px;
+  max-height: none;
   opacity: 1;
   margin-bottom: 15px;
 }
 
-.GPisochronFormMini button[id^=GPshowIsoExclusions][aria-pressed="true"] + div[id^=GPisoExclusions] {
+.GPisochronFormMini button[id^=GPshowIsoExclusions][aria-pressed="true"] + [id^=GPisoExclusions] {
   display: none;
 }
 
-div[id^=GPisoExclusions] {
+[id^=GPisoExclusions] {
   transition: max-height 0.5s ease-in-out 0.25s, opacity 0.5s ease-in-out 0.25s, margin 0.3s ease-in-out 0.25s;
-  overflow: hidden;
+  overflow: visible;
+}
+
+[id^=GPisoExclusions] input[type=checkbox]:focus-visible + label {
+  outline: 2px solid var(--border-action-high-blue-france, #0a76f6);
+  outline-offset: 2px;
 }
 
 /* Reset picto */

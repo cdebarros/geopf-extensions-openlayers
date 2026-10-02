@@ -297,6 +297,8 @@ class LocationSelector extends Control {
 
         var _buttonLabel = this._buttonLabel = this._createLocationPointLabelElement(id, this.options.tag.label);
         inputs.appendChild(_buttonLabel);
+        var _inputAutoCompleteLabel = this._inputAutoCompleteLabel = this._createLocationAutoCompleteLabelElement(id, "Saisir une adresse, un lieu...");
+        inputs.appendChild(_inputAutoCompleteLabel);
         var _inputAutoComplete = this._inputAutoComplete = this._createLocationAutoCompleteteInputElement(id);
         if (_inputAutoComplete.addEventListener) {
             _inputAutoComplete.addEventListener("click", () => this.onAutoCompleteInputClick());
